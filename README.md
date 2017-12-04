@@ -11,8 +11,8 @@
   * *while*
     * **regress()**
     * **stop()**
-  * **selection()**
-  * **evolve()**
+    * **selection()**
+    * **evolve()**
   * *choose*
 
 * Select (y, x, tbd, ...)
