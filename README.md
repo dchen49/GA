@@ -5,6 +5,16 @@
 * David - Github & R package
 
 ### Select Outline
+
+* select()
+  * *initialize*
+  * *while*
+    * **regress()**
+    * **stop()**
+  * **selection()**
+  * **evolve()**
+  * *choose*
+
 * Select (y, x, tbd, ...)
   * initialize(p = initial population size, n = ncol(x))
       * make a p x n matrix of random Bernoullis
@@ -37,6 +47,4 @@
         * picks locations (maybe number)
           * -> population = populationCrossedMutated
     * choice(population, fitness)
-      * return all unique genotypes associated with max fitness value~
-          
-    
+      * return all unique genotypes associated with max fitness value
