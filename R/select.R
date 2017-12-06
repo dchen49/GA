@@ -6,7 +6,7 @@
 #' @param x matrix of dimension n * p
 #' @param y vector of length n or a matrix with n rows
 #' @param model string specifying the model: "lm" or "glm"
-#' @param fitness string specifying the fitness criterion: "AIC", "BIC", or "TBD"
+#' @param fitnessCriteria default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or "TBD"
 #' @param pop0 an integer specifying the initial population size
 #' @param crossing a numeric vector, c("cross probability", "max number of cross locations on a single gene")
 #' @param maxGen an integer specifying the maximum number of GA generations to use
@@ -23,7 +23,7 @@
 #' TBD
 
 
-select <- function(x, y, model, fitness = "AIC", pop0 = 100, mutation = .1, crossing = c(.25, 1), maxGen = 100, minGen = 5 ...) {
+select <- function(x, y, model, fitnessCriteria = "AIC", pop0 = 100, mutation = .1, crossing = c(.25, 1), maxGen = 100, minGen = 5, ...) {
   # clean & process inputs
   x <- as.tibble(read.table(file = "data/baseball.dat", header = TRUE))[, -1]
   y <- as.tibble(read.table(file = "data/baseball.dat", header = TRUE))[, 1]
@@ -40,7 +40,7 @@ select <- function(x, y, model, fitness = "AIC", pop0 = 100, mutation = .1, cros
   # GA iterations
   gen <- 1
   while(gen < maxGen) {
-    fitness <- apply(population, 1, regress)
+    fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = )
 
     # Identify unique elite genotypes
     fittest <- which(fitness %in% unique(fitness)[order(unique(fitness), decreasing = TRUE)[1:min(10, floor(length(fitness/20)))]])
