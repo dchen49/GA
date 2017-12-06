@@ -7,13 +7,17 @@
 
 regress <- function(x, y, model="glm", fitnessCriteria="AIC") {
   
+  if (model != "glm" | "lm") stop("model must specify either glm or lm")
+  
   #Fit model based on user input model type, lm() or glm()
   #Apply fit to each row (each member of population)
   if (model=="glm") {
     fitModel <- glm.fit(t(as.matrix(append(x[which(x==1)], 1))), y)
+    class(fitModel) <- "glm"
   }
   else if (model=="lm") {
     fitModel <- lm.fit(t(as.matrix(append(x[which(x==1)], 1))), y)
+    class(fitModel) <- "lm"
   }
   
   #Calculate fitness criteria based on user input criteria;
@@ -21,10 +25,10 @@ regress <- function(x, y, model="glm", fitnessCriteria="AIC") {
   #existing feature of the fitted model
   
   if (fitnessCriteria=="AIC") {
-    performance <- extractAIC(fitModel$fitted.values)
+    performance <- -(AIC(fitModel))
   }
   else if (fitnessCriteria=="BIC") {
-    performance <- extractBIC(fitModel$fitted.values)
+    performance <- -(BIC(fitModel))
   }
   else {
     performance <- fitModel$fitnessCriteria
