@@ -24,6 +24,9 @@
       * Performs regression # lm.fit(Y, cbind(1s, x[, which(genotype == 1)]))
       * Calculate fitness
         * -> regressOutput: vector of fitness metrics
+    ??Survivor selection??
+      * Remove bad fitness model
+      * Keep good fitness models from previous generation and current generation
     * Stop (regressOutput, fitness)
       * Test that the current generation fitness improves upon the last by some threshold
       * update fitnessNew -> fitness
