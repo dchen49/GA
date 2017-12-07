@@ -44,10 +44,8 @@ fitness <- fitnessLM
 ## Linear Rank Selection
 ## For a population with size N, the best solution, the one with highest fitness has rank N, 
 ## the second best rank N-1, and the worst rank 1, etc
-gaLRselection <- function(population){
+gaLRselection <- function(population, fitnessVec){
   N <- dim(population)[1]
-  ## first compute the individual fitness value for each chromosome in the population
-  fitnessVec <- apply(population, 1, function(x) fitnessLM(x))
   ## fitnessVec is a vector of all the fitness values for current generation
   rank <- rank(fitnessVec, ties.method = "min") ## return corresponding rank for each fitness value
   denom <- N*(N+1)/2
@@ -63,10 +61,8 @@ gaLRselection <- function(population){
 ## almost the same as Linear Rank Selection, except the definition of probability
 ## base: exponential base, in (0,1)
 ## c is the base
-gaExpSelection <- function(population, c){
+gaExpSelection <- function(population, fitnessVec, c){
   N <- dim(population)[1]
-  ## first compute the individual fitness value for each chromosome in the population
-  fitnessVec <- apply(population, 1, function(x) fitnessLM(x))
   ## fitnessVec is a vector of all the fitness values for current generation
   rank <- rank(fitnessVec, ties.method = "min")
   prob <- c^(N-rank) / sum(c^(N-rank))
@@ -77,10 +73,8 @@ gaExpSelection <- function(population, c){
 }
 
 ## Roulette Wheel Selection
-gaRWselection <- function(population){
+gaRWselection <- function(population, fitnessVec){
   N <- dim(population)[1]
-  ## first compute the individual fitness value for each chromosome in the population
-  fitnessVec <- apply(population, 1, function(x) fitnessLM(x))
   prob <- abs(fitnessVec) / sum(abs(fitnessVec))
   sel <- sample(1:N, size = N, prob = prob, replace = TRUE)
   output <- list(population = population[sel,,drop=FALSE],
@@ -90,11 +84,9 @@ gaRWselection <- function(population){
 
 ## Tournament Selection
 ## k is the number of random selection from population
-gaTNselection <- function(population, k){
+gaTNselection <- function(population, fitnessVec, k){
   selection <- rep(0,N)
   N <- dim(population)[1]
-  ## first compute the individual fitness value for each chromosome in the population
-  fitnessVec <- apply(population, 1, function(x) fitnessLM(x))
   for (i in 1:N){
     s <- sample(1:N, size=k)
     selection[i] <- s[which.max(fitnessVec[s])]
@@ -108,17 +100,16 @@ gaTNselection <- function(population, k){
 
 ## selection-with survivor rate
 ## fitness is a function
-Newselect <- function(population, fitness, survivor.rate, survivor.scaling){
+Newselect <- function(population, fitnessVec, survivor.rate, survivor.scaling){
   popSize <- dim(population)[1]
   p <- dim(population)[2]
   ## if input "fitness" is not a function, return Error: "fitness is not a function"
   if (class(population) != "matrix") stop("population is not in matrix form")
-  if (class(fitness) != "function") stop("fitness is not a function")
   if (!is.numeric(survivor.rate)) stop("survivor.rate should be numeric")
   if (survivor.rate > 1) stop("survivor.rate cannnot exceed one")
   if (!is.numeric(survivor.scaling)) stop("survivor.scaling should be numeric")
   if (survivor.scaling > 1) stop("survivor.scaling cannot exceed one")
-  fitness <- apply(population, 1, function(x) fitness(x)) ## fitness of given population
+  fitness <- fitnessVec ## fitness of given population
   num.survivor <- floor(popSize*survivor.rate)
   ordInd.top <- order(fitness, decreasing = TRUE)[1:num.survivor]
   pop.select <- population[ordInd.top,]
