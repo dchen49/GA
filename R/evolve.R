@@ -1,5 +1,5 @@
 ################################################# Evolution ##################################################
-##### Mating 
+##### Mating
 ## parents selection
 
 ## create a mating matrix with two columns as parents
@@ -17,13 +17,13 @@ singlecrossover <- function(parents, crossing.prob = 0.5, num.cross.locations = 
 multiplecrossover <- function(parents, crossing.prob = 0.5, num.cross.locations = 2){
   n <- dim(parents)[2] #number of variables
   children <- matrix(0, nrow = 2, ncol = n)
-  parents <- switch(parents, num.cross.locations = 2)
+  parents <- cross(parents, num.cross.locations = 2)
   return(parents)
 }
 
-##dim(parents)[2] is number of variables 
-##switch only works when number of cross location is greater than one 
-switch <- function(parents, num.cross.locations=2){
+##dim(parents)[2] is number of variables
+##cross only works when number of cross location is greater than one
+cross <- function(parents, num.cross.locations=2){
   crossoverPoint <- sort(sample(seq(1.5, dim(parents)[2], by = 1), size=num.cross.locations))
   if (num.cross.locations %% 2 == 0){
     for (i in seq(1, num.cross.locations, by = 2)){
