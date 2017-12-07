@@ -1,4 +1,16 @@
-###mutation code(works!!)
+## mutation {GA}
+# Variable Selection via a Genetic Algorithm
+
+#' Selects regression variables via a genetic algorithm
+# '
+#' @param population matrix of dimension n * p
+#' @param mutation,prob mutation probability
+#'
+#' @return returns a matrix of dimension n * p
+#'
+#' @examples
+#'
+#' TBD
 
 mutation <- function(population, mutation.prob = 0.1){
   index <- replicate(dim(population)[2],expr = runif(dim(population)[1])) < mutation.prob
