@@ -2,10 +2,12 @@
 # Parents selection
 
 #' Parents Selection
-#'
+# '
 #' @param population A matrix
 #' @param fitnessVec A vector
+#'
 #' @return The selected parents
+#'
 #' @examples
 
 
