@@ -22,7 +22,7 @@ multiplecrossover <- function(parents, crossing.prob = 0.5, num.cross.locations 
 }
 
 ##dim(parents)[2] is number of variables 
-##switch only works when number of cross location is an even number
+##switch only works when number of cross location is greater than one 
 switch <- function(parents, num.cross.locations=2){
   crossoverPoint <- sort(sample(seq(1.5, dim(parents)[2], by = 1), size=num.cross.locations))
   if (num.cross.locations %% 2 == 0){
@@ -72,7 +72,6 @@ evolve <- function(population, mutation.prob=0.1, crossing.prob=0.5, num.cross.l
         offspring[i:(i+1),] <- singlecrossover(parents[i:(i+1),], crossing.prob = 0.5, num.cross.locations = 1)
       }else{
         offspring[i:(i+1),] <- parents[i:(i+1),]
-        #offspring <- rbind(offspring, parent[i:(i+1),])
       }
     }
   }else{
@@ -82,7 +81,6 @@ evolve <- function(population, mutation.prob=0.1, crossing.prob=0.5, num.cross.l
         offspring[i:(i+1),] <- multiplecrossover(parents[i:(i+1),], crossing.prob = 0.5, num.cross.locations = 2)
       }else{
         offspring[i:(i+1),] <- parents[i:(i+1),]
-        #offspring <- rbind(offspring, parent[i:(i+1),])
       }
     }
   }
