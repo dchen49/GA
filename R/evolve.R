@@ -11,8 +11,6 @@ singlecrossover <- function(parents, crossing.prob = 0.5, num.cross.locations = 
   crossoverPoint <- sample(seq(1.5, n, by = 1), size=1)
   children[1,] <- c(parents[1,(1:(crossoverPoint-0.5))], parents[2, (crossoverPoint+0.5):n])
   children[2,] <- c(parents[2,1:(crossoverPoint-0.5)], parents[1,(crossoverPoint+0.5):n])
-  #childrenFitness <- apply(children, 1, function(x) fitnessLM(x))
-  #output <- cbind(children, childrenFitness)
   return (children)
 }
 
@@ -47,15 +45,6 @@ switch <- function(parents, num.cross.locations=2){
 }
 
 
-##testing switch function
-debug(switch)
-parent2 <- rbind(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1), c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
-parent2
-switch(parent2, num.cross.locations = 2) ##num.cross.location can not be larger than n<- the number of variable
-switch(parent2, num.cross.locations = 3)
-undebug(switch)
-
-
 ###mutation code(works!!)
 
 mutation <- function(population, mutation.prob = 0.1){
@@ -69,7 +58,7 @@ mutation <- function(population, mutation.prob = 0.1){
 
 
 ##dim(population)[2] is number of variables
-evolve <- function(population, fitness, mutation.prob=0.1, crossing.prob=0.5, num.cross.locations=1){
+evolve <- function(population, mutation.prob=0.1, crossing.prob=0.5, num.cross.locations=1){
   ## dim(population)[1] is population size
   numMating <- floor(dim(population)[1]/2) ## number of pairs
   Nnew <- 2*numMating
@@ -100,8 +89,7 @@ evolve <- function(population, fitness, mutation.prob=0.1, crossing.prob=0.5, nu
   population <- rbind(offspring, population[-mating,])
   ##Next part is for mutation
   population <- mutation(population, mutation.prob = 0.1)
-  population_Fit <- apply(population, 1, function(x) fitness(x))
-  output <- list(population = population, population_Fit = population_Fit)
+  output <- list(population = population)
   return(output)
 }
 
