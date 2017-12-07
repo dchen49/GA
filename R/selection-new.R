@@ -1,12 +1,17 @@
 ## selection {GA}
-# Parents selection
+# Parent Selection
 
-#' Parents Selection
+#' Parent Selection
+# '
+#' @param population a matrix
+#' @param fitnessVec a vector of length n or a matrix with n rows
 #'
-#' @param population A matrix
-#' @param fitnessVec A vector
-#' @return The selected parents
+#' @return returns the selected parents
+#' @param population a matrix
+#'
 #' @examples
+#'
+#' TBD
 
 
 ################################################## Selection #################################################
