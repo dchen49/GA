@@ -1,7 +1,22 @@
+## selection {GA}
+# Parent Selection
+
+#' Parent Selection
+# '
+#' @param population a matrix
+#' @param fitnessVec a vector of length n or a matrix with n rows
+#'
+#' @return returns the selected parents
+#' @param population a matrix
+#'
+#' @examples
+#'
+#' TBD
+
 ################################################## Selection #################################################
 ##### Selection-select potential parents from initial population
 ## Linear Rank Selection
-## For a population with size N, the best solution, the one with highest fitness has rank N, 
+## For a population with size N, the best solution, the one with highest fitness has rank N,
 ## the second best rank N-1, and the worst rank 1, etc
 gaLRselection <- function(population, fitnessVec){
   N <- dim(population)[1]

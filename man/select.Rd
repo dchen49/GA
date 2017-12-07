@@ -4,25 +4,28 @@
 \alias{select}
 \title{Selects regression variables via a genetic algorithm}
 \usage{
-select(x, y, model, fitness = "AIC", pop0 = 100, mutation = 0.1,
-  crossing = c(0.25, 1), maxGen = 100, minGen = 5, ...)
+select(x, y, model = "glm", fitnessCriteria = "AIC", pop0 = 100,
+  mutation = 0.1, crossing = c(0.5, 1), maxGen = 100, minGen = 5,
+  selectionMethod = "gaTNselection", ...)
 }
 \arguments{
 \item{x}{matrix of dimension n * p}
 
 \item{y}{vector of length n or a matrix with n rows}
 
-\item{model}{string specifying the model: "lm" or "glm"}
+\item{model}{vector specifying the model: the first argument should be "lm" or "glm", and subsequent arguments specify additional arguments into "lm" or "glm"}
 
-\item{fitness}{string specifying the fitness criterion: "AIC", "BIC", or "TBD"}
+\item{fitnessCriteria}{default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or "TBD"}
 
-\item{pop0}{an integer specifying the initial population size}
+\item{pop0}{an integer specifying the initial population size, should be even otherwise 1 will be left out in cross}
 
 \item{crossing}{a numeric vector, c("cross probability", "max number of cross locations on a single gene")}
 
 \item{maxGen}{an integer specifying the maximum number of GA generations to use}
 
 \item{minGen}{an integer specifying the number of generations without fitness improvement at which the GA algorithm will stop.}
+
+\item{selectionMethod}{vectors specifying the genetic selection method and appropriate necessary arguments. See selectMethod help for details.}
 
 \item{...}{optional arguments to lm, glm, ect.}
 
@@ -41,5 +44,6 @@ returns an object of class "GA", which is a list containing the following compon
 Selects regression variables via a genetic algorithm
 }
 \examples{
+
 TBD
 }
