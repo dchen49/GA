@@ -5,18 +5,20 @@
 # model is either glm or lm.
 # fitnessCriteria is the metric that determines how good the model is.
 
-regress <- function(x, y, model="glm", fitnessCriteria="AIC") {
+#extra field genotype
+
+regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC") {
   
   if (model != "glm" | "lm") stop("model must specify either glm or lm")
   
   #Fit model based on user input model type, lm() or glm()
   #Apply fit to each row (each member of population)
   if (model=="glm") {
-    fitModel <- glm.fit(t(as.matrix(append(x[which(x==1)], 1))), y)
+    fitModel <- glm.fit(cbind(x[, which(genotype==1)], 1), y)
     class(fitModel) <- "glm"
   }
   else if (model=="lm") {
-    fitModel <- lm.fit(t(as.matrix(append(x[which(x==1)], 1))), y)
+    fitModel <- lm.fit(cbind(x[, which(genotype==1)], 1), y)
     class(fitModel) <- "lm"
   }
   
