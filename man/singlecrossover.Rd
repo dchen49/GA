@@ -13,7 +13,7 @@ singlecrossover(parents, num.cross.locations = 1)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{parents}{
-\code{matrix of dimension n * p}
+\code{matrix of dimension 2 * p}
 }
 }
 \details{

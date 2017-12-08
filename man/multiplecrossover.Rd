@@ -13,7 +13,7 @@ multiplecrossover(parents, num.cross.locations = 2)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{parents}{
-\code{matrix of dimension n * p}
+\code{matrix of dimension 2 * p}
 }
   \item{num.cross.locations}{
 \code{number of locations where crossover happens, defalut value is two}

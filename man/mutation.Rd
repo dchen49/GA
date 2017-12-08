@@ -45,7 +45,7 @@ mutation(population, mutation.prob = 0.1)
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-data <- matrix(sample(c(0, 1), 100, replace = TRUE), ncol = 20)
+data <- matrix(sample(c(0, 1), 1000, replace = TRUE), ncol = 20)
 mutation(data)
 
 
