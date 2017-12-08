@@ -11,7 +11,7 @@
 
 regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC") {
   
-  if (model != "glm" | "lm") stop("model must specify either glm or lm")
+  if (model != "glm" && model != "lm") stop("model must specify either glm or lm")
   
   #Fit model based on user input model type, lm() or glm()
   if (model=="glm") {
