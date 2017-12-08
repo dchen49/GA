@@ -1,38 +1,65 @@
-## select {GA}
-# Variable Selection via a Genetic Algorithm
+## selection {GA}
+# Parents Selection for generating offspring
 
-#' Selects regression variables via a genetic algorithm
-# '
-#' @param x matrix of dimension n * p
-#' @param y vector of length n or a matrix with n rows
-#' @param model vector specifying the model: the first argument should be "lm" or "glm", and subsequent arguments specify additional arguments into "lm" or "glm"
-#' @param fitnessCriteria default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or "TBD"
-#' @param pop0 an integer specifying the initial population size, should be even otherwise 1 will be left out in cross
-#' @param crossing a numeric vector, c("cross probability", "max number of cross locations on a single gene")
-#' @param maxGen an integer specifying the maximum number of GA generations to use
-#' @param minGen an integer specifying the number of generations without fitness improvement at which the GA algorithm will stop.
-#' @param selectionMethod vectors specifying the genetic selection method and appropriate necessary arguments. See selectMethod help for details.
-#' @param a A placeholder.
-#' @param ... optional arguments to lm, glm, ect.
+#' \code{selection} returns the parents population and the corresponding fitness values
 #'
-#' @return returns an object of class "GA", which is a list containing the following components:
-#' @param coefficients a named vector of coefficients
-#' @param fitness the maximum value attained of the specified fitness criterion
-#' @param generations the number of GA generations
+#' @param population a matrix
+#' @param fitnessVec a vector of length n
+#' @param selectMethod a function of selection method, can be gaLRselection-linear selection,
+#' gaExpSelection-nonlinear selection, gaRWselection-Roulette Wheel selection,
+#' gaTNselection-Tournament selection
+#' @param c a constant specifies the exponential base in nonlinear ranking selection
+#' @param k number of random selection from population in tournament selection
 #'
 #' @examples
+#' numVar <- 6
+#' N <- 50
+#' population <- matrix(rbinom(numVar*N, 1, prob = 0.5), N, numVar)
+#' fitnessVec <- seq(15, 50, length.out=50)
+#' c <- 0.5
+#' k <- 5
+#' selection(population, fitnessVec, selectMethod=gaLRselection)
+#' selection(population, fitnessVec, selectMethod=gaExpSelection, c)
+#' selection(population, fitnessVec, selectMethod=gaRWselection)
+#' selection(population, fitnessVec, selectMethod=gaTNselection, k)
 #'
 #' TBD
 
 
+###################################### Selection Functions Wrapping ############################################
+selection <- function(population, fitnessVec, selectMethod, c=NULL, k=NULL){
+  if(missing(selectMethod)) { stop("A selection method must be provided") }
+  if(!is.function(selectMethod)) { stop("Selection method is not a function") }
+  if(!is.vector(fitnessVec)) { stop("Fitness values should be a vector") }
+  if(!is.matrix(population)) { stop("Population should be a matrix") }
+  if( (!is.null(c))&(!is.null(k)) ) { stop("Cannot use tournament and nonlinear rank selection at the same time") }
 
+  ######### choose user-specified selection methods
+  ## extract function name as string
+  selectM <- as.character(substitute(selectMethod))
+  if (selectM == "gaLRselection") {
+    output <- gaLRselection(population, fitnessVec)
+  } else if (selectM == "gaExpSelection") {
+    if(is.null(c)) { stop("The exponential base for nonlinear rank selection must be provided") }
+    if(c < 0 | c > 1) { stop("The exponential base c must be between 0 and 1") }
 
+    output <- gaExpSelection(population, fitnessVec, c)
+  } else if (selectM == "gaRWselection") {
+    output <- gaRWselection(population, fitnessVec)
+  } else if (selectM == "gaTNselection") {
+    if(is.null(k)) { stop("Number of random selection must be provided for tournament selection") }
+    if(!k%%1==0) { stop("Number of random selections must be an integer") }
+    if (k>dim(population)[1]) { stop("Number of random selections cannot exceed population size") }
+    output <- gaTNselection(population, fitnessVec, k)
+  }
+  return (output)
+}
 
 
 ################################################## Selection #################################################
 ##### Selection-select potential parents from initial population
 ## Linear Rank Selection
-## For a population with size N, the best solution, the one with highest fitness has rank N, 
+## For a population with size N, the best solution, the one with highest fitness has rank N,
 ## the second best rank N-1, and the worst rank 1, etc
 gaLRselection <- function(population, fitnessVec){
   N <- dim(population)[1]
@@ -86,21 +113,6 @@ gaTNselection <- function(population, fitnessVec, k){
                  fitness = fitnessVec[selection])
   return (output)
 }
-
-############################################## Survivor Selection ##############################################
-Newpopulation <- function(offspringPop, offFitness, Pop.switch, replace.rate){
-  replacePop <- Pop.switch[,-1]
-  replaceFit <- Pop.switch[,1] ## fitness
-  N <- dim(offspringPop)[1] ## population size
-  Num.replace <- floor(N*replace.rate) ## number of individuals to be replaced
-  ordInd <- tail(order(offFitness, decreasing = TRUE), Num.replace)
-  offspringPop[ordInd,] <- replacePop
-  offFitness[ordInd] <- replaceFit
-  return (list(population=offspringPop))
-}
-
-
-
 
 
 
