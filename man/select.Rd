@@ -4,30 +4,42 @@
 \alias{select}
 \title{Selects regression variables via a genetic algorithm}
 \usage{
-select(x, y, model = "glm", fitnessCriteria = "AIC", pop0 = 100,
-  mutation = 0.1, crossing = c(0.5, 1), maxGen = 100, minGen = 5,
-  selectionMethod = "gaTNselection", ...)
+select(x, y, model = "glm", fitMetric = "AIC", pop = 100,
+  pMutate = 0.05, crossing = c(0.8, 1), maxGen = 100, minGen = 5,
+  gaMethod = "gaTNselection", ...)
 }
 \arguments{
 \item{x}{matrix of dimension n * p}
 
 \item{y}{vector of length n or a matrix with n rows}
 
-\item{model}{vector specifying the model: the first argument should be "lm" or "glm", and subsequent arguments specify additional arguments into "lm" or "glm"}
+\item{model}{a list: first entry specifying either"lm" or "glm", and subsequent optional entries specifying additional arguments into lm.fit() or glm.fit(): default "glm"}
 
-\item{fitnessCriteria}{default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or "TBD"}
+\item{fitMetric}{"AIC", "BIC", or "RSS": default "AIC"}
 
-\item{pop0}{an integer specifying the initial population size, should be even otherwise 1 will be left out in cross}
+\item{pop}{an integer specifying the size of the genotype population. If odd, 1 random individual will be left out of crossing: default 100}
 
-\item{crossing}{a numeric vector, c("cross probability", "max number of cross locations on a single gene")}
+\item{pMutate}{a real value between 0 and 1 specifying the probability of an allele mutation: default .1}
 
-\item{maxGen}{an integer specifying the maximum number of GA generations to use}
+\item{crossing}{a numeric vector, c("cross probability", "max number of cross locations on a single gene"): default (.8, 1)}
 
-\item{minGen}{an integer specifying the number of generations without fitness improvement at which the GA algorithm will stop.}
+\item{maxGen}{an integer specifying the maximum number of GA generations to use: default 100}
 
-\item{selectionMethod}{vectors specifying the genetic selection method and appropriate necessary arguments. See selectMethod help for details.}
+\item{minGen}{an integer specifying the number of generations without fitness improvement at which the GA algorithm will stop: default 5}
+
+\item{gaMethod}{a list: The first entry must be one of ('tournament', 'linearRank', 'expRank','roulette') with other entries specifying required additional arguments as needed. See gaMethod help for details.}
 
 \item{...}{optional arguments to lm, glm, ect.}
+
+\item{a}{A placeholder.}
+
+\item{a}{A placeholder.}
+
+\item{a}{A placeholder.}
+
+\item{a}{A placeholder.}
+
+\item{a}{A placeholder.}
 
 \item{a}{A placeholder.}
 

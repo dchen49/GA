@@ -5,13 +5,19 @@
 # '
 #' @param x matrix of dimension n * p
 #' @param y vector of length n or a matrix with n rows
-#' @param model vector specifying the model: the first argument should be "lm" or "glm", and subsequent arguments specify additional arguments into "lm" or "glm"
-#' @param fitnessCriteria default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or "TBD"
-#' @param pop0 an integer specifying the initial population size, should be even otherwise 1 will be left out in cross
-#' @param crossing a numeric vector, c("cross probability", "max number of cross locations on a single gene")
-#' @param maxGen an integer specifying the maximum number of GA generations to use
-#' @param minGen an integer specifying the number of generations without fitness improvement at which the GA algorithm will stop.
-#' @param selectionMethod vectors specifying the genetic selection method and appropriate necessary arguments. See selectMethod help for details.
+#' @param model a list: first entry specifying either"lm" or "glm", and subsequent optional entries specifying additional arguments into lm.fit() or glm.fit(): default "glm"
+#' @param fitMetric "AIC", "BIC", or "RSS": default "AIC"
+#' @param maxGen an integer specifying the maximum number of GA generations to use: default 100
+#' @param minGen an integer specifying the number of generations without fitness improvement at which the GA algorithm will stop: default 5
+#' @param gaMethod a list: The first entry must be one of ('tournament', 'linearRank', 'expRank','roulette') with other entries specifying required additional arguments as needed. See gaMethod help for details.
+#' @param pop an integer specifying the size of the genotype population. If odd, 1 random individual will be left out of crossing: default 100
+#' @param pMutate a real value between 0 and 1 specifying the probability of an allele mutation: default .1
+#' @param crossing a numeric vector, c("cross probability", "max number of cross locations on a single gene"): default (.8, 1)
+#' @param a A placeholder.
+#' @param a A placeholder.
+#' @param a A placeholder.
+#' @param a A placeholder.
+#' @param a A placeholder.
 #' @param a A placeholder.
 #' @param ... optional arguments to lm, glm, ect.
 #'
@@ -25,7 +31,7 @@
 #' TBD
 
 
-select <- function(x, y, model="glm", fitnessCriteria = "AIC", pop0 = 100, mutation = .1, crossing = c(.5, 1), maxGen = 100, minGen = 5, selectionMethod = "gaTNselection", ...) {
+select <- function(x, y, model="glm", fitMetric = "AIC", pop = 100, pMutate = .05, crossing = c(.8, 1), maxGen = 100, minGen = 5, gaMethod = "gaTNselection", ...) {
   # clean & process inputs
   # named columns for x, y and x same # of rows, x and y are vectors/matrices, check for NA
   # vector arguments get broken apart
@@ -33,17 +39,27 @@ select <- function(x, y, model="glm", fitnessCriteria = "AIC", pop0 = 100, mutat
   y <- as.tibble(read.table(file = "data/baseball.dat", header = TRUE))[, 1]
   etcetera <- match.arg
 
-  # break apart "model" argument
-  if (length(model) > 1) {
-    modelParams <- model[-1]
-    model <- modelParams[1]
-    modelParams <- paste(modelParams, sep = ",")
+  # check and break apart "model" argument
+  if (!is.list(model) | !sum(model %in% c('lm', 'glm')))
+    stop("model must be a list specifying either 'lm' or 'glm' and subsequent optional entries specifying additional arguments for either lm.fit() or glm.fit()")
+  else if (length(model) > 1) {
+    modelParams <- model[-(model %in% c('lm', 'glm'))]
+    model <- model[model %in% c('lm', 'glm')]
   }
 
-  # break apart SelectionMethod
+  # check and break apart "gaMethod"
+  if (!is.list(gaMethod) | !sum(gaMethod %in% method))
+    stop("gaMethod must be a list, specifying one of ('tournament', 'linearRank', 'expRank','roulette') and an additional required parameter for exponential ranking and tournament selection.")
+  method <- c('tournament', 'linearRank', 'expRank','roulette')
+  methodFun <- c('gaTNselection', 'gaLRselection', 'gaExpSelection', 'gaRWselection')
+  gaMethodArgs <- fitness
+
+  if (length(gaMethod) > 1) {
+    gaMethodArgs <- gaMethod[-(gaMethod %in% method)]
+  }
 
   # generate initial population
-  population <- as.tibble(matrix(rbinom(pop0*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop0, colnames(x))))
+  population <- as.tibble(matrix(rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x))))
 
   # generate GA object: GA[generation][fitness, elites, tbd]
   GA <- rep_len(list(), length.out = maxGen)
