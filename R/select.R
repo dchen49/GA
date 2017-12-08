@@ -5,15 +5,15 @@
 # '
 #' @param x matrix of dimension n * p
 #' @param y vector of length n or a matrix with n rows
-#' @param model a list: first entry specifying either"lm" or "glm", and subsequent optional entries specifying additional arguments into lm.fit() or glm.fit(): default "glm"
+#' @param model a list: first entry specifying either"lm" or "glm", and subsequent named entries specifying additional arguments into lm.fit() or glm.fit(): default "glm"
 #' @param fitMetric "AIC", "BIC", or "RSS": default "AIC"
 #' @param maxGen an integer specifying the maximum number of GA generations to use: default 100
 #' @param minGen an integer specifying the number of generations without fitness improvement at which the GA algorithm will stop: default 5
-#' @param gaMethod a list: The first entry must be one of ('tournament', 'linearRank', 'expRank','roulette') with other entries specifying required additional arguments as needed. See gaMethod help for details.
+#' @param gaMethod a list: The first entry must be one of ('TN', 'LR', 'ER','RW') with other entries specifying required additional arguments as needed. See gaMethod help for details.
 #' @param pop an integer specifying the size of the genotype population. If odd, 1 random individual will be left out of crossing: default 100
 #' @param pMutate a real value between 0 and 1 specifying the probability of an allele mutation: default .1
-#' @param crossing a numeric vector, c("cross probability", "max number of cross locations on a single gene"): default (.8, 1)
-#' @param a A placeholder.
+#' @param crossParams a numeric vector, c("cross probability", "max number of cross locations on a single gene"): default (.8, 1)
+#' @param eliteRate Proportion of total population of elites who pass into the next generation unchanged
 #' @param a A placeholder.
 #' @param a A placeholder.
 #' @param a A placeholder.
@@ -31,13 +31,26 @@
 #' TBD
 
 
-select <- function(x, y, model="glm", fitMetric = "AIC", pop = 100, pMutate = .05, crossing = c(.8, 1), maxGen = 100, minGen = 5, gaMethod = "gaTNselection", ...) {
+select <- function(x, y, model="glm", fitMetric = "AIC", maxGen = 100, minGen = 5, gaMethod = "gaTNselection",  pop = 100, pMutate = .05, crossParams = c(.8, 1), eliteRate = .05, ...) {
   # clean & process inputs
-  # named columns for x, y and x same # of rows, x and y are vectors/matrices, check for NA
-  # vector arguments get broken apart
-  x <- as.tibble(read.table(file = "data/baseball.dat", header = TRUE))[, -1]
-  y <- as.tibble(read.table(file = "data/baseball.dat", header = TRUE))[, 1]
-  etcetera <- match.arg
+
+  # define needed objects
+  fitness <- vector(mode = "numeric", length = pop)
+  # generate initial population
+  population <- as.tibble(matrix(rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x))))
+  # generate GA object: GA[generation][fitness, elites, tbd]
+  GA <- rep_len(list(), length.out = maxGen)
+  names(GA) <- sapply(1:maxGen, FUN = function(n) paste0('gen', n))
+
+  # check x and y: type, same row dimension, no NAs,
+  if (class(x)!="matrix" | !(typeof(x) %in% c("integer", "double")))
+    stop("x must be a matrix of numerical values")
+  if (!(class(y) %in% c("numeric", "matrix")))
+    stop("y must be a matrix or vector of numerical values")
+  if (!(nrow(x) %in% c(length(y), nrow(y))))
+    stop("x and y must have the same number of rows")
+  if (sum(is.na(x), is.na(y))!=0)
+      stop("x and y must not have missing values.")
 
   # check and break apart "model" argument
   if (!is.list(model) | !sum(model %in% c('lm', 'glm')))
@@ -47,23 +60,45 @@ select <- function(x, y, model="glm", fitMetric = "AIC", pop = 100, pMutate = .0
     model <- model[model %in% c('lm', 'glm')]
   }
 
-  # check and break apart "gaMethod"
-  if (!is.list(gaMethod) | !sum(gaMethod %in% method))
-    stop("gaMethod must be a list, specifying one of ('tournament', 'linearRank', 'expRank','roulette') and an additional required parameter for exponential ranking and tournament selection.")
-  method <- c('tournament', 'linearRank', 'expRank','roulette')
-  methodFun <- c('gaTNselection', 'gaLRselection', 'gaExpSelection', 'gaRWselection')
-  gaMethodArgs <- fitness
+  # check fitmetric
+  if (!(fitMetric %in% c("AIC", "BIC")) && !is.function(fitMetric))
+    stop("fitMetric must be 'AIC', 'BIC', or a function that takes a lm or glm object and outputs a single value that should be maximized")
 
-  if (length(gaMethod) > 1) {
-    gaMethodArgs <- gaMethod[-(gaMethod %in% method)]
+  # check maxGen, minGen, and pop
+  if (sum(is.integer(maxGen), is.integer(minGen))!=2 | median(1, minGen, maxGen)!=minGen)
+    stop("minGen and maxGen must be positive integers with maxGen greater than minGen")
+  if (!(is.integer(pop)) | pop < 1)
+    stop("pop must be a positive integer")
+
+  # check and break apart "gaMethod" into selectionFun and methodArgs
+  method <- c('TN', 'LR', 'ER','RW')
+  methodFuns <- c('gaTNselection', 'gaLRselection', 'gaExpSelection', 'gaRWselection')
+  if (!is.list(gaMethod) | (c('TN', 'ER') %in% gaMethod && length(gaMethod)!=2) |
+      (c('LR', 'RW') %in% gaMethod && length(gaMethod)!=1) | sum(gaMethod %in% method)!=1) {
+    stop("gaMethod must be a list, specifying one of ('TN', 'LR', 'ER', 'RW') and for ER or TN selection, the additional required parameter.")
   }
+  else methodFun <- methodFuns[which(method %in% gaMethod)]
+  if (selectionFun=="TN") {
+    if (!is.integer(gaMethod[[2]]) | gaMethod[[2]] > pop | length(gaMethod[[2]])!=1) {
+      stop("gaMethod for 'TN' must additionally include an integer between 1 and the population size to specify the number of selection tournaments")
+    }
+    else methodArgs <- list(population, fitness, gaMethod[[2]])
+  }
+  else if (selectionFun=="ER") {
+    if (!is.numeric(gaMethod[[2]]) | length(gaMethod[[2]])!=1) {
+      stop("gaMethod for 'ER' must additionally include an number to specify the exponential base")
+    }
+    else methodArgs <- list(population, fitness, gaMethod[[2]])
+  }
+  else methodArgs <- list(population, fitness)
 
-  # generate initial population
-  population <- as.tibble(matrix(rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x))))
+  # check pMutate and crossParams
+  if (!(is.numeric(pMutate)) | median(0, pMutate, 1)!=pMutate)
+    stop("pMutate must be a number between 0 and 1")
+  if (!is.numeric(crossParams) | length(crossParams)!=2 | median(0, crossParams[1], 1)!=crossParams[1] |
+      !is.integer(crossParams[2]) | median(1, crossParams[2], pop)!=crossParams[2])
+    stop("crossParams must be a numeric vector of length 2. The first term specifying a probability between 0 and 1 and the second a positive integer")
 
-  # generate GA object: GA[generation][fitness, elites, tbd]
-  GA <- rep_len(list(), length.out = maxGen)
-  names(GA) <- sapply(1:maxGen, FUN = function(n) paste0('gen', n))
 
   # GA iterations
   gen <- 1
@@ -71,10 +106,12 @@ select <- function(x, y, model="glm", fitMetric = "AIC", pop = 100, pMutate = .0
     fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = fitnessCriteria, ...)
 
     # Identify unique elite genotypes
-    fittest <- which(fitness %in% unique(fitness)[order(unique(fitness), decreasing = TRUE)[1:min(10, floor(length(fitness/20)))]])
-    elites <- unique(cbind("fitness" = fitness[fittest], population[fittest, ]))
+    # ?? number of elites, number of losers,
+    ordFit <- order(fitness, decreasing = TRUE)
+    elites <- population[head(ordFit, max(0, floor(length(fitness)*eliteRate))), ]
+    dunces <- population[tail(ordFit, max(0, floor(length(fitness)*eliteRate))), ]
 
-    GA[[counter]] <- list("fitness" = fitness, "elites" = elites[order(elites$fitness, decreasing = TRUE), ], "fitMax" = max(fitness), "tbd" = "tbd")
+    GA[[gen]] <- list("fitness" = fitness, "elites" = elites[order(elites$fitness, decreasing = TRUE), ], "fitMax" = max(fitness), "tbd" = "tbd")
 
     # check stopping criteria
     if (gen > minGen) {
@@ -87,13 +124,12 @@ select <- function(x, y, model="glm", fitMetric = "AIC", pop = 100, pMutate = .0
     if (Stop == TRUE) break
 
     # population selection
-    selectionMethods <- c()
+    population <- gaSelection(population, fitness, GA[[gen-1]]$elites, eliteRate, methodFun, methodArgs)
 
-    population <-
+    population <- evolve(population, pMutate, crossParams[1], crossParams[2])
 
-    population <- evolve(population, mutation.prob=0.1, crossing.prob=0.5, num.cross.locations=1)
     gen = gen + 1
   }
-
+  print(GA) # identify final optimal candidates
   return(GA)
 }

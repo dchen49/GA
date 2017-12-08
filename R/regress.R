@@ -1,11 +1,13 @@
-#Input descriptions:
-# x is an array of length p, where p is the number of coefficients;
-#   each array represents one member of the population.
-# y is the observation values.
-# model is either glm or lm.
-# fitnessCriteria is the metric that determines how good the model is.
+## regress {GA}
+# Regression on variable subset
 
-#extra field genotype
+#' Runs regression using a subset of variables dictated by the genotype
+# '
+#' @param genotype array of length p made up of 0s and 1s; represents a single member of the population
+#' @param x matrix of dimension n * p
+#' @param y vector of length n or a matrix with n rows
+#' @param model vector specifying the model: the first argument should be "lm" or "glm", and subsequent arguments specify additional arguments into "lm" or "glm"
+#' @param fitnessCriteria default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or "TBD"
 
 regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC") {
   
@@ -22,9 +24,7 @@ regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC") {
     class(fitModel) <- "lm"
   }
   
-  #Calculate fitness criteria based on user input criteria;
-  #If criteria is not AIC or BIC, then it must be an
-  #existing feature of the fitted model
+  #Calculate fitness criteria based on user specified criteria
   
   if (fitnessCriteria=="AIC") {
     performance <- -(AIC(fitModel))

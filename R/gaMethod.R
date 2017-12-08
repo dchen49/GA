@@ -1,4 +1,4 @@
-## gaMethod {GA}
+## gaSelectionMethod {GA}
 # Parent Selection
 
 #' Parent Selection
@@ -16,8 +16,11 @@
 
 ################################################## Selection #################################################
 
-gaMethod <- function(method, methodArg) {
-  do.call(method, )
+gaSelection <- function(population, fitness, elites, eliteRate, methodFun, methodArgs) {
+  newPopFit <- Newpopulation(population, fitness, elites, eliteRate)
+  methodArgs[[1]] <- newPopFit[[1]]
+  methodArgs[[2]] <- newPopFit[[2]]
+   return(do.call(methodFun, args = methodArgs))
 }
 
 ##### Selection-select potential parents from initial population
