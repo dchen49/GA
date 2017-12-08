@@ -14,7 +14,6 @@ regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC") {
   if (model != "glm" | "lm") stop("model must specify either glm or lm")
   
   #Fit model based on user input model type, lm() or glm()
-  #Apply fit to each row (each member of population)
   if (model=="glm") {
     fitModel <- glm.fit(cbind(x[, which(genotype==1)], 1), y)
     class(fitModel) <- "glm"
