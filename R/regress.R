@@ -33,7 +33,7 @@ regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC") {
     performance <- -(BIC(fitModel))
   }
   else {
-    performance <- fitModel$fitnessCriteria
+    performance <- eval(parse(paste0("fitModel$",fitnessCriteria)))
   }
   
   return(performance)
