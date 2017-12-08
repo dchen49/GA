@@ -5,7 +5,7 @@
 ## create a mating matrix with two columns as parents
 
 ##num.cross.locations = 1
-singlecrossover <- function(parents, crossing.prob = 0.5, num.cross.locations = 1){
+singlecrossover <- function(parents){
   n <- dim(parents)[2] #number of variables
   children <- matrix(0, nrow = 2, ncol = n)
   crossoverPoint <- sample(seq(1.5, n, by = 1), size=1)
@@ -14,35 +14,33 @@ singlecrossover <- function(parents, crossing.prob = 0.5, num.cross.locations = 
   return (children)
 }
 
-multiplecrossover <- function(parents, crossing.prob = 0.5, num.cross.locations = 2){
+multiplecrossover <- function(parents, num.cross.locations = 2){
   n <- dim(parents)[2] #number of variables
   children <- matrix(0, nrow = 2, ncol = n)
+  cross <- function(parents, num.cross.locations=2){
+    crossoverPoint <- sort(sample(seq(1.5, dim(parents)[2], by = 1), size=num.cross.locations))
+    if (num.cross.locations %% 2 == 0){
+      for (i in seq(1, num.cross.locations, by = 2)){
+        crosspart <- parents[1,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)]
+        parents[1,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)] <- parents[2,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)]
+        parents[2,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)] <- crosspart
+      }
+    }else{
+      for (i in seq(1, (num.cross.locations-1), by = 2)){
+        crosspart <- parents[1,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)]
+        parents[1,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)] <- parents[2,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)]
+        parents[2,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)] <- crosspart
+      }
+      crosspart <- parents[1,(crossoverPoint[num.cross.locations]+0.5):dim(parents)[2]]
+      parents[1, (crossoverPoint[num.cross.locations]+0.5):dim(parents)[2]] <- parents[2,(crossoverPoint[num.cross.locations]+0.5):dim(parents)[2]]
+      parents[2,(crossoverPoint[num.cross.locations]+0.5):dim(parents)[2]] <- crosspart
+    }
+    return(parents)
+  }
   parents <- cross(parents, num.cross.locations = 2)
   return(parents)
 }
 
-##dim(parents)[2] is number of variables
-##cross only works when number of cross location is greater than one
-cross <- function(parents, num.cross.locations=2){
-  crossoverPoint <- sort(sample(seq(1.5, dim(parents)[2], by = 1), size=num.cross.locations))
-  if (num.cross.locations %% 2 == 0){
-    for (i in seq(1, num.cross.locations, by = 2)){
-      crosspart <- parents[1,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)]
-      parents[1,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)] <- parents[2,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)]
-      parents[2,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)] <- crosspart
-    }
-  }else{
-    for (i in seq(1, (num.cross.locations-1), by = 2)){
-      crosspart <- parents[1,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)]
-      parents[1,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)] <- parents[2,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)]
-      parents[2,(crossoverPoint[i]+0.5):(crossoverPoint[i+1]-0.5)] <- crosspart
-    }
-    crosspart <- parents[1,(crossoverPoint[num.cross.locations]+0.5):dim(parents)[2]]
-    parents[1, (crossoverPoint[num.cross.locations]+0.5):dim(parents)[2]] <- parents[2,(crossoverPoint[num.cross.locations]+0.5):dim(parents)[2]]
-    parents[2,(crossoverPoint[num.cross.locations]+0.5):dim(parents)[2]] <- crosspart
-  }
-  return(parents)
-}
 
 
 ###mutation code(works!!)
@@ -69,7 +67,7 @@ evolve <- function(population, mutation.prob=0.1, crossing.prob=0.5, num.cross.l
     for (i in seq(1, Nnew, by = 2)){#e.g numMating = 25 pairs 50single
       if (crossing.prob > runif(1)){
         ## row number of parents in population
-        offspring[i:(i+1),] <- singlecrossover(parents[i:(i+1),], crossing.prob = 0.5, num.cross.locations = 1)
+        offspring[i:(i+1),] <- singlecrossover(parents[i:(i+1),])
       }else{
         offspring[i:(i+1),] <- parents[i:(i+1),]
       }
@@ -78,7 +76,7 @@ evolve <- function(population, mutation.prob=0.1, crossing.prob=0.5, num.cross.l
     for (i in seq(1, Nnew, by = 2)){
       if (crossing.prob > runif(1)){
         ## row number of parents in population
-        offspring[i:(i+1),] <- multiplecrossover(parents[i:(i+1),], crossing.prob = 0.5, num.cross.locations = 2)
+        offspring[i:(i+1),] <- multiplecrossover(parents[i:(i+1),], num.cross.locations = 2)
       }else{
         offspring[i:(i+1),] <- parents[i:(i+1),]
       }
