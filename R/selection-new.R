@@ -1,23 +1,38 @@
-## selection {GA}
-# Parent Selection
+## select {GA}
+# Variable Selection via a Genetic Algorithm
 
-#' Parent Selection
+#' Selects regression variables via a genetic algorithm
 # '
-#' @param population a matrix
-#' @param fitnessVec a vector of length n or a matrix with n rows
+#' @param x matrix of dimension n * p
+#' @param y vector of length n or a matrix with n rows
+#' @param model vector specifying the model: the first argument should be "lm" or "glm", and subsequent arguments specify additional arguments into "lm" or "glm"
+#' @param fitnessCriteria default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or "TBD"
+#' @param pop0 an integer specifying the initial population size, should be even otherwise 1 will be left out in cross
+#' @param crossing a numeric vector, c("cross probability", "max number of cross locations on a single gene")
+#' @param maxGen an integer specifying the maximum number of GA generations to use
+#' @param minGen an integer specifying the number of generations without fitness improvement at which the GA algorithm will stop.
+#' @param selectionMethod vectors specifying the genetic selection method and appropriate necessary arguments. See selectMethod help for details.
+#' @param a A placeholder.
+#' @param ... optional arguments to lm, glm, ect.
 #'
-#' @return returns the selected parents
-#' @param population a matrix
+#' @return returns an object of class "GA", which is a list containing the following components:
+#' @param coefficients a named vector of coefficients
+#' @param fitness the maximum value attained of the specified fitness criterion
+#' @param generations the number of GA generations
 #'
 #' @examples
 #'
 #' TBD
 
 
+
+
+
+
 ################################################## Selection #################################################
 ##### Selection-select potential parents from initial population
 ## Linear Rank Selection
-## For a population with size N, the best solution, the one with highest fitness has rank N,
+## For a population with size N, the best solution, the one with highest fitness has rank N, 
 ## the second best rank N-1, and the worst rank 1, etc
 gaLRselection <- function(population, fitnessVec){
   N <- dim(population)[1]
