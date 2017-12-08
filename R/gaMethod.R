@@ -1,4 +1,4 @@
-## selection {GA}
+## gaMethod {GA}
 # Parent Selection
 
 #' Parent Selection
