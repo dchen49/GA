@@ -7,14 +7,13 @@
 #' @param x matrix of dimension n * p
 #' @param y vector of length n or a matrix with n rows
 #' @param model vector specifying the model: the first argument should be "lm" or "glm", and subsequent arguments specify additional arguments into "lm" or "glm"
-#' @param fitnessCriteria default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or "TBD"
+#' @param fitnessCriteria default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or an attribute of a fitted lm or glm model (must be single numeric value)
 
 regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC") {
-  
-  if (model != "glm" | "lm") stop("model must specify either glm or lm")
-  
+
+  if (model != "glm" && model != "lm") stop("model must specify either glm or lm")
+
   #Fit model based on user input model type, lm() or glm()
-  #Apply fit to each row (each member of population)
   if (model=="glm") {
     fitModel <- glm.fit(cbind(x[, which(genotype==1)], 1), y)
     class(fitModel) <- "glm"
@@ -23,9 +22,9 @@ regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC") {
     fitModel <- lm.fit(cbind(x[, which(genotype==1)], 1), y)
     class(fitModel) <- "lm"
   }
-  
+
   #Calculate fitness criteria based on user specified criteria
-  
+
   if (fitnessCriteria=="AIC") {
     performance <- -(AIC(fitModel))
   }
@@ -33,8 +32,9 @@ regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC") {
     performance <- -(BIC(fitModel))
   }
   else {
-    performance <- fitModel$fitnessCriteria
+    performance <- eval(parse(text = paste0("fitModel$",fitnessCriteria)))
   }
-  
+  if (class(performance) == "NULL") stop("Inappropriate fitness criteria was specified")
+
   return(performance)
 }
