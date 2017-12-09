@@ -30,7 +30,6 @@
 #'
 #' TBD
 
-
 select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 100L, minGen = 5L, gaMethod = list("LR"),  pop = 100L, pMutate = .05, crossParams = c(.8, 1L), eliteRate = .05, ...) {
   # clean & process inputs
 
@@ -116,7 +115,6 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 100L, mi
       })
       Stop <- sum(sum(outer(fitHistory, fitHistory, "-"))) <= .Machine$double.eps
     }
-
     if (Stop == TRUE) break
 
     # population selection

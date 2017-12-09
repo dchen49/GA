@@ -10,7 +10,7 @@ y <- array(1:dataSize)
 #test that output is single numerical values
 test_that("output is single numerical value", {
   expect_equal(class(regress(genotype, x, y)), "numeric")
-  expect_equal(length(regress(genotype, x, y), 1)
+  expect_equal(length(regress(genotype, x, y)), 1)
 })
 
 #test that function can handle AIC, BIC, and other fitness criteria for both lm and glm
@@ -19,15 +19,13 @@ test_that("function handles various fitness criteria", {
   #testing for lm
   expect_equal(class(regress(genotype, x, y, model =  "lm", fitnessCriteria = "AIC")), "numeric")
   expect_equal(class(regress(genotype, x, y, model =  "lm", fitnessCriteria = "BIC")), "numeric")
-  expect_equal(class(regress(genotype, x, y, model =  "lm", fitnessCriteria = "df.residual")), "numeric")
-  expect_equal(class(regress(genotype, x, y, model =  "lm", fitnessCriteria = "gibberish")), "NULL")
+  expect_true(is.numeric(regress(genotype, x, y, model =  "lm", fitnessCriteria = "df.residual")))
   expect_error(regress(genotype, x, y, model =  "lm", fitnessCriteria = "gibberish"))
 
   #testing for glm
   expect_equal(class(regress(genotype, x, y, model =  "glm", fitnessCriteria = "AIC")), "numeric")
   expect_equal(class(regress(genotype, x, y, model =  "glm", fitnessCriteria = "BIC")), "numeric")
-  expect_equal(class(regress(genotype, x, y, model =  "glm", fitnessCriteria = "df.residual")), "numeric")
-  expect_equal(class(regress(genotype, x, y, model =  "glm", fitnessCriteria = "gibberish")), "NULL")
+  expect_true(is.numeric(regress(genotype, x, y, model =  "glm", fitnessCriteria = "df.residual")))
   expect_error(regress(genotype, x, y, model =  "glm", fitnessCriteria = "gibberish"))
 })
 
