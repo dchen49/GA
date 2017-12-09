@@ -60,6 +60,7 @@ evolve <- function(population, mutation.prob=0.1, crossing.prob=0.5, num.cross.l
   if (mutation.prob < 0 | mutation.prob > 1) { stop("mutation probability must be between 0 and 1") }
   if (crossing.prob < 0 | crossing.prob > 1) { stop("crossover probability must be between 0 and 1")}
   if (num.cross.locations%%1 != 0 ) { stop("num.cross.locations must be an integer")}
+  if (num.cross.locations >= dim(population)[2]) { stop("num.cross.locations must be smaller than the number of variables")}
   ## dim(population)[1] is population size
   numMating <- floor(dim(population)[1]/2) ## number of pairs
   Nnew <- 2*numMating
