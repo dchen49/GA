@@ -1,11 +1,11 @@
-\name{mutation{GA}}
+\name{mutation}
 \alias{mutation}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+%%
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+This function will randomly change 1 to 0 or 0 to 1. The default probability of mutation is 0.1. The mutation function is used in evolve function.
 }
 \usage{
 mutation(population, mutation.prob = 0.1)
@@ -33,7 +33,7 @@ mutation(population, mutation.prob = 0.1)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Qi Chen
 }
 \note{
 %%  ~~further notes~~
@@ -42,7 +42,7 @@ mutation(population, mutation.prob = 0.1)
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{evolve}}
 }
 \examples{
 data <- matrix(sample(c(0, 1), 1000, replace = TRUE), ncol = 20)
