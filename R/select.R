@@ -37,7 +37,7 @@ select <- function(x, y, model="glm", fitMetric = "AIC", maxGen = 100, minGen = 
   # define needed objects
   fitness <- vector(mode = "numeric", length = pop)
   # generate initial population
-  population <- as.matrix(matrix(rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x))))
+  population <- as.tibble(matrix(rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x))))
   # generate GA object: GA[generation][fitness, elites, tbd]
   GA <- rep_len(list(), length.out = maxGen)
   names(GA) <- sapply(1:maxGen, FUN = function(n) paste0('gen', n))
