@@ -52,7 +52,7 @@ selection <- function(population, fitnessVec, eliteRate, selectMethod, c=NULL, k
   } else if (selectM == "gaTNselection") {
     if(is.null(k)) { stop("Number of random selection must be provided for tournament selection") }
     if(!k%%1==0) { stop("Number of random selections must be an integer") }
-    if (k>dim(population)[1]) { stop("Number of random selections cannot exceed population size") }
+    if (k>(dim(population)[1] - floor(dim(population)[1]*eliteRate))) { stop("Number of random selections cannot exceed shrinked population size") }
     output <- gaTNselection(population, fitnessVec, eliteRate, k)
   }
   return (output)
