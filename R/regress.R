@@ -25,16 +25,10 @@ regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC") {
 
   #Calculate fitness criteria based on user specified criteria
 
-  if (fitnessCriteria=="AIC") {
-    performance <- -(AIC(fitModel))
-  }
-  else if (fitnessCriteria=="BIC") {
-    performance <- -(BIC(fitModel))
-  }
-  else {
-    performance <- eval(parse(text = paste0("fitModel$",fitnessCriteria)))
-  }
-  if (class(performance) == "NULL") stop("Inappropriate fitness criteria was specified")
+  if("try-error" %in% class(performance)) stop("Fitness criteria function is not correct.")
+
+  performance <- try (-eval(parse(text = paste0(fitnessCriteria, "(fitModel)"))), silent = TRUE)
+
 
   return(performance)
 }
