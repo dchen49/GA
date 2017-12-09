@@ -1,14 +1,24 @@
-## selection {GA}
-# Parents selection
+## gaSelectionMethod {GA}
+# Parent Selection
 
-#' Parents Selection
+#' Parent Selection
 # '
-#' @param population A matrix
-#' @param fitnessVec A vector
+#' @param population a matrix
+#' @param fitnessVec a vector of length n or a matrix with n rows
 #'
-#' @return The selected parents
+#' @return returns the selected parents
+#' @param population a matrix
 #'
 #' @examples
+#'
+#' TBD
+
+
+################################################## Selection #################################################
+
+gaSelection <- function(methodFun, methodArgs) {
+   return(do.call(methodFun, args = methodArgs))
+}
 
 
 ################################################## Selection #################################################
@@ -16,13 +26,14 @@
 ## Linear Rank Selection
 ## For a population with size N, the best solution, the one with highest fitness has rank N,
 ## the second best rank N-1, and the worst rank 1, etc
-gaLRselection <- function(population, fitnessVec){
+gaLRselection <- function(population, fitnessVec, eliteRate){
   N <- dim(population)[1]
+  n <- dim(population)[1] - floor(dim(population)[1]*eliteRate)
   ## fitnessVec is a vector of all the fitness values for current generation
-  rank <- rank(fitnessVec, ties.method = "min") ## return corresponding rank for each fitness value
+  rank <- rank(fitnessVec, ties.method = "min")[1:N] ## return corresponding rank for each fitness value
   denom <- N*(N+1)/2
   prob <- rank/denom
-  sel <- sample(1:N, size = N, prob = prob, replace = TRUE)
+  sel <- sample(1:N, size = n, prob = prob, replace = TRUE)
   output <- list(population = population[sel,,drop=FALSE],
                  fitness = fitnessVec[sel])
   ## selected chromosomes with size N and corresponding fitness value
@@ -33,22 +44,24 @@ gaLRselection <- function(population, fitnessVec){
 ## almost the same as Linear Rank Selection, except the definition of probability
 ## base: exponential base, in (0,1)
 ## c is the base
-gaExpSelection <- function(population, fitnessVec, c){
+gaExpSelection <- function(population, fitnessVec, eliteRate, c){
   N <- dim(population)[1]
+  n <- dim(population)[1] - floor(dim(population)[1]*eliteRate)
   ## fitnessVec is a vector of all the fitness values for current generation
   rank <- rank(fitnessVec, ties.method = "min")
   prob <- c^(N-rank) / sum(c^(N-rank))
-  sel <- sample(1:N, size = N, prob = prob, replace = TRUE)
+  sel <- sample(1:N, size = n, prob = prob, replace = TRUE)
   output <- list(population = population[sel,,drop=FALSE],
                  fitness = fitnessVec[sel])
   return (output)
 }
 
 ## Roulette Wheel Selection
-gaRWselection <- function(population, fitnessVec){
+gaRWselection <- function(population, fitnessVec, eliteRate){
   N <- dim(population)[1]
+  n <- dim(population)[1] - floor(dim(population)[1]*eliteRate)
   prob <- abs(fitnessVec) / sum(abs(fitnessVec))
-  sel <- sample(1:N, size = N, prob = prob, replace = TRUE)
+  sel <- sample(1:N, size = n, prob = prob, replace = TRUE)
   output <- list(population = population[sel,,drop=FALSE],
                  fitness = fitnessVec[sel])
   return (output)
@@ -56,9 +69,9 @@ gaRWselection <- function(population, fitnessVec){
 
 ## Tournament Selection
 ## k is the number of random selection from population
-gaTNselection <- function(population, fitnessVec, k){
+gaTNselection <- function(population, fitnessVec, eliteRate, k){
+  N <- dim(population)[1] - floor(dim(population)[1]*eliteRate)
   selection <- rep(0,N)
-  N <- dim(population)[1]
   for (i in 1:N){
     s <- sample(1:N, size=k)
     selection[i] <- s[which.max(fitnessVec[s])]
@@ -68,26 +81,3 @@ gaTNselection <- function(population, fitnessVec, k){
                  fitness = fitnessVec[selection])
   return (output)
 }
-
-############################################## Survivor Selection ##############################################
-Newpopulation <- function(offspringPop, offFitness, Pop.switch, replace.rate){
-  replacePop <- Pop.switch[,-1]
-  replaceFit <- Pop.switch[,1] ## fitness
-  N <- dim(offspringPop)[1] ## population size
-  Num.replace <- floor(N*replace.rate) ## number of individuals to be replaced
-  ordInd <- tail(order(offFitness, decreasing = TRUE), Num.replace)
-  offspringPop[ordInd,] <- replacePop
-  offFitness[ordInd] <- replaceFit
-  return (list(population=offspringPop))
-}
-
-
-
-
-
-
-
-
-
-
-

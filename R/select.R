@@ -30,14 +30,13 @@
 #'
 #' TBD
 
-
-select <- function(x, y, model="glm", fitMetric = "AIC", maxGen = 100, minGen = 5, gaMethod = "gaTNselection",  pop = 100, pMutate = .05, crossParams = c(.8, 1), eliteRate = .05, ...) {
+select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, minGen = 30L, gaMethod = list("TN", 5),  pop = 10L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.05, ...) {
   # clean & process inputs
 
   # define needed objects
   fitness <- vector(mode = "numeric", length = pop)
   # generate initial population
-  population <- as.tibble(matrix(rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x))))
+  population <- matrix(rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x)))
   # generate GA object: GA[generation][fitness, elites, tbd]
   GA <- rep_len(list(), length.out = maxGen)
   names(GA) <- sapply(1:maxGen, FUN = function(n) paste0('gen', n))
@@ -65,7 +64,7 @@ select <- function(x, y, model="glm", fitMetric = "AIC", maxGen = 100, minGen = 
     stop("fitMetric must be 'AIC', 'BIC', or a function that takes a lm or glm object and outputs a single value that should be maximized")
 
   # check maxGen, minGen, and pop
-  if (sum(is.integer(maxGen), is.integer(minGen))!=2 | median(1, minGen, maxGen)!=minGen)
+  if (!is.integer(maxGen) | !is.integer(minGen) | median(c(1, minGen, maxGen))!=minGen)
     stop("minGen and maxGen must be positive integers with maxGen greater than minGen")
   if (!(is.integer(pop)) | pop < 1)
     stop("pop must be a positive integer")
@@ -77,57 +76,53 @@ select <- function(x, y, model="glm", fitMetric = "AIC", maxGen = 100, minGen = 
       (c('LR', 'RW') %in% gaMethod && length(gaMethod)!=1) | sum(gaMethod %in% method)!=1) {
     stop("gaMethod must be a list, specifying one of ('TN', 'LR', 'ER', 'RW') and for ER or TN selection, the additional required parameter.")
   }
-  else methodFun <- methodFuns[which(method %in% gaMethod)]
-  if (selectionFun=="TN") {
-    if (!is.integer(gaMethod[[2]]) | gaMethod[[2]] > pop | length(gaMethod[[2]])!=1) {
+
+  methodFun <- methodFuns[which(method %in% gaMethod)]
+
+  if (methodFun=="gaTNselection") {
+    if ((gaMethod[[2]]!=as.integer(gaMethod[[2]])) | gaMethod[[2]] > pop | length(gaMethod[[2]])!=1) {
       stop("gaMethod for 'TN' must additionally include an integer between 1 and the population size to specify the number of selection tournaments")
-    }
-    else methodArgs <- list(population, fitness, gaMethod[[2]])
-  }
-  else if (selectionFun=="ER") {
-    if (!is.numeric(gaMethod[[2]]) | length(gaMethod[[2]])!=1) {
-      stop("gaMethod for 'ER' must additionally include an number to specify the exponential base")
-    }
-    else methodArgs <- list(population, fitness, gaMethod[[2]])
-  }
-  else methodArgs <- list(population, fitness)
+      } else methodArgs <- list("population" = population, "fitnessVec" = fitness, "eliteRate" = eliteRate, "k" = gaMethod[[2]])
+    } else if (methodFun=="gaExpSelection") {
+      if (!is.numeric(gaMethod[[2]]) | length(gaMethod[[2]])!=1) {
+        stop("gaMethod for 'ER' must additionally include an number to specify the exponential base")
+    } else methodArgs <- list(population, fitness, eliteRate, gaMethod[[2]])
+  } else methodArgs <- list(population, fitness, eliteRate)
 
   # check pMutate and crossParams
-  if (!(is.numeric(pMutate)) | median(0, pMutate, 1)!=pMutate)
+  if (!(is.numeric(pMutate)) | median(c(0, pMutate, 1))!=pMutate)
     stop("pMutate must be a number between 0 and 1")
-  if (!is.numeric(crossParams) | length(crossParams)!=2 | median(0, crossParams[1], 1)!=crossParams[1] |
-      !is.integer(crossParams[2]) | median(1, crossParams[2], pop)!=crossParams[2])
+  if (!is.numeric(crossParams) | length(crossParams)!=2 | median(c(0, crossParams[1], 1))!=crossParams[1] |
+      !(as.integer(crossParams[2])==crossParams[2]) | median(c(1, crossParams[2], pop))!=crossParams[2])
     stop("crossParams must be a numeric vector of length 2. The first term specifying a probability between 0 and 1 and the second a positive integer")
-
 
   # GA iterations
   gen <- 1
   while(gen < maxGen) { # fix inputs
-    fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = fitnessCriteria, ...)
+    fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = fitMetric)
 
     # Identify unique elite genotypes
-    # ?? number of elites, number of losers,
     ordFit <- order(fitness, decreasing = TRUE)
     elites <- population[head(ordFit, max(0, floor(length(fitness)*eliteRate))), ]
-    dunces <- population[tail(ordFit, max(0, floor(length(fitness)*eliteRate))), ]
 
-    GA[[gen]] <- list("fitness" = fitness, "elites" = elites[order(elites$fitness, decreasing = TRUE), ], "fitMax" = max(fitness), "tbd" = "tbd")
+    GA[[gen]] <- list("fitness" = fitness, "elites" = cbind("fitness" = fitness[head(ordFit, max(0, floor(length(fitness)*eliteRate)))], elites), "fitMax" = max(fitness), "tbd" = "tbd")
 
     # check stopping criteria
+    Stop = FALSE
     if (gen > minGen) {
-      fitHistory <- sapply(gen-minGen:gen, FUN = function(i) {
-        max(GA[[i]]$fitMax)
+      fitHistory <- sapply((gen-minGen+1):gen, FUN = function(i) {
+        GA[[i]]$fitMax - GA[[i-1]]$fitMax
       })
-      Stop <- sum(sum(outer(fitHistory, fitHistory, "-"))) <= .Machine$double.eps
+      Stop <- abs(sum(fitHistory)) <= .Machine$double.eps
     }
-
     if (Stop == TRUE) break
 
     # population selection
-    population <- gaSelection(population, fitness, GA[[gen-1]]$elites, eliteRate, methodFun, methodArgs)
+    population <- gaSelection(methodFun, methodArgs)[[1]]
 
     population <- evolve(population, pMutate, crossParams[1], crossParams[2])
 
+    population <- rbind(elites, population)
     gen = gen + 1
   }
   print(GA) # identify final optimal candidates
