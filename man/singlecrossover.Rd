@@ -1,8 +1,7 @@
 \name{singlecrossover}
 \alias{singlecrossover}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
+\title{Performs a Genetic Cross at a single location.
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~

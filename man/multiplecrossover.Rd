@@ -1,8 +1,7 @@
 \name{multiplecrossover}
 \alias{multiplecrossover}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
+\title{Performs a Genetic Cross with multiple translocation positions
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~

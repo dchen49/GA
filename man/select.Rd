@@ -4,34 +4,34 @@
 \alias{select}
 \title{Selects regression variables via a genetic algorithm}
 \usage{
-select(x, y, model = "glm", fitMetric = "AIC", pop = 100,
-  pMutate = 0.05, crossing = c(0.8, 1), maxGen = 100, minGen = 5,
-  gaMethod = "gaTNselection", ...)
+select(x, y, model = list("lm"), fitMetric = "AIC", maxGen = 200L,
+  minGen = 30L, gaMethod = list("TN", 5), pop = 10L, pMutate = 0.1,
+  crossParams = c(0.8, 1L), eliteRate = 0.05, ...)
 }
 \arguments{
 \item{x}{matrix of dimension n * p}
 
 \item{y}{vector of length n or a matrix with n rows}
 
-\item{model}{a list: first entry specifying either"lm" or "glm", and subsequent optional entries specifying additional arguments into lm.fit() or glm.fit(): default "glm"}
+\item{model}{a list: first entry specifying either"lm" or "glm", and subsequent named entries specifying additional arguments into lm.fit() or glm.fit(): default "glm"}
 
 \item{fitMetric}{"AIC", "BIC", or "RSS": default "AIC"}
-
-\item{pop}{an integer specifying the size of the genotype population. If odd, 1 random individual will be left out of crossing: default 100}
-
-\item{pMutate}{a real value between 0 and 1 specifying the probability of an allele mutation: default .1}
-
-\item{crossing}{a numeric vector, c("cross probability", "max number of cross locations on a single gene"): default (.8, 1)}
 
 \item{maxGen}{an integer specifying the maximum number of GA generations to use: default 100}
 
 \item{minGen}{an integer specifying the number of generations without fitness improvement at which the GA algorithm will stop: default 5}
 
-\item{gaMethod}{a list: The first entry must be one of ('tournament', 'linearRank', 'expRank','roulette') with other entries specifying required additional arguments as needed. See gaMethod help for details.}
+\item{gaMethod}{a list: The first entry must be one of ('TN', 'LR', 'ER','RW') with other entries specifying required additional arguments as needed. See gaMethod help for details.}
+
+\item{pop}{an integer specifying the size of the genotype population. If odd, 1 random individual will be left out of crossing: default 100}
+
+\item{pMutate}{a real value between 0 and 1 specifying the probability of an allele mutation: default .1}
+
+\item{crossParams}{a numeric vector, c("cross probability", "max number of cross locations on a single gene"): default (.8, 1)}
+
+\item{eliteRate}{Proportion of total population of elites who pass into the next generation unchanged}
 
 \item{...}{optional arguments to lm, glm, ect.}
-
-\item{a}{A placeholder.}
 
 \item{a}{A placeholder.}
 
