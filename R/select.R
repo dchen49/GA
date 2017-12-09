@@ -30,13 +30,13 @@
 #'
 #' TBD
 
-select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 100L, minGen = 5L, gaMethod = list("LR"),  pop = 100L, pMutate = .05, crossParams = c(.8, 1L), eliteRate = .05, ...) {
+select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, minGen = 30L, gaMethod = list("TN", 5),  pop = 10L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.05, ...) {
   # clean & process inputs
 
   # define needed objects
   fitness <- vector(mode = "numeric", length = pop)
   # generate initial population
-  population <- as.tibble(matrix(rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x))))
+  population <- matrix(rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x)))
   # generate GA object: GA[generation][fitness, elites, tbd]
   GA <- rep_len(list(), length.out = maxGen)
   names(GA) <- sapply(1:maxGen, FUN = function(n) paste0('gen', n))
@@ -80,7 +80,7 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 100L, mi
   methodFun <- methodFuns[which(method %in% gaMethod)]
 
   if (methodFun=="gaTNselection") {
-    if (!is.integer(gaMethod[[2]]) | gaMethod[[2]] > pop | length(gaMethod[[2]])!=1) {
+    if ((gaMethod[[2]]!=as.integer(gaMethod[[2]])) | gaMethod[[2]] > pop | length(gaMethod[[2]])!=1) {
       stop("gaMethod for 'TN' must additionally include an integer between 1 and the population size to specify the number of selection tournaments")
       } else methodArgs <- list("population" = population, "fitnessVec" = fitness, "eliteRate" = eliteRate, "k" = gaMethod[[2]])
     } else if (methodFun=="gaExpSelection") {
@@ -99,21 +99,21 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 100L, mi
   # GA iterations
   gen <- 1
   while(gen < maxGen) { # fix inputs
-    fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = fitMetric, ...)
+    fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = fitMetric)
 
     # Identify unique elite genotypes
     ordFit <- order(fitness, decreasing = TRUE)
     elites <- population[head(ordFit, max(0, floor(length(fitness)*eliteRate))), ]
 
-    GA[[gen]] <- list("fitness" = fitness, "elites" = cbind(fitness[head(ordFit, max(0, floor(length(fitness)*eliteRate)))], elites), "fitMax" = max(fitness), "tbd" = "tbd")
+    GA[[gen]] <- list("fitness" = fitness, "elites" = cbind("fitness" = fitness[head(ordFit, max(0, floor(length(fitness)*eliteRate)))], elites), "fitMax" = max(fitness), "tbd" = "tbd")
 
     # check stopping criteria
     Stop = FALSE
     if (gen > minGen) {
-      fitHistory <- sapply(gen-minGen:gen, FUN = function(i) {
-        max(GA[[i]]$fitMax)
+      fitHistory <- sapply((gen-minGen+1):gen, FUN = function(i) {
+        GA[[i]]$fitMax - GA[[i-1]]$fitMax
       })
-      Stop <- sum(sum(outer(fitHistory, fitHistory, "-"))) <= .Machine$double.eps
+      Stop <- abs(sum(fitHistory)) <= .Machine$double.eps
     }
     if (Stop == TRUE) break
 

@@ -20,6 +20,7 @@ gaSelection <- function(methodFun, methodArgs) {
    return(do.call(methodFun, args = methodArgs))
 }
 
+
 ################################################## Selection #################################################
 ##### Selection-select potential parents from initial population
 ## Linear Rank Selection
@@ -29,7 +30,7 @@ gaLRselection <- function(population, fitnessVec, eliteRate){
   N <- dim(population)[1]
   n <- dim(population)[1] - floor(dim(population)[1]*eliteRate)
   ## fitnessVec is a vector of all the fitness values for current generation
-  rank <- rank(fitnessVec, ties.method = "min") ## return corresponding rank for each fitness value
+  rank <- rank(fitnessVec, ties.method = "min")[1:N] ## return corresponding rank for each fitness value
   denom <- N*(N+1)/2
   prob <- rank/denom
   sel <- sample(1:N, size = n, prob = prob, replace = TRUE)
@@ -69,10 +70,9 @@ gaRWselection <- function(population, fitnessVec, eliteRate){
 ## Tournament Selection
 ## k is the number of random selection from population
 gaTNselection <- function(population, fitnessVec, eliteRate, k){
-  N <- dim(population)[1]
-  n <- dim(population)[1] - floor(dim(population)[1]*eliteRate)
+  N <- dim(population)[1] - floor(dim(population)[1]*eliteRate)
   selection <- rep(0,N)
-  for (i in 1:n){
+  for (i in 1:N){
     s <- sample(1:N, size=k)
     selection[i] <- s[which.max(fitnessVec[s])]
   }
