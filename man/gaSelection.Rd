@@ -2,7 +2,7 @@
 % Please edit documentation in R/gaMethod.R
 \name{gaSelection}
 \alias{gaSelection}
-\title{Parent Selection}
+\title{Parents Selection}
 \usage{
 gaSelection(methodFun, methodArgs)
 }
@@ -17,7 +17,7 @@ gaSelection(methodFun, methodArgs)
 returns the selected parents
 }
 \description{
-Parent Selection
+This is a process for selecting parents which mate and recombine to create off-springs for the next generation.
 }
 \examples{
 
