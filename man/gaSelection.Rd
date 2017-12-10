@@ -7,11 +7,12 @@
 gaSelection(methodFun, methodArgs)
 }
 \arguments{
-\item{population}{a matrix}
+\item{methodFun}{a function of selection method, can be gaLRselection-linear selection, gaExpSelection-nonlinear selection, gaRWselection-Roulette Wheel selection, gaTNselection-Tournament selection}
 
-\item{fitnessVec}{a vector of length n or a matrix with n rows}
+\item{methodArgs}{a list with elements as arguments of selection method function, where first element is population, second as fitness value, third as  elite rate. If the chosen selection method is exponential
+ranking selection, then one more argument as exponential base must be provided; if the chosen selection
+method is tournament selection, then one more argument as number of random selections must be provided}
 
-\item{population}{a matrix}
 }
 \value{
 returns the selected parents
@@ -19,7 +20,22 @@ returns the selected parents
 \description{
 This is a process for selecting parents which mate and recombine to create off-springs for the next generation.
 }
+\seealso{
+\code{\link{gaLRselection}} for linear ranking selection{\cr}
+\code{\link{gaExpSelection}} for nonlinear ranking selection{\cr}
+\code{\link{gaRWselection}} for Roulette Wheel selection{\cr}
+\code{\link{gaTNselection}} for Tournament Selection
+}
 \examples{
-
-TBD
+numVar <- 6
+N <- 50
+population <- matrix(rbinom(numVar*N, 1, prob = 0.5), N, numVar)
+fitnessVec <- seq(15, 50, length.out=50)
+c <- 0.5
+k <- 5
+eliteRate <- 0.05
+gaSelection(gaLRselection, list(population, fitnessVec, eliteRate))
+gaSelection(gaExpSelection, list(population, fitnessVec, eliteRate, c))
+gaSelection(gaRWselection, list(population, fitnessVec, eliteRate))
+gaSelection(gaTNselection, list(population, fitnessVec, eliteRate, k))
 }

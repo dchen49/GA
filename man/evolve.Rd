@@ -47,52 +47,13 @@ evolve(population, mutation.prob = 0.1, crossing.prob = 0.5, num.cross.locations
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{singlecrossover}}
-\code{\link{multiplecrossover}}
-\code{\link{mutation}}
+\code{\link{singlecrossover}}{\cr}
+\code{\link{multiplecrossover}}{\cr}
+\code{\link{mutation}}{\cr}
 }
 \examples{
 data <- matrix(sample(c(0, 1), 150, replace = TRUE), ncol = 10)
 evolve(data)
-
-## The function is currently defined as
-function (population, mutation.prob = 0.1, crossing.prob = 0.5,
-    num.cross.locations = 1)
-{
-    numMating <- floor(dim(population)[1]/2)
-    Nnew <- 2 * numMating
-    mating <- matrix(sample(1:Nnew, size = Nnew), nrow = 2)
-    parents <- population[mating, ]
-    offspring <- matrix(nrow = Nnew, ncol = dim(population)[2])
-    if (num.cross.locations == 1) {
-        for (i in seq(1, Nnew, by = 2)) {
-            if (crossing.prob > runif(1)) {
-                offspring[i:(i + 1), ] <- singlecrossover(parents[i:(i +
-                  1), ])
-            }
-            else {
-                offspring[i:(i + 1), ] <- parents[i:(i + 1),
-                  ]
-            }
-        }
-    }
-    else {
-        for (i in seq(1, Nnew, by = 2)) {
-            if (crossing.prob > runif(1)) {
-                offspring[i:(i + 1), ] <- multiplecrossover(parents[i:(i +
-                  1), ], num.cross.locations = 2)
-            }
-            else {
-                offspring[i:(i + 1), ] <- parents[i:(i + 1),
-                  ]
-            }
-        }
-    }
-    population <- rbind(offspring, population[-mating, ])
-    population <- mutation(population, mutation.prob = 0.1)
-    output <- list(population = population)
-    return(output)
-  }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
