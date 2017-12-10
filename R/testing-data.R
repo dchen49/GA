@@ -14,7 +14,7 @@ library(MASS)
 library(pls)
 
 ## step1: function to generate X, of size n*p
-variable_matrix <- function(n,p) {
+testdata$variable_matrix <- function(n,p) {
   mu = matrix(0,p,1)
   Sigma = matrix(0,p,p)
   for (i in 1:p){
@@ -29,12 +29,12 @@ variable_matrix <- function(n,p) {
 
 ## step2: generate response Y
 testdata$p <- 20
-testdata$X <- variable_matrix(300,20)
+testdata$X <- testdata$variable_matrix(300,20)
 testdata$beta <- rnorm(testdata$p, mean=3, sd=5)
 testdata$Y <- testdata$X%*%testdata$beta
 
 ## combine X with noise \epsilon
-testdata$X.tilde <- cbind(testdata$X, variable_matrix(300,10)) ## 10 uncorrelated variables
+testdata$X.tilde <- cbind(testdata$X, testdata$variable_matrix(300,10)) ## 10 uncorrelated variables
 
 ## first column-Y, 2-21: X, 22-31: noise
 testdata$data <- cbind(testdata$Y, testdata$X.tilde)
