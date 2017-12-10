@@ -28,9 +28,8 @@
 ################################################## Selection #################################################
 
 gaSelection <- function(methodFun, methodArgs) {
-  selectM <- as.character(substitute(methodFun))
+  selectM <- methodFun
   if(missing(methodFun)) { stop("A selection method must be provided") }
-  if(!is.function(methodFun)) { stop("Selection method is not a function") }
   if(!is.list(methodArgs)) { stop("Method arguments should be inside a list")  }
   if(!is.vector(methodArgs[[2]])) { stop("Fitness values should be a vector") }
   if(!is.matrix(methodArgs[[1]])) { stop("Population should be a matrix") }
@@ -43,7 +42,6 @@ gaSelection <- function(methodFun, methodArgs) {
   } else if (methodArgs[[4]]>(dim(methodArgs[[1]])[1] - floor(dim(methodArgs[[1]])[1]*methodArgs[[3]]))) {
     stop("Number of random selections cannot exceed shrinked population size")
   } }
-
   return(do.call(methodFun, args = methodArgs))
 }
 

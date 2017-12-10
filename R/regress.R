@@ -9,25 +9,24 @@
 #' @param model vector specifying the model: the first argument should be "lm" or "glm", and subsequent arguments specify additional arguments into "lm" or "glm"
 #' @param fitnessCriteria default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or an attribute of a fitted lm or glm model (must be single numeric value)
 
-regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC") {
+regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC", modelParams=NULL) {
 
   if (model != "glm" && model != "lm") stop("model must specify either glm or lm")
 
   #Fit model based on user input model type, lm() or glm()
   if (model=="glm") {
-    fitModel <- glm.fit(cbind(x[, which(genotype==1)], 1), y)
-    class(fitModel) <- "glm"
+    fitModel <- eval(parse(text = paste0("try(glm.fit(cbind(x[, which(genotype==1)], 1), y, ", modelParams,"))")))
+    if("try-error" %in% class(fitModel)) stop(fitModel[1])
+    else class(fitModel) <- "glm"
   }
   else if (model=="lm") {
-    fitModel <- lm.fit(cbind(x[, which(genotype==1)], 1), y)
-    class(fitModel) <- "lm"
+    fitModel <- eval(parse(text = paste0("try(lm.fit(cbind(x[, which(genotype==1)], 1), y, ", modelParams,"))")))
+    if("try-error" %in% class(fitModel)) stop(fitModel[1])
+    else class(fitModel) <- "lm"
   }
 
   #Calculate fitness criteria based on user specified criteria
-
-
   performance <- try (-eval(parse(text = paste0(fitnessCriteria, "(fitModel)"))), silent = TRUE)
-
   if("try-error" %in% class(performance)) stop("Fitness criteria function is not correct.")
   return(performance)
 }

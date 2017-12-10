@@ -4,9 +4,9 @@
 \alias{select}
 \title{Selects regression variables via a genetic algorithm}
 \usage{
-select(x, y, model = list("lm"), fitMetric = "AIC", maxGen = 200L,
-  minGen = 30L, gaMethod = list("TN", 5), pop = 10L, pMutate = 0.1,
-  crossParams = c(0.8, 1L), eliteRate = 0.05, ...)
+select(x, y, model = list("glm", "family = gaussian()"), fitMetric = "AIC",
+  maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5), pop = 50L,
+  pMutate = 0.1, crossParams = c(0.8, 1L), eliteRate = 0.1, ...)
 }
 \arguments{
 \item{x}{matrix of dimension n * p}
@@ -58,4 +58,7 @@ Selects regression variables via a genetic algorithm
 \examples{
 
 TBD
+}
+\seealso{
+\co
 }

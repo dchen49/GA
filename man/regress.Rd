@@ -4,7 +4,8 @@
 \alias{regress}
 \title{Runs regression using a subset of variables dictated by the genotype}
 \usage{
-regress(genotype, x, y, model = "glm", fitnessCriteria = "AIC")
+regress(genotype, x, y, model = "glm", fitnessCriteria = "AIC",
+  modelParams = NULL)
 }
 \arguments{
 \item{genotype}{array of length p made up of 0s and 1s; represents a single member of the population}
