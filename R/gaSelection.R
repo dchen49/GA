@@ -1,17 +1,28 @@
 ## gaSelectionMethod {GA}
 # Parent Selection
 
-#' Parent Selection
-# '
-#' @param population a matrix
-#' @param fitnessVec a vector of length n or a matrix with n rows
+#' Returns the parents population and the corresponding fitness values
 #'
-#' @return returns the selected parents
-#' @param population a matrix
+#' @param methodFun a function of selection method, can be gaLRselection-linear selection,
+#' gaExpSelection-nonlinear selection, gaRWselection-Roulette Wheel selection,
+#' gaTNselection-Tournament selection
+#' @param methodArgs a list with elements as arguments of selection method function, where first element
+#' is population, second as fitness value, third as  elite rate. If the chosen selection method is exponential
+#' ranking selection, then one more argument as exponential base must be provided; if the chosen selection
+#' method is tournament selection, then one more argument as number of random selections must be provided
 #'
 #' @examples
-#'
-#' TBD
+#' numVar <- 6
+#' N <- 50
+#' population <- matrix(rbinom(numVar*N, 1, prob = 0.5), N, numVar)
+#' fitnessVec <- seq(15, 50, length.out=50)
+#' c <- 0.5
+#' k <- 5
+#' eliteRate <- 0.05
+#' gaSelection(gaLRselection, list(population, fitnessVec, eliteRate))
+#' gaSelection(gaExpSelection, list(population, fitnessVec, eliteRate, c))
+#' gaSelection(gaRWselection, list(population, fitnessVec, eliteRate))
+#' gaSelection(gaTNselection, list(population, fitnessVec, eliteRate, k))
 
 
 ################################################## Selection #################################################
