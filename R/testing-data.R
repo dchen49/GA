@@ -7,7 +7,7 @@
 ### We hope that our genetic algorithm can select the first p variables
 ### Next, we start to test our algorithm
 
-rm(list=ls())
+testdata <- new.env()
 
 library(mvtnorm)
 library(MASS)
@@ -28,19 +28,21 @@ variable_matrix <- function(n,p) {
 ## generate X with size n*p
 
 ## step2: generate response Y
-p <- 20
-X <- variable_matrix(300,20)
-beta <- rnorm(p, mean=3, sd=5)
-Y <- X%*%beta
+testdata$p <- 20
+testdata$X <- variable_matrix(300,20)
+testdata$beta <- rnorm(testdata$p, mean=3, sd=5)
+testdata$Y <- testdata$X%*%testdata$beta
 
 ## combine X with noise \epsilon
-X.tilde <- cbind(X, variable_matrix(300,10)) ## 10 uncorrelated variables
+testdata$X.tilde <- cbind(testdata$X, variable_matrix(300,10)) ## 10 uncorrelated variables
 
 ## first column-Y, 2-21: X, 22-31: noise
-data <- cbind(Y, X.tilde)
-write.csv(data, file = "./data/LRdataTest.csv",row.names=FALSE)
-write.table(data, file="./data/LRdataTest")
+testdata$data <- cbind(testdata$Y, testdata$X.tilde)
+write.csv(testdata$data, file = "./data/LRdataTest.csv",row.names=FALSE)
+write.table(testdata$data, file="./data/LRdataTest")
 
-
-
+unloadNamespace("mvtnorm")
+unloadNamespace("MASS")
+unloadNamespace("pls")
+rm("testdata")
 

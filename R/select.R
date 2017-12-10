@@ -31,7 +31,7 @@
 #'
 #' TBD
 
-select <- function(x, y, model=list("glm", "family = gaussian()"), fitMetric = "AIC", maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5),  pop = 50L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
+select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5),  pop = 50L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
 
 
   ######################################## DEFINE NECESSARY OBJECTS ########################################

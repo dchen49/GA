@@ -2,29 +2,22 @@
 % Please edit documentation in R/gaSelection.R
 \name{gaSelection}
 \alias{gaSelection}
-\title{Parents Selection}
+\title{Returns the parents population and the corresponding fitness values}
 \usage{
 gaSelection(methodFun, methodArgs)
 }
 \arguments{
-\item{methodFun}{a function of selection method, can be gaLRselection-linear selection, gaExpSelection-nonlinear selection, gaRWselection-Roulette Wheel selection, gaTNselection-Tournament selection}
+\item{methodFun}{a function of selection method, can be gaLRselection-linear selection,
+gaExpSelection-nonlinear selection, gaRWselection-Roulette Wheel selection,
+gaTNselection-Tournament selection}
 
-\item{methodArgs}{a list with elements as arguments of selection method function, where first element is population, second as fitness value, third as  elite rate. If the chosen selection method is exponential
+\item{methodArgs}{a list with elements as arguments of selection method function, where first element
+is population, second as fitness value, third as  elite rate. If the chosen selection method is exponential
 ranking selection, then one more argument as exponential base must be provided; if the chosen selection
 method is tournament selection, then one more argument as number of random selections must be provided}
-
-}
-\value{
-returns the selected parents
 }
 \description{
-This is a process for selecting parents which mate and recombine to create off-springs for the next generation.
-}
-\seealso{
-\code{\link{gaLRselection}} for linear ranking selection{\cr}
-\code{\link{gaExpSelection}} for nonlinear ranking selection{\cr}
-\code{\link{gaRWselection}} for Roulette Wheel selection{\cr}
-\code{\link{gaTNselection}} for Tournament Selection
+Returns the parents population and the corresponding fitness values
 }
 \examples{
 numVar <- 6

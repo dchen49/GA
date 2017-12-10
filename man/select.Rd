@@ -4,7 +4,9 @@
 \alias{select}
 \title{Selects regression variables via a genetic algorithm}
 \usage{
-select(obj)
+select(x, y, model = list("glm", "family = gaussian()"), fitMetric = "AIC",
+  maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5), pop = 50L,
+  pMutate = 0.1, crossParams = c(0.8, 1L), eliteRate = 0.1, ...)
 }
 \arguments{
 \item{x}{matrix of dimension n * p}
@@ -29,17 +31,17 @@ select(obj)
 
 \item{eliteRate}{Proportion of total population of elites who pass into the next generation unchanged}
 
-\item{a}{A placeholder.}
-
-\item{a}{A placeholder.}
-
-\item{a}{A placeholder.}
-
-\item{a}{A placeholder.}
-
-\item{a}{A placeholder.}
-
 \item{...}{optional arguments to lm, glm, ect.}
+
+\item{a}{A placeholder.}
+
+\item{a}{A placeholder.}
+
+\item{a}{A placeholder.}
+
+\item{a}{A placeholder.}
+
+\item{a}{A placeholder.}
 
 \item{coefficients}{a named vector of coefficients}
 
