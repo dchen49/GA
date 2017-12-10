@@ -17,7 +17,7 @@
 ################################################## Selection #################################################
 
 gaSelection <- function(methodFun, methodArgs) {
-   return(do.call(methodFun, args = methodArgs))
+  return(do.call(methodFun, args = methodArgs))
 }
 
 

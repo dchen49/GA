@@ -59,3 +59,6 @@ Selects regression variables via a genetic algorithm
 
 TBD
 }
+\seealso{
+regress()
+}

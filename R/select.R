@@ -26,6 +26,7 @@
 #' @param fitness the maximum value attained of the specified fitness criterion
 #' @param generations the number of GA generations
 #'
+#' @seealso \co
 #' @examples
 #'
 #' TBD
@@ -50,6 +51,8 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     stop("x and y must have the same number of rows")
   if (sum(is.na(x), is.na(y))!=0)
       stop("x and y must not have missing values.")
+  if (dim(x)[2] > dim(x)[1])
+    warning("Number of dimensions is large compared to the sample size and may adversely affect model fitting")
 
   # check and break apart "model" argument
   if (!is.list(model) | !sum(model %in% c('lm', 'glm')))
@@ -93,7 +96,7 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
   if (!(is.numeric(pMutate)) | median(c(0, pMutate, 1))!=pMutate)
     stop("pMutate must be a number between 0 and 1")
   if (!is.numeric(crossParams) | length(crossParams)!=2 | median(c(0, crossParams[1], 1))!=crossParams[1] |
-      !(as.integer(crossParams[2])==crossParams[2]) | median(c(1, crossParams[2], pop))!=crossParams[2])
+      !(as.integer(crossParams[2])==crossParams[2]) | median(c(1, crossParams[2], ncol(x)))!=crossParams[2])
     stop("crossParams must be a numeric vector of length 2. The first term specifying a probability between 0 and 1 and the second a positive integer")
 
   # GA iterations
@@ -125,6 +128,14 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     population <- rbind(elites, population)
     gen = gen + 1
   }
+
+  GA <- GA[[1:gen]]
+  fitStats <- matrix(rep_len(0, 3*length(GA)), ncol = 3, dimnames = list(NULL, c("mean", "median", "max")))
+  fitStats <- sapply(1:length(GA), FUN = function(i) {
+    c(mean(GA[[i]]$fitness), median(GA[[i]]$fitness), GA[[i]]$fitMax)
+
+  })
+
   print(GA) # identify final optimal candidates
   return(GA)
 }
