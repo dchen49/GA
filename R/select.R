@@ -31,7 +31,7 @@
 #'
 #' TBD
 
-select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, minGen = 30L, gaMethod = list("TN", 5),  pop = 10L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.05, ...) {
+select <- function(x, y, model=list("glm", "family = gaussian()"), fitMetric = "AIC", maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5),  pop = 50L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
   # clean & process inputs
 
   # define needed objects
@@ -43,9 +43,9 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
   names(GA) <- sapply(1:maxGen, FUN = function(n) paste0('gen', n))
 
   # check x and y: type, same row dimension, no NAs,
-  if (class(x)!="matrix" | !(typeof(x) %in% c("integer", "double")))
+  if (!is.matrix(x) | !(typeof(x) %in% c("integer", "double")))
     stop("x must be a matrix of numerical values")
-  if (!(class(y) %in% c("numeric", "matrix")))
+  if (!(class(y) %in% c("numeric", "matrix", "integer")))
     stop("y must be a matrix or vector of numerical values")
   if (!(nrow(x) %in% c(length(y), nrow(y))))
     stop("x and y must have the same number of rows")
@@ -55,12 +55,17 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     warning("Number of dimensions is large compared to the sample size and may adversely affect model fitting")
 
   # check and break apart "model" argument
-  if (!is.list(model) | !sum(model %in% c('lm', 'glm')))
-    stop("model must be a list specifying either 'lm' or 'glm' and subsequent optional entries specifying additional arguments for either lm.fit() or glm.fit()")
-  else if (length(model) > 1) {
-    modelParams <- model[-(model %in% c('lm', 'glm'))]
-    model <- model[model %in% c('lm', 'glm')]
-  }
+  if (!is.list(model) | !sum(model %in% c('lm', 'glm')) | !(length(model) %in% c(1,2)) ) {
+    stop("model must be a list including either 'lm' or 'glm' and optionally a string specifying additional arguments for the specified .fit function")
+    } else if (length(model) > 1) {
+      if (!is.character(model[[2]]) ) {
+        stop("additional argument must be a string specifying additional arguments for the specified lm.fit or glm.fit function")
+      } else {
+        modelParams <- as.character(model[-(model %in% c('lm', 'glm'))])
+        model <- model[model %in% c('lm', 'glm')]
+      }
+    }
+
 
   # check fitmetric
   if (!(fitMetric %in% c("AIC", "BIC")) && !is.function(fitMetric))
@@ -105,10 +110,10 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = fitMetric)
 
     # Identify unique elite genotypes
-    ordFit <- order(fitness, decreasing = TRUE)
-    elites <- population[head(ordFit, max(0, floor(length(fitness)*eliteRate))), ]
+    eliteFits <- head(order(fitness, decreasing = TRUE), max(0, ceiling(length(fitness)*eliteRate)))
+    elites <- population[eliteFits, ]
 
-    GA[[gen]] <- list("fitness" = fitness, "elites" = cbind("fitness" = fitness[head(ordFit, max(0, floor(length(fitness)*eliteRate)))], elites), "fitMax" = max(fitness), "tbd" = "tbd")
+    GA[[gen]] <- list("fitness" = fitness, "elites" = cbind("fitness" = fitness[eliteFits], elites), "fitMax" = max(fitness), "tbd" = "tbd")
 
     # check stopping criteria
     Stop = FALSE
@@ -123,19 +128,30 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     # population selection
     population <- gaSelection(methodFun, methodArgs)[[1]]
 
+    # Offspring
     population <- evolve(population, pMutate, crossParams[1], crossParams[2])
-
     population <- rbind(elites, population)
     gen = gen + 1
   }
 
-  GA <- GA[[1:gen]]
-  fitStats <- matrix(rep_len(0, 3*length(GA)), ncol = 3, dimnames = list(NULL, c("mean", "median", "max")))
-  fitStats <- sapply(1:length(GA), FUN = function(i) {
-    c(mean(GA[[i]]$fitness), median(GA[[i]]$fitness), GA[[i]]$fitMax)
+  GA <- GA[1:gen]
 
-  })
+  fitStats <- t(sapply(1:length(GA), FUN = function(i) {
+    c("Generation" = i,
+      "Mean" = mean(GA[[i]]$fitness),
+      "Median" = median(GA[[i]]$fitness),
+      "Maximum" = GA[[i]]$fitMax)
+  }))
 
-  print(GA) # identify final optimal candidates
-  return(GA)
+  as.tibble(fitStats) %>% gather(key = "Statistic", value = "Value", c(Mean, Median, Maximum)) %>%
+    ggplot() +  geom_point(aes(x = Generation, y = Value, colour = Statistic)) -> fitPlot
+
+  fittest <- GA[[gen]]$elites[1, ]
+
+  fittest <- list("variables" = names(fittest)[fittest==1], 'fitness' = fittest[1])
+
+  return(list("GA" = GA, "fitStats" = fitStats, "fitPlot" = fitPlot))
 }
+
+
+
