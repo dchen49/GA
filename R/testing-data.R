@@ -38,8 +38,8 @@ X.tilde <- cbind(X, variable_matrix(300,10)) ## 10 uncorrelated variables
 
 ## first column-Y, 2-21: X, 22-31: noise
 data <- cbind(Y, X.tilde)
-write.csv(data, file = "/Users/Cindy/STA243-project/GA/data/LRdataTest.csv",row.names=FALSE)
-write.table(data, file="/Users/Cindy/STA243-project/GA/data/LRdataTest")
+write.csv(data, file = "./data/LRdataTest.csv",row.names=FALSE)
+write.table(data, file="./data/LRdataTest")
 
 
 

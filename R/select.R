@@ -26,23 +26,30 @@
 #' @param fitness the maximum value attained of the specified fitness criterion
 #' @param generations the number of GA generations
 #'
-#' @seealso \co
+#' @seealso
 #' @examples
 #'
 #' TBD
 
 select <- function(x, y, model=list("glm", "family = gaussian()"), fitMetric = "AIC", maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5),  pop = 50L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
-  # clean & process inputs
 
-  # define needed objects
+
+  ######################################## DEFINE NECESSARY OBJECTS ########################################
+
+
   fitness <- vector(mode = "numeric", length = pop)
-  # generate initial population
+
   population <- matrix(rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x)))
-  # generate GA object: GA[generation][fitness, elites, tbd]
+
+  # generate GA object: GA[[generation]][fitness, elites, fitMax]
   GA <- rep_len(list(), length.out = maxGen)
   names(GA) <- sapply(1:maxGen, FUN = function(n) paste0('gen', n))
 
-  # check x and y: type, same row dimension, no NAs,
+
+  ######################################## CHECK AND FORMAT ARGUMENTS ########################################
+
+
+  # x and y: type, same row dimension, no NAs, etc.
   if (!is.matrix(x) | !(typeof(x) %in% c("integer", "double")))
     stop("x must be a matrix of numerical values")
   if (!(class(y) %in% c("numeric", "matrix", "integer")))
@@ -54,7 +61,7 @@ select <- function(x, y, model=list("glm", "family = gaussian()"), fitMetric = "
   if (dim(x)[2] > dim(x)[1])
     warning("Number of dimensions is large compared to the sample size and may adversely affect model fitting")
 
-  # check and break apart "model" argument
+  # model: list specifying "lm" or "glm" and string specifying additional arguments -> model & modelParams
   if (!is.list(model) | !sum(model %in% c('lm', 'glm')) | !(length(model) %in% c(1,2)) ) {
     stop("model must be a list including either 'lm' or 'glm' and optionally a string specifying additional arguments for the specified .fit function")
     } else if (length(model) > 1) {
@@ -66,27 +73,24 @@ select <- function(x, y, model=list("glm", "family = gaussian()"), fitMetric = "
       }
     }
 
-
-  # check fitmetric
+  # fitMetric: "AIC" or "BIC", or a function taking in an lm/glm object and outputting a singel number to be maximized
   if (!(fitMetric %in% c("AIC", "BIC")) && !is.function(fitMetric))
     stop("fitMetric must be 'AIC', 'BIC', or a function that takes a lm or glm object and outputs a single value that should be maximized")
 
-  # check maxGen, minGen, and pop
+  # maxGen, minGen, and pop: positive integers, maxGen > minGen
   if (!is.integer(maxGen) | !is.integer(minGen) | median(c(1, minGen, maxGen))!=minGen)
     stop("minGen and maxGen must be positive integers with maxGen greater than minGen")
   if (!(is.integer(pop)) | pop < 1)
     stop("pop must be a positive integer")
 
-  # check and break apart "gaMethod" into selectionFun and methodArgs
-  method <- c('TN', 'LR', 'ER','RW')
-  methodFuns <- c('gaTNselection', 'gaLRselection', 'gaExpSelection', 'gaRWselection')
+  # gaMethod: one of 'TN', 'LR', 'ER','RW'; and a numeric argument as appropriate -> methodFun & methodArgs
+  method <- c('TN' = 'gaTNselection', 'LR' = 'gaLRselection',
+                 'ER' = 'gaExpSelection', 'RW' = 'gaRWselection')
   if (!is.list(gaMethod) | (c('TN', 'ER') %in% gaMethod && length(gaMethod)!=2) |
-      (c('LR', 'RW') %in% gaMethod && length(gaMethod)!=1) | sum(gaMethod %in% method)!=1) {
+      (c('LR', 'RW') %in% gaMethod && length(gaMethod)!=1) | sum(gaMethod %in% names(method))!=1) {
     stop("gaMethod must be a list, specifying one of ('TN', 'LR', 'ER', 'RW') and for ER or TN selection, the additional required parameter.")
   }
-
-  methodFun <- methodFuns[which(method %in% gaMethod)]
-
+  methodFun <- method[which(names(method) %in% gaMethod)]
   if (methodFun=="gaTNselection") {
     if ((gaMethod[[2]]!=as.integer(gaMethod[[2]])) | gaMethod[[2]] > pop | length(gaMethod[[2]])!=1) {
       stop("gaMethod for 'TN' must additionally include an integer between 1 and the population size to specify the number of selection tournaments")
@@ -97,23 +101,26 @@ select <- function(x, y, model=list("glm", "family = gaussian()"), fitMetric = "
     } else methodArgs <- list(population, fitness, eliteRate, gaMethod[[2]])
   } else methodArgs <- list(population, fitness, eliteRate)
 
-  # check pMutate and crossParams
+  # pMutate & crossParams: proper probabilities & integer number of crosses
   if (!(is.numeric(pMutate)) | median(c(0, pMutate, 1))!=pMutate)
     stop("pMutate must be a number between 0 and 1")
   if (!is.numeric(crossParams) | length(crossParams)!=2 | median(c(0, crossParams[1], 1))!=crossParams[1] |
       !(as.integer(crossParams[2])==crossParams[2]) | median(c(1, crossParams[2], ncol(x)))!=crossParams[2])
     stop("crossParams must be a numeric vector of length 2. The first term specifying a probability between 0 and 1 and the second a positive integer")
 
-  # GA iterations
+
+  ######################################## GA ITERATIONS ########################################
+
+
   gen <- 1
-  while(gen < maxGen) { # fix inputs
+  while(gen < maxGen) {
     fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = fitMetric)
 
     # Identify unique elite genotypes
     eliteFits <- head(order(fitness, decreasing = TRUE), max(0, ceiling(length(fitness)*eliteRate)))
     elites <- population[eliteFits, ]
 
-    GA[[gen]] <- list("fitness" = fitness, "elites" = cbind("fitness" = fitness[eliteFits], elites), "fitMax" = max(fitness), "tbd" = "tbd")
+    GA[[gen]] <- list("fitness" = fitness, "elites" = cbind("fitness" = fitness[eliteFits], elites), "fitMax" = max(fitness))
 
     # check stopping criteria
     Stop = FALSE
@@ -152,6 +159,4 @@ select <- function(x, y, model=list("glm", "family = gaussian()"), fitMetric = "
 
   return(list("GA" = GA, "fitStats" = fitStats, "fitPlot" = fitPlot))
 }
-
-
 
