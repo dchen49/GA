@@ -5,7 +5,7 @@
 \title{Performs a Genetic Cross with multiple translocation positions
 }
 \description{
-%%
+Multiplecrossover function performs a genetic cross with multiple translocation positions. For two vectors or matrix, it randomly chooses more than one points and switch every other piece of the segments. Multiplecrossover function will return a 2*p matrix. The default value of number of locations is 2.
 }
 \usage{
 multiplecrossover(parents, num.cross.locations = 2)
@@ -45,54 +45,10 @@ Qi Chen
 \code{\link{singlecrossover}}
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+data <- rbind(c(1,0,1,0,1,1,1), c(0,0,1,1,1,1,0))
+multiplecrossover(data, 3)
 
-## The function is currently defined as
-function (parents, num.cross.locations = 2)
-{
-    n <- dim(parents)[2]
-    children <- matrix(0, nrow = 2, ncol = n)
-    cross <- function(parents, num.cross.locations = 2) {
-        crossoverPoint <- sort(sample(seq(1.5, dim(parents)[2],
-            by = 1), size = num.cross.locations))
-        if (num.cross.locations\%\%2 == 0) {
-            for (i in seq(1, num.cross.locations, by = 2)) {
-                crosspart <- parents[1, (crossoverPoint[i] +
-                  0.5):(crossoverPoint[i + 1] - 0.5)]
-                parents[1, (crossoverPoint[i] + 0.5):(crossoverPoint[i +
-                  1] - 0.5)] <- parents[2, (crossoverPoint[i] +
-                  0.5):(crossoverPoint[i + 1] - 0.5)]
-                parents[2, (crossoverPoint[i] + 0.5):(crossoverPoint[i +
-                  1] - 0.5)] <- crosspart
-            }
-        }
-        else {
-            for (i in seq(1, (num.cross.locations - 1), by = 2)) {
-                crosspart <- parents[1, (crossoverPoint[i] +
-                  0.5):(crossoverPoint[i + 1] - 0.5)]
-                parents[1, (crossoverPoint[i] + 0.5):(crossoverPoint[i +
-                  1] - 0.5)] <- parents[2, (crossoverPoint[i] +
-                  0.5):(crossoverPoint[i + 1] - 0.5)]
-                parents[2, (crossoverPoint[i] + 0.5):(crossoverPoint[i +
-                  1] - 0.5)] <- crosspart
-            }
-            crosspart <- parents[1, (crossoverPoint[num.cross.locations] +
-                0.5):dim(parents)[2]]
-            parents[1, (crossoverPoint[num.cross.locations] +
-                0.5):dim(parents)[2]] <- parents[2, (crossoverPoint[num.cross.locations] +
-                0.5):dim(parents)[2]]
-            parents[2, (crossoverPoint[num.cross.locations] +
-                0.5):dim(parents)[2]] <- crosspart
-        }
-        return(parents)
-    }
-    parents <- cross(parents, num.cross.locations = 2)
-    return(parents)
-  }
-}
+
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }% use one of  RShowDoc("KEYWORDS")
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+

@@ -5,7 +5,7 @@
 %%
 }
 \description{
-This function will randomly change 1 to 0 or 0 to 1. The default probability of mutation is 0.1. The mutation function is used in evolve function.
+This mutation function will randomly change 1 to 0 or 0 to 1. The default probability of mutation is 0.1. The mutation function is used in evolve function.
 }
 \usage{
 mutation(population, mutation.prob = 0.1)
@@ -45,7 +45,8 @@ Qi Chen
 \code{\link{evolve}}
 }
 \examples{
-data <- matrix(sample(c(0, 1), 1000, replace = TRUE), ncol = 20)
+N <- 1000
+data <- matrix(sample(c(0, 1), N, replace = TRUE), ncol = 20)
 mutation(data)
 
 

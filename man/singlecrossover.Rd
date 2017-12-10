@@ -4,7 +4,7 @@
 \title{Performs a Genetic Cross at a single location.
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Singlecrossover function performs a genetic cross at a single location. For two vectors or matrix, it randomly chooses one point and switch one piece of the segments.Singlecrossover function will return a 2*p matrix.
 }
 \usage{
 singlecrossover(parents, num.cross.locations = 1)
@@ -16,7 +16,7 @@ singlecrossover(parents, num.cross.locations = 1)
 }
 }
 \details{
-For two vectors or matrix, it randomly chooses one point and switch one piece of the segments.
+
 }
 \value{
 %%  ~Describe the value returned
