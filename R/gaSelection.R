@@ -17,7 +17,23 @@
 ################################################## Selection #################################################
 
 gaSelection <- function(methodFun, methodArgs) {
-   return(do.call(methodFun, args = methodArgs))
+  selectM <- as.character(substitute(methodFun))
+  if(missing(methodFun)) { stop("A selection method must be provided") }
+  if(!is.function(methodFun)) { stop("Selection method is not a function") }
+  if(!is.list(methodArgs)) { stop("Method arguments should be inside a list")  }
+  if(!is.vector(methodArgs[[2]])) { stop("Fitness values should be a vector") }
+  if(!is.matrix(methodArgs[[1]])) { stop("Population should be a matrix") }
+  if(length(methodArgs)==2) { stop("A elite rate must be provided") }
+  if(methodArgs[[3]] < 0 | methodArgs[[3]] > 1) { stop("The elite rate must be between 0 and 1") }
+  if(selectM  == "gaExpSelection") { if(length(methodArgs)==3) { stop("The exponential base for nonlinear rank selection must be provided") } }
+  if(selectM == "gaExpSelection") { if(methodArgs[[4]]< 0 | methodArgs[[4]] > 1) { stop("The exponential base c must be between 0 and 1") } }
+  if(selectM == "gaTNselection") { if(length(methodArgs)==3) { stop("Number of random selection must be provided for tournament selection") } else if (!methodArgs[[4]]%%1==0) {
+    stop("Number of random selections must be an integer")
+  } else if (methodArgs[[4]]>(dim(methodArgs[[1]])[1] - floor(dim(methodArgs[[1]])[1]*methodArgs[[3]]))) {
+    stop("Number of random selections cannot exceed shrinked population size")
+  } }
+
+  return(do.call(methodFun, args = methodArgs))
 }
 
 
