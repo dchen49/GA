@@ -2,7 +2,7 @@
 \alias{gaRWselection{GA}}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Roulette Wheel Selection
 }
 \description{
 In Roulette Wheel Selection method, the chromosomes are selected based on their probabilities

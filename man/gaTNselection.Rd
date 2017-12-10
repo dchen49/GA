@@ -2,7 +2,7 @@
 \alias{gaTNselection{GA}}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Tournament Selection
 }
 \description{
 In Tournament selection method, 'n' individuals are chosen at random from the entire population. These

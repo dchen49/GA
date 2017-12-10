@@ -2,7 +2,7 @@
 \alias{gaExpSelection{GA}}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Exponential Ranking Selection
 }
 \description{
 In nonlinear Ranking selection method, individuals are first sorted according to their fitness value

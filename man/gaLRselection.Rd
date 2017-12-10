@@ -2,7 +2,7 @@
 \alias{gaLRselection{GA}}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Linear Ranking Selection
 }
 \description{
 In Linear Ranking selection method, individuals are first sorted according to their fitness value
