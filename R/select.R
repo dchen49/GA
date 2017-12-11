@@ -60,6 +60,7 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
     warning("Number of dimensions is large compared to the sample size and may adversely affect model fitting")
 
   # model: list specifying "lm" or "glm" and string specifying additional arguments -> model & modelParams
+  modelParams <- NULL
   if (!is.list(model) | !sum(model %in% c('lm', 'glm')) | !(length(model) %in% c(1,2)) ) {
     stop("model must be a list including either 'lm' or 'glm' and optionally a string specifying additional arguments for the specified .fit function")
     } else if (length(model) > 1) {
@@ -139,6 +140,9 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
     gen = gen + 1
   }
 
+
+  ######################################## GA OUTPUT CLEANING ########################################
+
   GA <- GA[1:gen]
 
   fitStats <- t(sapply(1:length(GA), FUN = function(i) {
@@ -152,9 +156,16 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
      ggplot2::geom_point(ggplot2::aes(x = Generation, y = Value, colour = Statistic)) -> fitPlot
 
   fittest <- GA[[gen]]$elites[1, ]
+  if (model=="glm") {
+    fitModel <- eval(parse(text = paste0("try(glm.fit(cbind(x[, which(fittest[-1]==1)], 1), y, ", modelParams,"))")))
+    class(fitModel) <- "glm"
+  } else {
+    fitModel <- eval(parse(text = paste0("try(lm.fit(cbind(x[, which(fittest[-1]==1)], 1), y, ", modelParams,"))")))
+    class(fitModel) <- "lm"
+  }
 
-  fittest <- list("variables" = names(fittest)[fittest==1], 'fitness' = fittest[1])
+  fittest <- list("variables" = names(fittest)[fittest==1], 'fitness' = fittest[1], "fitModel" = fitModel)
 
-  return(list("GA" = GA, "fitStats" = fitStats, "fitPlot" = fitPlot))
+  return(list("optimum" = fittest, "fitPlot" = fitPlot, "fitStats" = fitStats, "GA" = GA))
 }
 

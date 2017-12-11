@@ -18,8 +18,7 @@ regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC", modelPar
     fitModel <- eval(parse(text = paste0("try(glm.fit(cbind(x[, which(genotype==1)], 1), y, ", modelParams,"))")))
     if("try-error" %in% class(fitModel)) stop(fitModel[1])
     else class(fitModel) <- "glm"
-  }
-  else if (model=="lm") {
+  } else if (model=="lm") {
     fitModel <- eval(parse(text = paste0("try(lm.fit(cbind(x[, which(genotype==1)], 1), y, ", modelParams,"))")))
     if("try-error" %in% class(fitModel)) stop(fitModel[1])
     else class(fitModel) <- "lm"
