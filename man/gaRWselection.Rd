@@ -1,5 +1,5 @@
 \name{gaRWselection}
-\alias{gaRWselection{GA}}
+\alias{gaRWselection}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Roulette Wheel Selection
