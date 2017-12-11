@@ -7,7 +7,6 @@
 ### We hope that our genetic algorithm can select the first p variables
 ### Next, we start to test our algorithm
 
-rm(list=ls())
 
 ## step1: function to generate X, of size n*p
 variable_matrix <- function(n,p) {

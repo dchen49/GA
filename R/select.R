@@ -27,6 +27,7 @@
 #' @param generations the number of GA generations
 #'
 #' @examples tbd
+#' @export
 
 select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5),  pop = 50L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
 
@@ -147,8 +148,8 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
       "Maximum" = GA[[i]]$fitMax)
   }))
 
-  as.tibble(fitStats) %>% gather(key = "Statistic", value = "Value", c(Mean, Median, Maximum)) %>%
-    ggplot() +  geom_point(aes(x = Generation, y = Value, colour = Statistic)) -> fitPlot
+   ggplot2::ggplot(tidyr::gather(tibble::as.tibble(fitStats), key = "Statistic", value = "Value", c(Mean, Median, Maximum))) +
+     ggplot2::geom_point(ggplot2::aes(x = Generation, y = Value, colour = Statistic)) -> fitPlot
 
   fittest <- GA[[gen]]$elites[1, ]
 
