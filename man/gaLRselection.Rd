@@ -1,5 +1,5 @@
 \name{gaLRselection}
-\alias{gaLRselection{GA}}
+\alias{gaLRselection}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Linear Ranking Selection

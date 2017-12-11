@@ -1,0 +1,291 @@
+\documentclass{article}
+
+
+\usepackage{mathrsfs}
+\usepackage{amsthm,amsmath,amssymb,bbm}
+\usepackage{natbib}
+\usepackage{multirow}
+\usepackage{subfigure}
+\usepackage{makecell}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{MnSymbol}
+%\usepackage{fullpage}
+\usepackage{url}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{bm}
+%\usepackage{mathtools}
+\usepackage{wrapfig}
+\usepackage{lipsum}
+\usepackage{mathrsfs}
+\usepackage{graphicx}
+\graphicspath{ {/Users/Cindy/Documents/images/} }
+\usepackage{dsfont}
+\usepackage{titling}
+\usepackage{mathtools}
+\usepackage{amsmath,lipsum}
+\newcommand{\mypm}{\mathbin{\smash{%
+\raisebox{0.35ex}{%
+            $\underset{\raisebox{0.5ex}{$\smash \frown$}}{\smash \smile}$%
+            }%
+        }%
+    }%
+}
+
+\newcommand{\tlarge}{\mathbin{\smash{%
+\raisebox{0.35ex}{%
+            $\underset{\raisebox{0.5ex}{$\smash \sim$}}{\smash >}$%
+            }%
+        }%
+    }%
+}
+
+\newcommand{\tsmall}{\mathbin{\smash{%
+\raisebox{0.35ex}{%
+            $\underset{\raisebox{0.5ex}{$\smash \sim$}}{\smash <}$%
+            }%
+        }%
+    }%
+}
+
+%\usepackage{datetime}
+%\usepackage{epstopdf,mathabx}
+
+%\usepackage{algcompatible}
+%\pagestyle{fancy}
+%\lhead{Semiparametric Spjiu arse Column Inverse Operator}
+%\rhead{  }
+%%\cfoot{center of the footer!}
+%\renewcommand{\headrulewidth}{1pt}
+%\renewcommand{\footrulewidth}{1pt}
+\usepackage{multirow}
+%\usepackage{subfigure}
+%\usepackage{makecell}
+
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[colorlinks,
+linkcolor=red,
+anchorcolor=blue,
+citecolor=blue
+]{hyperref}
+
+\def\T{{ \mathrm{\scriptscriptstyle T} }}
+
+\def\skeptic{{\sc skeptic}}
+\newcommand{\sgn}{\mathop{\mathrm{sign}}}
+\providecommand{\norm}[1]{\|#1\|}
+\providecommand{\bnorm}[1]{\big\|#1\big\|}
+\providecommand{\enorm}[1]{| \! | \! |#1| \! | \! |}
+\providecommand{\bemnorm}[1]{\big| \! \big| \! \big|#1\big| \! \big| \! \big|}
+
+\newcommand*{\expect}{\mathsf{E}}
+\newcommand*{\prob}{\mathsf{P}}
+\newcommand\Tau{\mathcal{T}}
+
+
+%\numberwithin{equation}{section}
+%\numberwithin{thm}{section}
+%\numberwithin{asmp}{section}
+%\numberwithin{defn}{section}
+%\numberwithin{figure}{section}
+%\numberwithin{table}{section}
+%\numberwithin{rem}{section}
+
+
+
+%%%%My macros
+
+\newcommand*{\Sc}{\cS^{\perp}}
+\newcommand*{\Ac}{\cA^{\perp}}
+\newcommand*{\supp}{\mathrm{supp}}
+%\usepackage{cite}
+
+\newcommand \rF{\mathrm{F}}
+\newcommand \rd{\mathrm{d}}
+\newcommand \ru{\mathrm{u}}
+\newcommand \rv{\mathrm{v}}
+\newcommand \rw{\mathrm{w}}
+\newcommand \rwb{\bm{\mathrm{w}}}
+\newcommand{\e}{\mathbb{E}}
+\newcommand{\nn}{\nonumber}
+\newcommand{\nb}[1]{{\bf\color{blue} [#1]}}
+\newcommand{\nr}[1]{{\bf\color{red} [#1]}}
+
+%%%%%%%%%%%
+\newcommand \btt{\bbeta}
+\newcommand \hbt{\hat{\btt}}
+\newcommand \bttc{\bbeta^*}
+\newcommand \tbs{\tilde{\btt}^*}
+\newcommand \tbt{\tilde{\btt}}
+\newcommand \mbu{\ub}
+
+%%%%Definition of new notations
+\newcommand{\FDP}{{\rm FDP}}
+\newcommand{\thh}{-{{\rm th}}}
+
+
+%%%%Definition of Equation environment
+\def\##1\#{\begin{align}#1\end{align}}
+\def\$#1\${\begin{align*}#1\end{align*}}
+
+%%%%Definition of Operators
+\newcommand {\vecc}{\textnormal {vec}}
+\newcommand {\cov}{\textnormal {cov}}
+\newcommand {\var}{\textnormal {var}}
+
+\def\T{\mathrm{\scriptstyle T}} %%%transpose operator
+\def\sn{\sum_{i=1}^n}
+\newcommand {\summ}{\textnormal {sum}}
+
+\newcommand {\F}{\textnormal {F}}
+\newcommand\X{\mathrm{X}}
+\newcommand\Y{\mathrm{Y}}
+\newcommand\E{\mathrm{E}}
+\newcommand\V{\mathrm{V}}
+\newcommand\U{\mathrm{U}}
+\newcommand\W{\mathrm{W}}
+
+
+%%%%Definition of Roman Numbers
+\newcommand{\Rom}[1]{\text{\uppercase\expandafter{\romannumeral #1\relax}}}
+
+
+%\addtolength{\textwidth}{1in} \addtolength{\oddsidemargin}{-0.5in}
+%\addtolength{\textheight}{1in} \addtolength{\topmargin}{-0.62in}
+%margin and textwidth
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ %total={170mm,257mm},
+ left=28mm,
+ top=30mm,
+ }
+\textwidth=6in
+
+\renewcommand{\baselinestretch}{1.1}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\usepackage{enumitem}
+
+\usepackage[latin1]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\begin{document}
+
+\title{\LARGE Genetic Algorithm-R Package Final Report}
+\author{David Chen, Qi Chen, Emily Suter and Xinyi(Cindy) Zhang}
+
+\date{\today}
+
+\maketitle
+
+\begin{abstract}
+Genetic Algorithm (GA) is a search-based optimization technique based on the principles of Genetics and Natural Selection. It is frequently used to find optimal or near-optimal solutions to difficult problems which otherwise would take a lifetime to solve. In this report, we will first introduce how we set up the genetic algorithm and the main steps. We then describe the testing procedure carried out. In section \ref{s3}, we include the results from the example we have taken to apply our GA algorithm. Contributions of each team member is collected in the last part, section \ref{s4}.
+\end{abstract}
+
+\newpage
+\pagestyle{empty}
+
+\section{Introduction to Our Genetic Algorithm}\label{s1}
+To better introduce our genetic algorithm  Figure \ref{p1}, a flowchart is displayed as follows
+
+\vspace{5mm}
+
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20,
+    text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm, text width=5em,
+    rounded corners, minimum height=3em]
+
+\begin{tikzpicture}[node distance = 2cm, auto]\label{p1}
+    % Place nodes
+    \node [block] (init) {Genetic Algorithm Starts Here};
+    \node [block, below of=init] (identify) {Population Initialization $P_{0}$};
+    \node [block, below of=identify] (evaluate) {Compute Fitness};
+    \node [decision, below of=evaluate] (decide) {Checking Stopping Criteria?};
+    \node [cloud, right of=decide, node distance=3.5cm] (stop) {Terminate and return the best!};
+    \node [block, left of=decide, node distance=3cm] (update) {Recombine with survivors from the last generation};
+
+
+    \node [block, below of=decide, node distance=3cm] (continue) {Parents Selection};
+    \node [block, below of=continue, node distance=2.5cm] (continuea) {Offspring Generation};
+    % Draw edges
+    \path [line] (init) -- (identify);
+    \path [line] (identify) -- (evaluate);
+    \path [line] (evaluate) -- (decide);
+    %\path [line] (decide) -| node [near start] {no} (update);
+    \path [line] (update) |- node {current population}(evaluate);
+    \path [line] (decide) -- node {no}(continue);
+    \path [line] (continue) -- node {Evolution, including crossover and mutation}(continuea);
+    \path [line] (decide) -- node {yes}(stop);
+    \path [line] (continuea) -| node [near start] {step into} (update);
+
+
+\end{tikzpicture}
+
+\section{Testing}\label{s2}
+
+
+\section{Application}\label{s3}
+In this section, we considerde two applications of our genetic algorithm, one on the dataset generated from a linear regression model, which aims to evaluate whether the designed algorithm can successfully select those important features, given known relevant variables combined with some noise terms. Another application is based on the baseball data collected from the textbook ``Computational Statistics'' \citet{compute}. Details will be illustrated as follows.
+
+\subsection{Application on Data Generated from Linear Regression Model}
+In this section, we will first introduce how we generate the covariates and responses for evaluating our genetic algorithm on feature selection. We first generate covariates from the multivariate normal distribution $N_{p}(\bm{0}, \Sigma_{x})$, where the $(j, j^{\prime})$ $\Sigma_{x}$ satisfies
+$$
+\Sigma_{x(j,j^{\prime})} = 0.5^{|j-j^{\prime}|}, \mbox{ for } 1\leq j, j^{\prime}\leq p.
+$$
+Setting sample size $n=300$ and feature dimension $p=20$, we then fit the linear regression model
+$$
+Y = X\beta,
+$$
+where $\beta=(\beta_{1}, \cdots, \beta_{6})^{\mathrm{T}}$ is generated from univariate normal distribution $N(3, 25)$. Moreover, we add some noise $\epsilon=(\epsilon_{1}, \cdots, \epsilon_{n})$ to the covariates generated as above. $\epsilon_{i}$, for $1\leq i \leq n$, is generated from $N_{10}(\bm{0}, \Sigma_{x})$, which has the same parameter setting as $X$ except the dimension. We then combine $X$ and the noise terms together. The resulting covariates matrix is given by
+$$
+\tilde{X} = (X|\epsilon).
+$$
+Apply our genetic algorithm to fit a linear model regressing $Y\in \mathbb{R}^{n}$ on $\tilde{X}\in \mathbb{R}^{n\times 30}$. Given $20$ relevant covariates and 10 noise terms, the designed GA algorithm gives the following results for feature selection
+$$
+\mbox{genotype}=(0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, \textcolor{red}{0, 1, 0, 0, 1, 0, 1, 0, 0, 1}).
+$$
+One can see that our GA algorithm can select most of the relevant variables, but will also include some irrelevant noise terms denoted in red.
+
+\vspace{3mm}
+\noindent
+A plot monitoring the optmization process is also included:
+\begin{figure}[h]
+\caption{How it evolves}
+\centering
+\includegraphics[width=10cm, height=6cm]{r2}
+\end{figure}
+
+\subsection{Application on Baseball Data}
+
+
+\section{Group Member Contributions}\label{s4}
+David Chen:
+
+\vspace{3mm}
+\noindent
+Qi Chen:
+
+\vspace{3mm}
+\noindent
+Emily Suter:
+
+\vspace{3mm}
+\noindent
+Xinyi(Cindy) Zhang:
+
+\nocite{selection}
+\bibliographystyle{ims}
+\bibliography{243project}
+
+
+
+\end{document}
