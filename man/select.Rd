@@ -2,10 +2,10 @@
 % Please edit documentation in R/select.R
 \name{select}
 \alias{select}
-\title{Selects regression variables via a genetic algorithm}
+\title{Selects Regression Variables using a Genetic Algorithm}
 \usage{
-select(x, y, model = list("glm"), fitMetric = "AIC", maxGen = 200L,
-  minGen = 50L, gaMethod = list("TN", 5), pop = 50L, pMutate = 0.1,
+select(x, y, model = list("lm"), fitMetric = "AIC", maxGen = 200L,
+  minGen = 50L, gaMethod = list("TN", 5), pop = 100L, pMutate = 0.1,
   crossParams = c(0.8, 1L), eliteRate = 0.1, ...)
 }
 \arguments{
@@ -13,48 +13,51 @@ select(x, y, model = list("glm"), fitMetric = "AIC", maxGen = 200L,
 
 \item{y}{vector of length n or a matrix with n rows}
 
-\item{model}{a list: first entry specifying either"lm" or "glm", and subsequent named entries specifying additional arguments into lm.fit() or glm.fit(): default "glm"}
+\item{model}{list - default "lm" : one of ("lm", "glm") and an optional character string specifying arguments into lm.fit() or glm.fit()}
 
-\item{fitMetric}{"AIC", "BIC", or "RSS": default "AIC"}
+\item{fitMetric}{default "AIC": one of ("AIC", "BIC", "RSS") or a function that takes a regression object and outputs a single number to be maximized}
 
-\item{maxGen}{an integer specifying the maximum number of GA generations to use: default 100}
+\item{maxGen}{default 200: integer specifying the maximum number of GA generations to use}
 
-\item{minGen}{an integer specifying the number of generations without fitness improvement at which the GA algorithm will stop: default 5}
+\item{minGen}{default 50: integer specifying the number of generations without fitness improvement at which the GA algorithm will stop}
 
-\item{gaMethod}{a list: The first entry must be one of ('TN', 'LR', 'ER','RW') with other entries specifying required additional arguments as needed. See gaMethod help for details.}
+\item{gaMethod}{list - default 'LR': one of ('TN', 'LR', 'ER','RW') and an additional numrical argument as needed. See gaSelection for details.}
 
-\item{pop}{an integer specifying the size of the genotype population. If odd, 1 random individual will be left out of crossing: default 100}
+\item{pop}{default 100: integer specifying the size of the genotype pool.}
 
-\item{pMutate}{a real value between 0 and 1 specifying the probability of an allele mutation: default .1}
+\item{pMutate}{default .1: real number between 0 and 1 specifying the probability of an allele mutation}
 
-\item{crossParams}{a numeric vector, c("cross probability", "max number of cross locations on a single gene"): default (.8, 1)}
+\item{crossParams}{numeric - default (.8, 1): c("cross probability", "max number of cross locations on a single gene")}
 
-\item{eliteRate}{Proportion of total population of elites who pass into the next generation unchanged}
-
-\item{...}{optional arguments to lm, glm, ect.}
-
-\item{a}{A placeholder.}
-
-\item{a}{A placeholder.}
-
-\item{a}{A placeholder.}
-
-\item{a}{A placeholder.}
-
-\item{a}{A placeholder.}
-
-\item{coefficients}{a named vector of coefficients}
-
-\item{fitness}{the maximum value attained of the specified fitness criterion}
-
-\item{generations}{the number of GA generations}
+\item{eliteRate}{default .1: Proportion of highest fitness genotypes that pass into the next generation unchanged.}
 }
 \value{
-returns an object of class "GA", which is a list containing the following components:
+returns a list of 4 components: optimum, fitPlot, fitStats, and GA
+\itemize{
+\item{\strong{optimum:} a list of properties of the genotype acheiving max fitness}{
+\itemize{
+\item \emph{\strong{variables:}} the recommended set of regression variables
+\item \emph{\strong{fitness:}} the achieved fitness metric
+\item \emph{\strong{fitModel:}} the regression object returned by using the recommended variables
+}}
+\item{\strong{fitPlot:} a plot of the mean, median, and maximum fitness over the generations}
+\item{\strong{fitStats:} a tibble of the values used to generate the plot}
+\item{\strong{GA:} a list of data associated with each generation of the genetic algorithm}{
+\itemize{
+\item \emph{\strong{fitness:}} the fitness measures of the current generation
+\item \emph{\strong{elites:}} the fitness values and genotypes with the highest fitness
+\item \emph{\strong{fitMax:}} the highest fitness value
+}}
+}
 }
 \description{
-Selects regression variables via a genetic algorithm
+Selects Regression Variables using a Genetic Algorithm
 }
 \examples{
 tbd
+}
+\seealso{
+\code{\link{regress}}
+\code{\link{gaSelection}}
+\code{\link{evolve}}
 }
