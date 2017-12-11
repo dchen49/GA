@@ -47,7 +47,7 @@ Qi Chen
 \examples{
 data <- rbind(c(1,0,1,0,1,1,1), c(0,0,1,1,1,1,0))
 multiplecrossover(data, 3)
-
+}
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

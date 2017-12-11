@@ -56,6 +56,8 @@ population <- matrix(rbinom(numVar*N, 1, prob = 0.5), N, numVar)
 fitnessVec <- seq(15, 50, length.out=50)
 eliteRate <- 0.05
 gaLRselection(population, fitnessVec, eliteRate)
+}
+
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 

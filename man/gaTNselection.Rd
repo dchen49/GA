@@ -59,6 +59,7 @@ fitnessVec <- seq(15, 50, length.out=50)
 eliteRate <- 0.05
 k <- 5
 gaTNselection(population, fitnessVec, eliteRate, k)
+}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 

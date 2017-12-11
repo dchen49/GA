@@ -60,7 +60,7 @@ fitnessVec <- seq(15, 50, length.out=50)
 eliteRate <- 0.05
 c <- 0.5
 gaExpSelection(population, fitnessVec, eliteRate, c)
-
+}
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
