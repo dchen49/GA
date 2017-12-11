@@ -265,7 +265,9 @@ A plot monitoring the optmization process is also included:
 \end{figure}
 
 \subsection{Application on Baseball Data}
+We next test our genetic algorithm on a real data set to demonstrate the ability to select and optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for Computational Statistics, 2nd Edition, by Givens and Hoeting (http://www.stat.colostate.edu/computationalstatistics/).
 
+The data set contains 27 different statistics (such as hits and on-base percentage) for 337 players in the 1991 baseball season.  Additionally, the data set contains the salaries for the same 337 players in the 1992 season.  We used our genetic algorithm to select player statistic(s) that most influence that players salary in the following year.
 
 \section{Group Member Contributions}\label{s4}
 David Chen:
