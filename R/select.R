@@ -2,7 +2,7 @@
 # Variable Selection via a Genetic Algorithm
 
 #' Selects regression variables via a genetic algorithm
-# '
+#'
 #' @param x matrix of dimension n * p
 #' @param y vector of length n or a matrix with n rows
 #' @param model a list: first entry specifying either"lm" or "glm", and subsequent named entries specifying additional arguments into lm.fit() or glm.fit(): default "glm"
@@ -26,15 +26,12 @@
 #' @param fitness the maximum value attained of the specified fitness criterion
 #' @param generations the number of GA generations
 #'
-#' @seealso
-#' @examples
-#'
-#' TBD
+#' @examples tbd
 
 select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5),  pop = 50L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
 
 
-  ######################################## DEFINE NECESSARY OBJECTS ########################################
+  ######################################## DEFINE NECESSARY OBJECTS ########################################\
 
 
   fitness <- vector(mode = "numeric", length = pop)

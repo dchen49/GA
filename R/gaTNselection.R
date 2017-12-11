@@ -1,4 +1,4 @@
-## gaSelectionMethod {GA}
+## gaselectionMethod {GA}
 # Tournament Selection
 
 #' In Tournament selection method, ‘n’ individuals are chosen at random from the entire population. These
