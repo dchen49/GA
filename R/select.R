@@ -151,7 +151,7 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
   }
 
 
-  ######################################## GA OUTPUT CLEANING ########################################
+  ######################################## GA OUTPUT  ########################################
 
   GA <- GA[1:gen]
 
@@ -167,10 +167,10 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
 
   fittest <- GA[[gen]]$elites[1, ]
   if (model=="glm") {
-    fitModel <- eval(parse(text = paste0("try(glm.fit(cbind(x[, which(fittest[-1]==1)], 1), y, ", modelParams,"))")))
+    fitModel <- eval(parse(text = paste0("glm.fit(cbind(x[, which(fittest[-1]==1)], 1), y, ", modelParams,")")))
     class(fitModel) <- "glm"
   } else {
-    fitModel <- eval(parse(text = paste0("try(lm.fit(cbind(x[, which(fittest[-1]==1)], 1), y, ", modelParams,"))")))
+    fitModel <- eval(parse(text = paste0("lm.fit(cbind(x[, which(fittest[-1]==1)], 1), y, ", modelParams,")")))
     class(fitModel) <- "lm"
   }
 
