@@ -1,35 +1,45 @@
 ## select {GA}
 # Variable Selection via a Genetic Algorithm
 
-#' Selects regression variables via a genetic algorithm
+#' Selects Regression Variables using a Genetic Algorithm
 #'
 #' @param x matrix of dimension n * p
 #' @param y vector of length n or a matrix with n rows
-#' @param model a list: first entry specifying either"lm" or "glm", and subsequent named entries specifying additional arguments into lm.fit() or glm.fit(): default "glm"
-#' @param fitMetric "AIC", "BIC", or "RSS": default "AIC"
-#' @param maxGen an integer specifying the maximum number of GA generations to use: default 100
-#' @param minGen an integer specifying the number of generations without fitness improvement at which the GA algorithm will stop: default 5
-#' @param gaMethod a list: The first entry must be one of ('TN', 'LR', 'ER','RW') with other entries specifying required additional arguments as needed. See gaMethod help for details.
-#' @param pop an integer specifying the size of the genotype population. If odd, 1 random individual will be left out of crossing: default 100
-#' @param pMutate a real value between 0 and 1 specifying the probability of an allele mutation: default .1
-#' @param crossParams a numeric vector, c("cross probability", "max number of cross locations on a single gene"): default (.8, 1)
-#' @param eliteRate Proportion of total population of elites who pass into the next generation unchanged
-#' @param a A placeholder.
-#' @param a A placeholder.
-#' @param a A placeholder.
-#' @param a A placeholder.
-#' @param a A placeholder.
-#' @param ... optional arguments to lm, glm, ect.
+#' @param model list - default "lm" : one of ("lm", "glm") and an optional character string specifying arguments into lm.fit() or glm.fit()
+#' @param fitMetric default "AIC": one of ("AIC", "BIC", "RSS") or a function that takes a regression object and outputs a single number to be maximized
+#' @param maxGen default 200: integer specifying the maximum number of GA generations to use
+#' @param minGen default 50: integer specifying the number of generations without fitness improvement at which the GA algorithm will stop
+#' @param gaMethod list - default 'LR': one of ('TN', 'LR', 'ER','RW') and an additional numrical argument as needed. See gaSelection for details.
+#' @param pop default 100: integer specifying the size of the genotype pool.
+#' @param pMutate default .1: real number between 0 and 1 specifying the probability of an allele mutation
+#' @param crossParams numeric - default (.8, 1): c("cross probability", "max number of cross locations on a single gene")
+#' @param eliteRate default .1: Proportion of highest fitness genotypes that pass into the next generation unchanged.
 #'
-#' @return returns an object of class "GA", which is a list containing the following components:
-#' @param coefficients a named vector of coefficients
-#' @param fitness the maximum value attained of the specified fitness criterion
-#' @param generations the number of GA generations
+#' @return returns a list of 4 components: optimum, fitPlot, fitStats, and GA
+#' \itemize{
+#' \item{\strong{optimum:} a list of properties of the genotype acheiving max fitness}{
+#' \itemize{
+#' \item \emph{\strong{variables:}} the recommended set of regression variables
+#' \item \emph{\strong{fitness:}} the achieved fitness metric
+#' \item \emph{\strong{fitModel:}} the regression object returned by using the recommended variables
+#' }}
+#' \item{\strong{fitPlot:} a plot of the mean, median, and maximum fitness over the generations}
+#' \item{\strong{fitStats:} a tibble of the values used to generate the plot}
+#' \item{\strong{GA:} a list of data associated with each generation of the genetic algorithm}{
+#' \itemize{
+#' \item \emph{\strong{fitness:}} the fitness measures of the current generation
+#' \item \emph{\strong{elites:}} the fitness values and genotypes with the highest fitness
+#' \item \emph{\strong{fitMax:}} the highest fitness value
+#' }}
+#' }
 #'
 #' @examples tbd
+#' @seealso \code{\link{regress}}
+#' \code{\link{gaSelection}}
+#' \code{\link{evolve}}
 #' @export
 
-select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5),  pop = 50L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
+select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5),  pop = 100L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
 
 
   ######################################## DEFINE NECESSARY OBJECTS ########################################\
@@ -60,6 +70,7 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
     warning("Number of dimensions is large compared to the sample size and may adversely affect model fitting")
 
   # model: list specifying "lm" or "glm" and string specifying additional arguments -> model & modelParams
+  modelParams <- NULL
   if (!is.list(model) | !sum(model %in% c('lm', 'glm')) | !(length(model) %in% c(1,2)) ) {
     stop("model must be a list including either 'lm' or 'glm' and optionally a string specifying additional arguments for the specified .fit function")
     } else if (length(model) > 1) {
@@ -139,6 +150,9 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
     gen = gen + 1
   }
 
+
+  ######################################## GA OUTPUT CLEANING ########################################
+
   GA <- GA[1:gen]
 
   fitStats <- t(sapply(1:length(GA), FUN = function(i) {
@@ -152,9 +166,16 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
      ggplot2::geom_point(ggplot2::aes(x = Generation, y = Value, colour = Statistic)) -> fitPlot
 
   fittest <- GA[[gen]]$elites[1, ]
+  if (model=="glm") {
+    fitModel <- eval(parse(text = paste0("try(glm.fit(cbind(x[, which(fittest[-1]==1)], 1), y, ", modelParams,"))")))
+    class(fitModel) <- "glm"
+  } else {
+    fitModel <- eval(parse(text = paste0("try(lm.fit(cbind(x[, which(fittest[-1]==1)], 1), y, ", modelParams,"))")))
+    class(fitModel) <- "lm"
+  }
 
-  fittest <- list("variables" = names(fittest)[fittest==1], 'fitness' = fittest[1])
+  fittest <- list("variables" = names(fittest)[fittest==1], 'fitness' = fittest[1], "fitModel" = fitModel)
 
-  return(list("GA" = GA, "fitStats" = fitStats, "fitPlot" = fitPlot))
+  return(list("optimum" = fittest, "fitPlot" = fitPlot, "fitStats" = fitStats, "GA" = GA))
 }
 
