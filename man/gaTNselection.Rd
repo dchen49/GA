@@ -1,5 +1,5 @@
 \name{gaTNselection}
-\alias{gaTNselection
+\alias{gaTNselection}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Tournament Selection
