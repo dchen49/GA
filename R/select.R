@@ -99,16 +99,6 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
       (c('LR', 'RW') %in% gaMethod && length(gaMethod)!=1) | sum(gaMethod %in% names(method))!=1) {
     stop("gaMethod must be a list, specifying one of ('TN', 'LR', 'ER', 'RW') and for ER or TN selection, the additional required parameter.")
   }
-  methodFun <- method[which(names(method) %in% gaMethod)]
-  if (methodFun=="gaTNselection") {
-    if ((gaMethod[[2]]!=as.integer(gaMethod[[2]])) | gaMethod[[2]] > pop | length(gaMethod[[2]])!=1) {
-      stop("gaMethod for 'TN' must additionally include an integer between 1 and the population size to specify the number of selection tournaments")
-      } else methodArgs <- list("population" = population, "fitnessVec" = fitness, "eliteRate" = eliteRate, "k" = gaMethod[[2]])
-    } else if (methodFun=="gaExpSelection") {
-      if (!is.numeric(gaMethod[[2]]) | length(gaMethod[[2]])!=1) {
-        stop("gaMethod for 'ER' must additionally include an number to specify the exponential base")
-    } else methodArgs <- list(population, fitness, eliteRate, gaMethod[[2]])
-  } else methodArgs <- list(population, fitness, eliteRate)
 
   # pMutate & crossParams: proper probabilities & integer number of crosses
   if (!(is.numeric(pMutate)) | median(c(0, pMutate, 1))!=pMutate)
@@ -122,17 +112,20 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
 
 
   gen <- 1
+  Stop = FALSE
+
   while(gen < maxGen) {
+    # Regression
     fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = fitMetric)
 
     # Identify unique elite genotypes
     eliteFits <- head(order(fitness, decreasing = TRUE), max(0, ceiling(length(fitness)*eliteRate)))
     elites <- population[eliteFits, ]
 
-    GA[[gen]] <- list("fitness" = fitness, "elites" = cbind("fitness" = fitness[eliteFits], elites), "fitMax" = max(fitness))
+    # update GA object
+    GA[[gen]] <- list("fitness" = fitness, "elites" = cbind("fitness" = fitness[eliteFits], elites))
 
     # check stopping criteria
-    Stop = FALSE
     if (gen > minGen) {
       fitHistory <- sapply((gen-minGen+1):gen, FUN = function(i) {
         GA[[i]]$fitMax - GA[[i-1]]$fitMax
@@ -141,23 +134,14 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     }
     if (Stop == TRUE) break
 
-    methodFun <- method[which(names(method) %in% gaMethod)]
-    if (methodFun=="gaTNselection") {
-      if ((gaMethod[[2]]!=as.integer(gaMethod[[2]])) | gaMethod[[2]] > pop | length(gaMethod[[2]])!=1) {
-        stop("gaMethod for 'TN' must additionally include an integer between 1 and the population size to specify the number of selection tournaments")
-      } else methodArgs <- list("population" = population, "fitnessVec" = fitness, "eliteRate" = eliteRate, "k" = gaMethod[[2]])
-    } else if (methodFun=="gaExpSelection") {
-      if (!is.numeric(gaMethod[[2]]) | length(gaMethod[[2]])!=1) {
-        stop("gaMethod for 'ER' must additionally include an number to specify the exponential base")
-      } else methodArgs <- list(population, fitness, eliteRate, gaMethod[[2]])
-    } else methodArgs <- list(population, fitness, eliteRate)
-
     # population selection
+    methodArgs[c("pop", "fit")] <- list(population, fitness)
     population <- gaSelection(methodFun, methodArgs)[[1]]
 
-    # Offspring
+    # offspring generation
     population <- evolve(population, pMutate, crossParams[1], crossParams[2])
     population <- rbind(elites, population)
+
     gen = gen + 1
   }
 
