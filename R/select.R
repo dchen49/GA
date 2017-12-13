@@ -8,7 +8,7 @@
 #' @param model list - default "lm" : one of ("lm", "glm") and an optional character string specifying arguments into lm.fit() or glm.fit()
 #' @param fitMetric default "AIC": one of ("AIC", "BIC", "RSS") or a function that takes a regression object and outputs a single number to be maximized
 #' @param maxGen default 200: integer specifying the maximum number of GA generations to use
-#' @param minGen default 50: integer specifying the number of generations without fitness improvement at which the GA algorithm will stop
+#' @param minGen default 10: integer specifying the number of generations without fitness improvement at which the GA algorithm will stop
 #' @param gaMethod list - default 'LR': one of ('TN', 'LR', 'ER','RW') and an additional numrical argument as needed. See gaSelection for details.
 #' @param pop default 100: integer specifying the size of the genotype pool.
 #' @param pMutate default .1: real number between 0 and 1 specifying the probability of an allele mutation
@@ -29,7 +29,6 @@
 #' \itemize{
 #' \item \emph{\strong{fitness:}} the fitness measures of the current generation
 #' \item \emph{\strong{elites:}} the fitness values and genotypes with the highest fitness
-#' \item \emph{\strong{fitMax:}} the highest fitness value
 #' }}
 #' }
 #'
@@ -39,7 +38,7 @@
 #' \code{\link{evolve}}
 #' @export
 
-select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5),  pop = 100L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
+select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, minGen = 10L, gaMethod = list("TN", 5),  pop = 100L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
 
 
   ######################################## DEFINE NECESSARY OBJECTS ########################################\
@@ -122,18 +121,20 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
 
 
   gen <- 1
+  Stop = FALSE
+
   while(gen < maxGen) {
+    # Regression
     fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = fitMetric)
-    methodArgs[c("pop", "fit")] <- list(population, fitness)
 
     # Identify unique elite genotypes
     eliteFits <- head(order(fitness, decreasing = TRUE), max(0, ceiling(length(fitness)*eliteRate)))
     elites <- population[eliteFits, ]
 
-    GA[[gen]] <- list("fitness" = fitness, "elites" = cbind("fitness" = fitness[eliteFits], elites), "fitMax" = max(fitness))
+    # update GA object
+    GA[[gen]] <- list("fitness" = fitness, "elites" = cbind("fitness" = fitness[eliteFits], elites))
 
     # check stopping criteria
-    Stop = FALSE
     if (gen > minGen) {
       fitHistory <- sapply((gen-minGen+1):gen, FUN = function(i) {
         GA[[i]]$fitMax - GA[[i-1]]$fitMax
@@ -143,29 +144,35 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     if (Stop == TRUE) break
 
     # population selection
+    methodArgs[c("pop", "fit")] <- list(population, fitness)
     population <- gaSelection(methodFun, methodArgs)[[1]]
 
-    # Offspring
+    # offspring generation
     population <- evolve(population, pMutate, crossParams[1], crossParams[2])
     population <- rbind(elites, population)
+
     gen = gen + 1
   }
 
 
   ######################################## GA OUTPUT  ########################################
 
+
   GA <- GA[1:gen]
 
+  # gather fitness statistics
   fitStats <- t(sapply(1:length(GA), FUN = function(i) {
     c("Generation" = i,
       "Mean" = mean(GA[[i]]$fitness),
       "Median" = median(GA[[i]]$fitness),
-      "Maximum" = GA[[i]]$fitMax)
+      "Maximum" = max(GA[[i]]$fitness))
   }))
 
-   ggplot2::ggplot(tidyr::gather(tibble::as.tibble(fitStats), key = "Statistic", value = "Value", c(Mean, Median, Maximum))) +
-     ggplot2::geom_point(ggplot2::aes(x = Generation, y = Value, colour = Statistic)) -> fitPlot
+  # create plot of fitness statistics
+  ggplot2::ggplot(tidyr::gather(tibble::as.tibble(fitStats), key = "Statistic", value = "Value", c(Mean, Median, Maximum))) +
+    ggplot2::geom_point(ggplot2::aes(x = Generation, y = Value, colour = Statistic)) -> fitPlot
 
+  # get the regression object output for the fittest genotype
   fittest <- GA[[gen]]$elites[1, ]
   if (model=="glm") {
     fitModel <- eval(parse(text = paste0("glm.fit(cbind(x[, which(fittest[-1]==1)], 1), y, ", modelParams,")")))
@@ -175,8 +182,8 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     class(fitModel) <- "lm"
   }
 
-  fittest <- list("variables" = names(fittest)[fittest==1], 'fitness' = fittest[1], "fitModel" = fitModel)
+  optimum <- list("variables" = names(fittest)[fittest==1], 'fitness' = fittest[1], "fitModel" = fitModel)
 
-  return(list("optimum" = fittest, "fitPlot" = fitPlot, "fitStats" = fitStats, "GA" = GA))
+  return(list("optimum" = optimum, "fitPlot" = fitPlot, "fitStats" = fitStats, "GA" = GA))
 }
 

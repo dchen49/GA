@@ -5,7 +5,7 @@
 \title{Selects Regression Variables using a Genetic Algorithm}
 \usage{
 select(x, y, model = list("lm"), fitMetric = "AIC", maxGen = 200L,
-  minGen = 50L, gaMethod = list("TN", 5), pop = 100L, pMutate = 0.1,
+  minGen = 10L, gaMethod = list("TN", 5), pop = 100L, pMutate = 0.1,
   crossParams = c(0.8, 1L), eliteRate = 0.1, ...)
 }
 \arguments{
@@ -19,7 +19,7 @@ select(x, y, model = list("lm"), fitMetric = "AIC", maxGen = 200L,
 
 \item{maxGen}{default 200: integer specifying the maximum number of GA generations to use}
 
-\item{minGen}{default 50: integer specifying the number of generations without fitness improvement at which the GA algorithm will stop}
+\item{minGen}{default 10: integer specifying the number of generations without fitness improvement at which the GA algorithm will stop}
 
 \item{gaMethod}{list - default 'LR': one of ('TN', 'LR', 'ER','RW') and an additional numrical argument as needed. See gaSelection for details.}
 
@@ -46,7 +46,6 @@ returns a list of 4 components: optimum, fitPlot, fitStats, and GA
 \itemize{
 \item \emph{\strong{fitness:}} the fitness measures of the current generation
 \item \emph{\strong{elites:}} the fitness values and genotypes with the highest fitness
-\item \emph{\strong{fitMax:}} the highest fitness value
 }}
 }
 }
