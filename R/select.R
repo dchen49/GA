@@ -8,7 +8,7 @@
 #' @param model list - default "lm" : one of ("lm", "glm") and an optional character string specifying arguments into lm.fit() or glm.fit()
 #' @param fitMetric default "AIC": one of ("AIC", "BIC", "RSS") or a function that takes a regression object and outputs a single number to be maximized
 #' @param maxGen default 200: integer specifying the maximum number of GA generations to use
-#' @param minGen default 50: integer specifying the number of generations without fitness improvement at which the GA algorithm will stop
+#' @param minGen default 10: integer specifying the number of generations without fitness improvement at which the GA algorithm will stop
 #' @param gaMethod list - default 'LR': one of ('TN', 'LR', 'ER','RW') and an additional numrical argument as needed. See gaSelection for details.
 #' @param pop default 100: integer specifying the size of the genotype pool.
 #' @param pMutate default .1: real number between 0 and 1 specifying the probability of an allele mutation
@@ -29,7 +29,6 @@
 #' \itemize{
 #' \item \emph{\strong{fitness:}} the fitness measures of the current generation
 #' \item \emph{\strong{elites:}} the fitness values and genotypes with the highest fitness
-#' \item \emph{\strong{fitMax:}} the highest fitness value
 #' }}
 #' }
 #'
@@ -39,7 +38,7 @@
 #' \code{\link{evolve}}
 #' @export
 
-select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, minGen = 50L, gaMethod = list("TN", 5),  pop = 100L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
+select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, minGen = 10L, gaMethod = list("TN", 5),  pop = 100L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
 
 
   ######################################## DEFINE NECESSARY OBJECTS ########################################\
@@ -65,7 +64,7 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
   if (!(nrow(x) %in% c(length(y), nrow(y))))
     stop("x and y must have the same number of rows")
   if (sum(is.na(x), is.na(y))!=0)
-      stop("x and y must not have missing values.")
+    stop("x and y must not have missing values.")
   if (dim(x)[2] > dim(x)[1])
     warning("Number of dimensions is large compared to the sample size and may adversely affect model fitting")
 
@@ -73,14 +72,14 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
   modelParams <- NULL
   if (!is.list(model) | !sum(model %in% c('lm', 'glm')) | !(length(model) %in% c(1,2)) ) {
     stop("model must be a list including either 'lm' or 'glm' and optionally a string specifying additional arguments for the specified .fit function")
-    } else if (length(model) > 1) {
-      if (!is.character(model[[2]]) ) {
-        stop("additional argument must be a string specifying additional arguments for the specified lm.fit or glm.fit function")
-      } else {
-        modelParams <- as.character(model[-(model %in% c('lm', 'glm'))])
-        model <- model[model %in% c('lm', 'glm')]
-      }
+  } else if (length(model) > 1) {
+    if (!is.character(model[[2]]) ) {
+      stop("additional argument must be a string specifying additional arguments for the specified lm.fit or glm.fit function")
+    } else {
+      modelParams <- as.character(model[-(model %in% c('lm', 'glm'))])
+      model <- model[model %in% c('lm', 'glm')]
     }
+  }
 
   # fitMetric: "AIC" or "BIC", or a function taking in an lm/glm object and outputting a singel number to be maximized
   if (!(fitMetric %in% c("AIC", "BIC")) && !is.function(fitMetric))
@@ -94,7 +93,7 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
 
   # gaMethod: one of 'TN', 'LR', 'ER','RW'; and a numeric argument as appropriate -> methodFun & methodArgs
   method <- c('TN' = 'gaTNselection', 'LR' = 'gaLRselection',
-                 'ER' = 'gaExpSelection', 'RW' = 'gaRWselection')
+              'ER' = 'gaExpSelection', 'RW' = 'gaRWselection')
   if (!is.list(gaMethod) | (c('TN', 'ER') %in% gaMethod && length(gaMethod)!=2) |
       (c('LR', 'RW') %in% gaMethod && length(gaMethod)!=1) | sum(gaMethod %in% names(method))!=1) {
     stop("gaMethod must be a list, specifying one of ('TN', 'LR', 'ER', 'RW') and for ER or TN selection, the additional required parameter.")
@@ -158,18 +157,22 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
 
   ######################################## GA OUTPUT  ########################################
 
+
   GA <- GA[1:gen]
 
+  # gather fitness statistics
   fitStats <- t(sapply(1:length(GA), FUN = function(i) {
     c("Generation" = i,
       "Mean" = mean(GA[[i]]$fitness),
       "Median" = median(GA[[i]]$fitness),
-      "Maximum" = GA[[i]]$fitMax)
+      "Maximum" = max(GA[[i]]$fitness))
   }))
 
-   ggplot2::ggplot(tidyr::gather(tibble::as.tibble(fitStats), key = "Statistic", value = "Value", c(Mean, Median, Maximum))) +
-     ggplot2::geom_point(ggplot2::aes(x = Generation, y = Value, colour = Statistic)) -> fitPlot
+  # create plot of fitness statistics
+  ggplot2::ggplot(tidyr::gather(tibble::as.tibble(fitStats), key = "Statistic", value = "Value", c(Mean, Median, Maximum))) +
+    ggplot2::geom_point(ggplot2::aes(x = Generation, y = Value, colour = Statistic)) -> fitPlot
 
+  # get the regression object output for the fittest genotype
   fittest <- GA[[gen]]$elites[1, ]
   if (model=="glm") {
     fitModel <- eval(parse(text = paste0("glm.fit(cbind(x[, which(fittest[-1]==1)], 1), y, ", modelParams,")")))
@@ -179,8 +182,8 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     class(fitModel) <- "lm"
   }
 
-  fittest <- list("variables" = names(fittest)[fittest==1], 'fitness' = fittest[1], "fitModel" = fitModel)
+  optimum <- list("variables" = names(fittest)[fittest==1], 'fitness' = fittest[1], "fitModel" = fitModel)
 
-  return(list("optimum" = fittest, "fitPlot" = fitPlot, "fitStats" = fitStats, "GA" = GA))
+  return(list("optimum" = optimum, "fitPlot" = fitPlot, "fitStats" = fitStats, "GA" = GA))
 }
 
