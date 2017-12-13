@@ -1,4 +1,3 @@
-library(ggplot2)
 
 ########################### TESTING ON BASEBALL DATA ###########################
 
@@ -26,6 +25,7 @@ ga2[[2]]
 # library(foreach)
 # library(parallel)
 # library(doParallel)
+# library(ggplot2)
 #
 # registerDoParallel(8)  # change as needed
 # time <- system.time(
@@ -41,3 +41,31 @@ ga2[[2]]
 # )
 # gaComparisonPlot <- ggplot() + stat_count(aes(x = as.integer(gaComparison))) + xlab("Variables")
 # save.image(file = "./data/toyDataTest.Rdata")
+
+
+########################### TESTING ON TOY DATASET ###########################
+# # Toy regression whhere only X[, 1:10] are meaningfully correlated with Y
+# # Y = mean(X[, 1:10])
+# # X[, 1:10] ~ N(500, 4)
+# # X[, 11:100] ~ Unif(-1000, 1000)
+#
+# library(foreach)
+# library(parallel)
+# library(doParallel)
+#
+# registerDoParallel(8)  # change as needed
+# time <- system.time(
+# gaComparison <- foreach(i=1:20,
+#                         .packages = "GA",
+#                         .combine = rbind,
+#                         .verbose = TRUE) %dopar% {
+#                           dummyX <- cbind(matrix(rnorm(10*250, 500, 2), ncol = 10, dimnames = list(1:250, 1:10)),
+#                                           matrix(runif(90*250, -1000, 1000), ncol = 90, dimnames = list(1:250, 11:100)))
+#                           dummyY <- apply(dummyX[, 1:10], 1, mean)
+#                           data <- select(dummyX, dummyY, minGen = 10L)$GA
+#                           gaElites <- unlist(rowSums(sapply((length(data)-4):length(data), FUN = function(i) {
+#                             colSums(data[[i]]$elites[, -1])
+#                           })))
+#                         }
+# )
+# barplot(unlist(colSums(gaComparison)))

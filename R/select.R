@@ -186,4 +186,3 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
 
   return(list("optimum" = optimum, "fitPlot" = fitPlot, "fitStats" = fitStats, "GA" = GA))
 }
-
