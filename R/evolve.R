@@ -56,7 +56,7 @@ mutation <- function(population, mutation.prob = 0.1){
 
 
 ##dim(population)[2] is number of variables
-evolve <- function(population, mutation.prob=0.1, crossing.prob=0.5, num.cross.locations=1){
+evolve <- function(population, mutation.prob=0.1, crossing.prob=0.8, num.cross.locations=1){
   if (mutation.prob < 0 | mutation.prob > 1) { stop("mutation probability must be between 0 and 1") }
   if (crossing.prob < 0 | crossing.prob > 1) { stop("crossover probability must be between 0 and 1")}
   if (num.cross.locations%%1 != 0 ) { stop("num.cross.locations must be an integer")}
