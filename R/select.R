@@ -64,7 +64,7 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
   if (!(nrow(x) %in% c(length(y), nrow(y))))
     stop("x and y must have the same number of rows")
   if (sum(is.na(x), is.na(y))!=0)
-    stop("x and y must not have missing values.")
+      stop("x and y must not have missing values.")
   if (dim(x)[2] > dim(x)[1])
     warning("Number of dimensions is large compared to the sample size and may adversely affect model fitting")
 
@@ -72,14 +72,14 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
   modelParams <- NULL
   if (!is.list(model) | !sum(model %in% c('lm', 'glm')) | !(length(model) %in% c(1,2)) ) {
     stop("model must be a list including either 'lm' or 'glm' and optionally a string specifying additional arguments for the specified .fit function")
-  } else if (length(model) > 1) {
-    if (!is.character(model[[2]]) ) {
-      stop("additional argument must be a string specifying additional arguments for the specified lm.fit or glm.fit function")
-    } else {
-      modelParams <- as.character(model[-(model %in% c('lm', 'glm'))])
-      model <- model[model %in% c('lm', 'glm')]
+    } else if (length(model) > 1) {
+      if (!is.character(model[[2]]) ) {
+        stop("additional argument must be a string specifying additional arguments for the specified lm.fit or glm.fit function")
+      } else {
+        modelParams <- as.character(model[-(model %in% c('lm', 'glm'))])
+        model <- model[model %in% c('lm', 'glm')]
+      }
     }
-  }
 
   # fitMetric: "AIC" or "BIC", or a function taking in an lm/glm object and outputting a singel number to be maximized
   if (!(fitMetric %in% c("AIC", "BIC")) && !is.function(fitMetric))
@@ -93,7 +93,7 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
 
   # gaMethod: one of 'TN', 'LR', 'ER','RW'; and a numeric argument as appropriate -> methodFun & methodArgs
   method <- c('TN' = 'gaTNselection', 'LR' = 'gaLRselection',
-              'ER' = 'gaExpSelection', 'RW' = 'gaRWselection')
+                 'ER' = 'gaExpSelection', 'RW' = 'gaRWselection')
   if (!is.list(gaMethod) | (c('TN', 'ER') %in% gaMethod && length(gaMethod)!=2) |
       (c('LR', 'RW') %in% gaMethod && length(gaMethod)!=1) | sum(gaMethod %in% names(method))!=1) {
     stop("gaMethod must be a list, specifying one of ('TN', 'LR', 'ER', 'RW') and for ER or TN selection, the additional required parameter.")
@@ -102,10 +102,10 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
   if (methodFun=="gaTNselection") {
     if ((gaMethod[[2]]!=as.integer(gaMethod[[2]])) | gaMethod[[2]] > pop | length(gaMethod[[2]])!=1) {
       stop("gaMethod for 'TN' must additionally include an integer between 1 and the population size to specify the number of selection tournaments")
-    } else methodArgs <- list("pop" = population, "fit" = fitness, "eliteRate" = eliteRate, "k" = gaMethod[[2]])
-  } else if (methodFun=="gaExpSelection") {
-    if (!is.numeric(gaMethod[[2]]) | length(gaMethod[[2]])!=1) {
-      stop("gaMethod for 'ER' must additionally include an number to specify the exponential base")
+      } else methodArgs <- list("pop" = population, "fit" = fitness, "eliteRate" = eliteRate, "k" = gaMethod[[2]])
+    } else if (methodFun=="gaExpSelection") {
+      if (!is.numeric(gaMethod[[2]]) | length(gaMethod[[2]])!=1) {
+        stop("gaMethod for 'ER' must additionally include an number to specify the exponential base")
     } else methodArgs <- list("pop" = population, "fit" = fitness, "eliteRate" = eliteRate, "c" = gaMethod[[2]])
   } else methodArgs <- list("pop" = population, "fit" = fitness, "eliteRate" = eliteRate)
 
