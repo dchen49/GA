@@ -99,6 +99,16 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
       (c('LR', 'RW') %in% gaMethod && length(gaMethod)!=1) | sum(gaMethod %in% names(method))!=1) {
     stop("gaMethod must be a list, specifying one of ('TN', 'LR', 'ER', 'RW') and for ER or TN selection, the additional required parameter.")
   }
+  methodFun <- method[which(names(method) %in% gaMethod)]
+  if (methodFun=="gaTNselection") {
+    if ((gaMethod[[2]]!=as.integer(gaMethod[[2]])) | gaMethod[[2]] > pop | length(gaMethod[[2]])!=1) {
+      stop("gaMethod for 'TN' must additionally include an integer between 1 and the population size to specify the number of selection tournaments")
+    } else methodArgs <- list("pop" = population, "fit" = fitness, "eliteRate" = eliteRate, "k" = gaMethod[[2]])
+  } else if (methodFun=="gaExpSelection") {
+    if (!is.numeric(gaMethod[[2]]) | length(gaMethod[[2]])!=1) {
+      stop("gaMethod for 'ER' must additionally include an number to specify the exponential base")
+    } else methodArgs <- list("pop" = population, "fit" = fitness, "eliteRate" = eliteRate, "c" = gaMethod[[2]])
+  } else methodArgs <- list("pop" = population, "fit" = fitness, "eliteRate" = eliteRate)
 
   # pMutate & crossParams: proper probabilities & integer number of crosses
   if (!(is.numeric(pMutate)) | median(c(0, pMutate, 1))!=pMutate)
