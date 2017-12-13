@@ -46,7 +46,7 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
 
   fitness <- vector(mode = "numeric", length = pop)
 
-  population <- matrix(rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x)))
+  population <- matrix(stats::rbinom(pop*ncol(x), 1, .5), ncol = ncol(x), dimnames = list(1:pop, colnames(x)))
 
   # generate GA object: GA[[generation]][fitness, elites, fitMax]
   GA <- rep_len(list(), length.out = maxGen)
@@ -128,7 +128,7 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = fitMetric)
 
     # Identify unique elite genotypes
-    eliteFits <- head(order(fitness, decreasing = TRUE), max(0, ceiling(length(fitness)*eliteRate)))
+    eliteFits <- order(fitness, decreasing = TRUE)[1:ceiling(length(fitness)*eliteRate)]
     elites <- population[eliteFits, ]
 
     # update GA object
@@ -137,7 +137,7 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     # check stopping criteria
     if (gen > minGen) {
       fitHistory <- sapply((gen-minGen+1):gen, FUN = function(i) {
-        GA[[i]]$fitMax - GA[[i-1]]$fitMax
+        GA[[i]]$elites[1,1] - GA[[i-1]]$elites[1,1]
       })
       Stop <- abs(sum(fitHistory)) <= .Machine$double.eps
     }
@@ -164,7 +164,7 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
   fitStats <- t(sapply(1:length(GA), FUN = function(i) {
     c("Generation" = i,
       "Mean" = mean(GA[[i]]$fitness),
-      "Median" = median(GA[[i]]$fitness),
+      "Median" = stats::median(GA[[i]]$fitness),
       "Maximum" = max(GA[[i]]$fitness))
   }))
 
