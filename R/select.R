@@ -141,6 +141,17 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
     }
     if (Stop == TRUE) break
 
+    methodFun <- method[which(names(method) %in% gaMethod)]
+    if (methodFun=="gaTNselection") {
+      if ((gaMethod[[2]]!=as.integer(gaMethod[[2]])) | gaMethod[[2]] > pop | length(gaMethod[[2]])!=1) {
+        stop("gaMethod for 'TN' must additionally include an integer between 1 and the population size to specify the number of selection tournaments")
+      } else methodArgs <- list("population" = population, "fitnessVec" = fitness, "eliteRate" = eliteRate, "k" = gaMethod[[2]])
+    } else if (methodFun=="gaExpSelection") {
+      if (!is.numeric(gaMethod[[2]]) | length(gaMethod[[2]])!=1) {
+        stop("gaMethod for 'ER' must additionally include an number to specify the exponential base")
+      } else methodArgs <- list(population, fitness, eliteRate, gaMethod[[2]])
+    } else methodArgs <- list(population, fitness, eliteRate)
+
     # population selection
     population <- gaSelection(methodFun, methodArgs)[[1]]
 
