@@ -178,6 +178,8 @@ citecolor=blue
 \begin{document}
 \input{report-concordance}
 
+\graphicspath{ {GA/} }
+
 \title{\LARGE Genetic Algorithm-R Package Final Report}
 \author{David Chen, Qi Chen, Emily Suter and Xinyi(Cindy) Zhang}
 
@@ -190,7 +192,9 @@ citecolor=blue
 Genetic Algorithm (GA) is a search-based optimization technique based on the principles of Genetics and Natural Selection. It is frequently used to find optimal or near-optimal solutions to difficult problems which otherwise would take a lifetime to solve. In this report, we will first introduce how we set up the genetic algorithm and the main steps. We then describe the testing procedure carried out. In section \ref{s3}, we include the results from the example we have taken to apply our GA algorithm. Contributions of each team member is collected in the last part, section \ref{s4}.
 \end{abstract}
 
+\begin{center}
 \textbf{Github Username:} dchen49
+\end{center}
 
 \newpage
 \pagestyle{empty}
@@ -349,19 +353,35 @@ In this section, we will first introduce how we generate the covariates and resp
 $$
 \Sigma_{x(j,j^{\prime})} = 0.5^{|j-j^{\prime}|}, \mbox{ for } 1\leq j, j^{\prime}\leq p.
 $$
-Setting sample size $n=300$ and feature dimension $p=20$, we then fit the linear regression model
+Setting sample size $n=300$ and feature dimension $p=10$, we then fit the linear regression model
 $$
 Y = X\beta,
 $$
-where $\beta=(\beta_{1}, \cdots, \beta_{6})^{\mathrm{T}}$ is generated from univariate normal distribution $N(3, 25)$. Moreover, we add some noise $\epsilon=(\epsilon_{1}, \cdots, \epsilon_{n})$ to the covariates generated as above. $\epsilon_{i}$, for $1\leq i \leq n$, is generated from $N_{10}(\bm{0}, \Sigma_{x})$, which has the same parameter setting as $X$ except the dimension. We then combine $X$ and the noise terms together. The resulting covariates matrix is given by
+where $\beta=(\beta_{1}, \cdots, \beta_{6})^{\mathrm{T}}$ is generated from univariate normal distribution $N(3, 25)$. Moreover, we add some noise $\epsilon=(\epsilon_{1}, \cdots, \epsilon_{n})$ to the covariates generated as above. $\epsilon_{i}$, for $1\leq i \leq n$, is generated from $N_{20}(\bm{0}, \Sigma_{x})$, which has the same parameter setting as $X$ except the dimension. We then combine $X$ and the noise terms together. The resulting covariates matrix is given by
 $$
 \tilde{X} = (X|\epsilon).
 $$
-Apply our genetic algorithm to fit a linear model regressing $Y\in \mathbb{R}^{n}$ on $\tilde{X}\in \mathbb{R}^{n\times 30}$. Given $20$ relevant covariates and 10 noise terms, the designed GA algorithm gives the following results for feature selection
-$$
-\mbox{genotype}=(0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, \textcolor{red}{0, 1, 0, 0, 1, 0, 1, 0, 0, 1}).
-$$
-One can see that our GA algorithm can select most of the relevant variables, but will also include some irrelevant noise terms denoted in red.
+Apply our genetic algorithm to fit a linear model regressing $Y\in \mathbb{R}^{n}$ on $\tilde{X}\in \mathbb{R}^{n\times 30}$. Given $10$ relevant covariates and 20 noise terms, the designed GA algorithm gives the following results for feature selection
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr}
+  \hline
+ & x1 & x2 & x3 & x4 & x5 & x6 & x7 & x8 & x9 & x10 & n1 & n2 & n3 & n4 & n5 & n6 & n7 & n8 & n9 & n10 & n11 & n12 & n13 & n14 & n15 & n16 & n17 & n18 & n19 & n20 \\
+  \hline
+1 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 0.00 & 1.00 & 1.00 & 0.00 & 1.00 & 0.00 & 1.00 & 0.00 & 1.00 & 0.00 & 1.00 & 0.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+   \hline
+\end{tabular}
+\end{table}
+One can see that our GA algorithm can select all the relevant features, but will also include some irrelevant noise terms denoted in red. Next, we will take a look at the coefficients of those noise terms from the regression model and further investigate whether the "noise" terms are significant or not.
+
+\vspace{3mm}
+\noindent
+
+
+
+\includegraphics{barplot}
+
+
 
 % \vspace{3mm}
 % \noindent
