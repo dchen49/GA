@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2017.12.13)  14 DEC 2017 13:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2017.12.13)  14 DEC 2017 14:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1178,27 +1178,27 @@ Underfull \hbox (badness 10000) in paragraph at lines 256--257
 [2]
 \tableboxb=\box66
 \tableboxc=\box67
- [3] <barplot.jpeg, id=78, 895.84688pt x 574.39594pt>
+ [3] <barplot.jpeg, id=80, 895.84688pt x 574.39594pt>
 File: barplot.jpeg Graphic file (type jpg)
  <use barplot.jpeg>
-Package pdftex.def Info: barplot.jpeg used on input line 415.
+Package pdftex.def Info: barplot.jpeg used on input line 419.
 (pdftex.def)             Requested size: 346.89731pt x 222.41835pt.
 
 [4] [5 <./barplot.jpeg>] (./report.bbl) [6]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 526.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 526.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 532.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 532.
  (./report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 526.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 526.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 532.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 532.
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: D4685DB26969CCFB08E919B2AD3BDA74;405.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 526.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 532.
  ) 
 Here is how much of TeX's memory you used:
- 23778 strings out of 494945
- 444276 string characters out of 6181031
- 648708 words of memory out of 5000000
- 26485 multiletter control sequences out of 15000+600000
+ 23784 strings out of 494945
+ 444328 string characters out of 6181031
+ 649986 words of memory out of 5000000
+ 26489 multiletter control sequences out of 15000+600000
  56495 words of font info for 145 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  55i,11n,67p,947b,636s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1221,10 +1221,10 @@ t/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/symbols/msbm10.pfb>
-Output written on report.pdf (6 pages, 271993 bytes).
+Output written on report.pdf (6 pages, 276218 bytes).
 PDF statistics:
- 175 PDF objects out of 1000 (max. 8388607)
- 146 compressed objects within 2 object streams
- 27 named destinations out of 1000 (max. 500000)
+ 179 PDF objects out of 1000 (max. 8388607)
+ 150 compressed objects within 2 object streams
+ 29 named destinations out of 1000 (max. 500000)
  70 words of extra memory for PDF output out of 10000 (max. 10000000)
 

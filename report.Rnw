@@ -360,9 +360,10 @@ where $\beta=(\beta_{1}, \cdots, \beta_{6})^{\mathrm{T}}$ is generated from univ
 $$
 \tilde{X} = (X|\epsilon).
 $$
-Apply our genetic algorithm to fit a linear model regressing $Y\in \mathbb{R}^{n}$ on $\tilde{X}\in \mathbb{R}^{n\times 30}$. Given $10$ relevant covariates and 20 noise terms, the designed GA algorithm gives the following results for feature selection.
+Apply our genetic algorithm to fit a linear model regressing $Y\in \mathbb{R}^{n}$ on $\tilde{X}\in \mathbb{R}^{n\times 30}$. Given $10$ relevant covariates and 20 noise terms, the designed GA algorithm gives the following results for feature selection. Results are presentesd in Table: \ref{t1}
 \begin{table}[ht]
 \centering
+\caption{Selected Genotypes}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr}
   \hline
@@ -371,10 +372,10 @@ Var & x1 & x2 & x3 & x4 & x5 & x6 & x7 & x8 & x9 & x10 & n1 & n2 & n3 & n4 & n5 
 Gene & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & \textcolor{red}{1} & \textcolor{red}{1} & 0 & \textcolor{red}{1} & \textcolor{red}{1} & 0 & \textcolor{red}{1} & 0 & \textcolor{red}{1} & 0 & \textcolor{red}{1} & 0 & \textcolor{red}{1} & 0 & \textcolor{red}{1} & \textcolor{red}{1} & \textcolor{red}{1} & \textcolor{red}{1} & \textcolor{red}{1} & \textcolor{red}{1} \\
    \hline
 \end{tabular}%
-}
+}\label{t1}
 \end{table}
 
-One can see that our GA algorithm can select all the relevant features, but will also include some irrelevant noise terms denoted in red. Next, we will take a look at the coefficients of those noise terms from the regression model and further investigate whether the "noise" terms are significant or not. Results are presented in Table \ref{Table:7} and Table \ref{Table:8}.
+One can see that our GA algorithm can select all the relevant features, but will also include some irrelevant noise terms denoted in red. Next, we will take a look at the coefficients of those noise terms from the regression model and further investigate whether the "noise" terms are significant or not. Results are presented in Table \ref{Table:8} and Table \ref{Table:9}.
 
 \vspace{3mm}
 \noindent
@@ -389,7 +390,7 @@ Coefficients of Relevant Variables:
   \hline
 8.70 & 0.98 & 8.46 & -0.74 & 1.87 & -1.31 & 5.47 & 5.07 & 0.61 & 4.99 \\
    \hline
-\end{tabular}\label{Table:7}
+\end{tabular}\label{Table:8}
 \end{table}
 
 \noindent
@@ -405,14 +406,19 @@ Coefficients of Noise terms:
 3e-15 & -4e-15 & -2e-15 &4e-15& -2e-15& -1e-15& -5e-15 &5e-15& -1e-15& 1e-15& 5e-15& -1e-14& 4e-15& -5e-15& 3e-16 \\
    \hline
 \end{tabular}%
-}\label{Table:8}
+}\label{Table:9}
 \end{table}
 
 \noindent
 One can see from the table that although we have included some noise terms, but values of those coefficients are quite small, which indicates that these noise terms are not significant.
 
-\includegraphics{barplot}
+We then repeated the previously described variable selection $ 50 $ times. Figure \ref{Figure: 1} plots the summed absolute value of the coefficients for all selected variables. One can clearly see the same pattern described previously, where the weights of the noise terms are negligible compared to those of the valid x terms.
 
+\begin{figure}
+\includegraphics{barplot}
+\caption{Summed Weights of Regression Variables}
+\label{Figure: 1}
+\end{figure}
 
 
 % \vspace{3mm}
