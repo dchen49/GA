@@ -497,9 +497,8 @@ The number of variables returned in the best genotype of each combination is sho
 Regardless of method, model, or criteria, Strength of Schedule (\textit{sos}), Runs Batted In (\textit{rbis}), Free Agency (\textit{freeagent}), and Arbitration (\textit{arbitration}) are all included in the top genotypes.  Free Agency and Arbitration had very high regression coefficients, hovering around 1300 and 850, respectively; conversely, the coefficients of RBIs and SOS were much lower, about 25 and -12.  We hypothesize that this is because a player that becomes a free agent and gets signed to a new team will likely negotiate a large salary contract with their new team;  players that enter free agency and don't get signed aren't included in this data set.
 
 
-
 \section{Group Member Contributions}\label{s4}
-All teammembers worked together to integrate functions, debug/execute testing, and assemble the report document.
+All members worked together to integrate functions, debug/execute testing, and assemble the report document (i.e., fought with Latex as a team).
 
 \vspace{3mm}
 \noindent
