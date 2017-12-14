@@ -68,7 +68,7 @@ GA$optimum$fitModel
 # generalized linear regression with binomial family using tournament selection
 GA <- select(X, Y, model = list("glm", "family = poisson()"))
 
-# Code for the example using the baseball dataset
+# Code for the baseball dataset example
 maxFits <- matrix(0, 4, 4)
 maxIters <- matrix(0, 4, 4)
 method <- list(list('TN', 5), list('LR'), list('ER', 0.5), list('RW'))
@@ -92,6 +92,8 @@ for (i in 1:4) {
    maxIters[i,j] <- iters
    }
 }
+
+# code for the generated dataset
 
 }
 \seealso{

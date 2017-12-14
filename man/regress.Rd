@@ -23,3 +23,11 @@ regress(genotype, x, y, model = "glm", fitnessCriteria = "AIC",
 \description{
 Runs regression using a subset of variables dictated by the genotype
 }
+\examples{
+numVar <- 10
+dataSize <- 50
+genotype <- array(rbinom(numVar, 1, prob = 0.5))
+x <- matrix(1:dataSize*numVar, dataSize, numVar)
+y <- array(1:dataSize)
+regress(genotype, x, y, model =  "lm", fitnessCriteria = "AIC")
+}
