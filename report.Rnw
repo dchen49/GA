@@ -193,17 +193,17 @@ Genetic Algorithm (GA) is a search-based optimization technique based on the pri
 
 \section{Introduction to Our Genetic Algorithm}\label{s1}
 
-Our package is comprised of 4 major functions: select(), regress(), mate(), and evolve().\\
+Our package is comprised of 4 major functions: \textit{select()}, \textit{regress()}, \textit{mate()}, and \textit{evolve()}.\\
 
-select() is the main, exported function which takes in all user arguments and wraps all other functions. select() also loops over generations and creates the output list object with components: optimum, fitPlot, fitStats, and GA. optimum contains the names of the selected variables, the fitness value achieved, and the regression object. fitPlot is a ggplot of the mean, median, and maximum fitness per generation and is generated from the table in fitStats. GA contains the elite genotypes all fitness values  for each generation.\\
+\textit{select()} is the main, exported function which takes in all user arguments and wraps all other functions. \textit{select()} also loops over generations, checks stopping criteria, and creates the output list object with 4 components: \textit{optimum}, \textit{fitPlot}, \textit{fitStats}, and \textit{GA}. \textit{optimum} contains the names of the selected variables, the fitness value achieved, and the regression object. \textit{fitPlot} is a ggplot of the mean, median, and maximum fitness per generation and is generated from the table in \textit{fitStats}. \textit{GA} contains the elite subset of genotypes and all fitness values for each generation.\\
 
-regress() calculates the fitness of the regresssion model using a particular group of covariates and returns fitness metric as a single number to be maximized. In our GA implementation, regress() is called in an apply() to operate over the entire genotype poulation and return a vector of fitness values.\\
+\textit{regress()} calculates the fitness of the regresssion model using a particular group of covariates and returns fitness metric as a single number to be maximized. In our GA implementation, \textit{regress()} is called in an apply loop to operate over the entire genotype poulation and return a vector of fitness values.\\
 
-mate() selects parents using one of 4 selection methods: tournament selection, linear ranking selection, exponential ranking selection, or roulette wheel selection. Each method is defined as a sub-function called by mate(). The output is a genotype population of parents to be passed into evolve().\\
+\textit{mate()} selects parents using one of 4 selection methods: tournament selection, linear ranking selection, exponential ranking selection, or roulette wheel selection. Each method is defined as a sub-function which is then called by \textit{mate()}. The output is a genotype population of parents to be passed into \textit{evolve()}.\\
 
-evolve() performs crossing-over of genotypes and mutates single alleles by calling subfunctions singlecrossover(), multiplecrossover(), and mutate(). It returns a population of altered genotypes to be combined with elite survivors to form the next generation.\\
+\textit{evolve()} performs crossing-over of genotypes and mutates single alleles by calling subfunctions \textit{singlecrossover()}, \textit{multiplecrossover()}, and \textit{mutate()}. It returns a population of altered genotypes to be combined with elite survivors to produce the next generation.\\
 \\
-To better introduce our genetic algorithm  Figure \ref{p1}, a flowchart is displayed as follows
+To better introduce our genetic algorithm, the following Figure \ref{p1} diagrams the workflow
 
 \vspace{5mm}
 
@@ -212,32 +212,34 @@ To better introduce our genetic algorithm  Figure \ref{p1}, a flowchart is displ
     text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
     text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{bblock} = [rectangle, draw, fill=blue!20,
+    text width=8em, text centered, rounded corners, minimum height=4em]
 \tikzstyle{line} = [draw, -latex']
 \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm, text width=5em,
     rounded corners, minimum height=3em]
+\tikzstyle{begin} = [rectangle, draw, fill=green!20,
+    text width=8em, text centered, rounded corners, minimum height=4em]
 
 \begin{tikzpicture}[node distance = 2cm, auto]\label{p1}
     % Place nodes
-    \node [block] (init) {Genetic Algorithm Starts Here};
-    \node [block, below of=init] (identify) {Population Initialization $P_{0}$};
-    \node [block, below of=identify] (evaluate) {Compute Fitness};
+    \node [begin] (init) {Algorithm Start: Initialize P$_{0}$};
+    \node [block, below of=init, node distance=3cm] (evaluate) {Compute Fitness};
     \node [decision, below of=evaluate] (decide) {Checking Stopping Criteria?};
-    \node [cloud, right of=decide, node distance=3.5cm] (stop) {Terminate and return the best!};
-    \node [block, left of=decide, node distance=3cm] (update) {Recombine with survivors from the last generation};
+    \node [cloud, right of=decide, node distance=4.5cm] (stop) {Terminate and return the best!};
+    \node [bblock, left of=evaluate, node distance=5.5cm] (update) {Recombine with survivors from the last generation};
 
 
     \node [block, below of=decide, node distance=3cm] (continue) {Parents Selection};
-    \node [block, below of=continue, node distance=2.5cm] (continuea) {Offspring Generation};
+    \node [block, left of=continue, node distance=5.5cm] (continuea) {Offspring Generation};
     % Draw edges
-    \path [line] (init) -- (identify);
-    \path [line] (identify) -- (evaluate);
+    \path [line] (init) -- (evaluate);
     \path [line] (evaluate) -- (decide);
     %\path [line] (decide) -| node [near start] {no} (update);
-    \path [line] (update) |- node {current population}(evaluate);
+    \path [line] (update) -- node {new population}(evaluate);
     \path [line] (decide) -- node {no}(continue);
-    \path [line] (continue) -- node {Evolution, including crossover and mutation}(continuea);
+    \path [line] (continue) -- node {Evolution}(continuea);
     \path [line] (decide) -- node {yes}(stop);
-    \path [line] (continuea) -| node [near start] {step into} (update);
+    \path [line] (continuea) --  node {step into} (update);
 
 
 \end{tikzpicture}
