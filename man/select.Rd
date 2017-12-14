@@ -76,7 +76,7 @@ out <- sapply(1:n, FUN = function {select(x, y)$optimum})
 coeffs <- sapply(seq(3, 3*n, 3), FUN = function(i) out[[i]]$coefficients)
 weights <- c(unlist(sapply(1:n, FUN = function(i) coeffs[[i]])))
 weights <- sapply(colnames(x), FUN = function(name) sum(abs(weights[names(weights)==name])))
-barplot(weights)
+barplot(weights, xlab = "Variables", ylab = "Weights")
 
 vars <- out[[1]]
 varCoeffs <- out[[3]]$coefficients
