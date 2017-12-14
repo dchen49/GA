@@ -57,11 +57,12 @@
 # # x <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, -1]
 # # colnames(x) <- sapply(1:30, FUN = function(i) paste0("x", i))
 # # y <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, 1]
-#
+# #
 # x <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, -1]
 # y <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, 1]
-#
-# w <- sapply(1:50, FUN = function(i) {z <- select(x, y)$optimum$fitModel$coefficients})
-# weights <- rowSums(abs(w))
-# names(weights) <- c('avg', 'obp', 'run', 'hit', 'dbl', 'trp', 'hr', 'rbi', 'w', 'sos', 'sbs', 'err', 'fa', 'arb', 'r/so', 'h/so', 'w/so', 'o/e', 'r/e', 'h/e', 'hr/e', '', 'sbsop', 'sbsrns', 'sbshts')
-# barplot(weights)
+
+w <- sapply(1:50, FUN = function(i) {z <- select(x, y)$optimum$fitModel$coefficients})
+weights <- c(unlist(sapply(1:50, FUN = function(i) w[[i]])))
+weights <- sapply(colnames(x), FUN = function(name) sum(abs(weights[names(weights)==name])))
+names(weights) <- c('av', 'obp', 'rn', 'hit', 'dbl', 'trp', 'hr', 'rbi', 'w', 'so', 'sbs', 'err', 'fa', 'arb', 'r/so', 'h/so', 'w/so', 'o/e', 'r/e', 'h/e', 'hr/e', '', 'sbsop', 'sbsrns', 'sbshts')
+barplot(weights)
