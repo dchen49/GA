@@ -174,8 +174,9 @@ citecolor=blue
 \usepackage[latin1]{inputenc}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows}
+\usepackage{Sweave}
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+\input{report-concordance}
 
 \title{\LARGE Genetic Algorithm-R Package Final Report}
 \author{David Chen, Qi Chen, Emily Suter and Xinyi(Cindy) Zhang}
@@ -271,7 +272,7 @@ We next test our genetic algorithm on a real data set to demonstrate the ability
 
 The data set contains 27 different statistics (such as hits and on-base percentage) for 337 players in the 1991 baseball season.  Additionally, the data set contains the salaries for the same 337 players in the 1992 season.  We used our genetic algorithm to select player statistic(s) that most influence that players salary in the following year.
 
-\subsection{Comparison with Global Search for Optima}
+\subsection{Comparison with Global Search for optima}
 To investigate whether our GA algorithm can attain the same optimum as global search for all possible genotypes, we create another dataset to test this. How data generated is presented as follows:
 
 \vspace{3mm}
