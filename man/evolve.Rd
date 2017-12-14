@@ -7,7 +7,7 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-evolve(population, mutation.prob = 0.1, crossing.prob = 0.5, num.cross.locations = 1)
+evolve(population, mutation.prob = 0.1, crossing.prob = 0.8, num.cross.locations = 1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

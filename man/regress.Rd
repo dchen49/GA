@@ -14,9 +14,11 @@ regress(genotype, x, y, model = "glm", fitnessCriteria = "AIC",
 
 \item{y}{vector of length n or a matrix with n rows}
 
-\item{model}{vector specifying the model: the first argument should be "lm" or "glm", and subsequent arguments specify additional arguments into "lm" or "glm"}
+\item{model}{default "glm", a string either "lm" or "glm"}
 
 \item{fitnessCriteria}{default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or an attribute of a fitted lm or glm model (must be single numeric value)}
+
+\item{modelParams}{default NULL, a string specifying additional arguments into lm.fit() or glm.fit()}
 }
 \description{
 Runs regression using a subset of variables dictated by the genotype

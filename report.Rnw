@@ -232,10 +232,11 @@ To better introduce our genetic algorithm  Figure \ref{p1}, a flowchart is displ
 \end{tikzpicture}
 
 \section{Testing}\label{s2}
-
+Ability to find max fitness.\\
+Ability to
 
 \section{Application}\label{s3}
-In this section, we considerde two applications of our genetic algorithm, one on the dataset generated from a linear regression model, which aims to evaluate whether the designed algorithm can successfully select those important features, given known relevant variables combined with some noise terms. Another application is based on the baseball data collected from the textbook ``Computational Statistics'' \citet{compute}. Details will be illustrated as follows.
+In this section, we considered two applications of our genetic algorithm, one on the dataset generated from a linear regression model, which aims to evaluate whether the designed algorithm can successfully select those important features, given known relevant variables combined with some noise terms. Another application is based on the baseball data collected from the textbook ``Computational Statistics'' \citet{compute}. Details will be illustrated as follows.
 
 \subsection{Application on Data Generated from Linear Regression Model}
 In this section, we will first introduce how we generate the covariates and responses for evaluating our genetic algorithm on feature selection. We first generate covariates from the multivariate normal distribution $N_{p}(\bm{0}, \Sigma_{x})$, where the $(j, j^{\prime})$ $\Sigma_{x}$ satisfies
@@ -256,14 +257,14 @@ $$
 $$
 One can see that our GA algorithm can select most of the relevant variables, but will also include some irrelevant noise terms denoted in red.
 
-\vspace{3mm}
-\noindent
-A plot monitoring the optmization process is also included:
-\begin{figure}[h]
-\caption{How it evolves}
-\centering
-\includegraphics[width=10cm, height=6cm]{r2}
-\end{figure}
+% \vspace{3mm}
+% \noindent
+% A plot monitoring the optmization process is also included:
+% \begin{figure}[h]
+% \caption{How it evolves}
+% \centering
+% \includegraphics[width=10cm, height=6cm]{r2}
+% \end{figure}
 
 \subsection{Application on Baseball Data}
 We next test our genetic algorithm on a real data set to demonstrate the ability to select and optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for Computational Statistics, 2nd Edition, by Givens and Hoeting (http://www.stat.colostate.edu/computationalstatistics/).

@@ -1,4 +1,4 @@
-## gaSelectionMethod {GA}
+## mate {GA}
 # Parent Selection
 
 #' Returns the parents population and the corresponding fitness values
@@ -19,15 +19,15 @@
 #' c <- 0.5
 #' k <- 5
 #' eliteRate <- 0.05
-#' gaSelection(gaLRselection, list(population, fitnessVec, eliteRate))
-#' gaSelection(gaExpSelection, list(population, fitnessVec, eliteRate, c))
-#' gaSelection(gaRWselection, list(population, fitnessVec, eliteRate))
-#' gaSelection(gaTNselection, list(population, fitnessVec, eliteRate, k))
+#' mate(gaLRselection, list(population, fitnessVec, eliteRate))
+#' mate(gaExpSelection, list(population, fitnessVec, eliteRate, c))
+#' mate(gaRWselection, list(population, fitnessVec, eliteRate))
+#' mate(gaTNselection, list(population, fitnessVec, eliteRate, k))
 
 
 ################################################## Selection #################################################
 
-gaSelection <- function(methodFun, methodArgs) {
+mate <- function(methodFun, methodArgs) {
   if(missing(methodFun)) { stop("A selection method must be provided") }
   if(class(methodFun)!="character") {stop("Selection method must be one of 'gaLRselection', 'gaExpSelection', 'gaRWselection', or 'gaTNselection'")}
   if(!is.list(methodArgs)) { stop("Method arguments should be inside a list")  }

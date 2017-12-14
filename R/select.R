@@ -5,7 +5,7 @@
 #'
 #' @param x matrix of dimension n * p
 #' @param y vector of length n or a matrix with n rows
-#' @param model list - default "lm" : one of ("lm", "glm") and an optional character string specifying arguments into lm.fit() or glm.fit()
+#' @param model list - default "glm" : one of ("lm", "glm") and an optional character string specifying arguments into lm.fit() or glm.fit()
 #' @param fitMetric default "AIC": one of ("AIC", "BIC", "RSS") or a function that takes a regression object and outputs a single number to be maximized
 #' @param maxGen default 200: integer specifying the maximum number of GA generations to use
 #' @param minGen default 10: integer specifying the number of generations without fitness improvement at which the GA algorithm will stop
@@ -34,15 +34,19 @@
 #'
 #' @examples tbd
 #' @seealso \code{\link{regress}}
-#' \code{\link{gaSelection}}
+#' \code{\link{mate}}
 #' \code{\link{evolve}}
 #' @export
 
-select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, minGen = 10L, gaMethod = list("TN", 5),  pop = 100L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
+select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, minGen = 10L, gaMethod = list("TN", 5),  pop = 100L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1) {
 
 
   ######################################## DEFINE NECESSARY OBJECTS ########################################\
 
+
+  if (is.null(colnames(x))) {
+    colnames(x) <- 1:dim(x)[2]
+  }
 
   fitness <- vector(mode = "numeric", length = pop)
 
@@ -145,7 +149,7 @@ select <- function(x, y, model=list("lm"), fitMetric = "AIC", maxGen = 200L, min
 
     # population selection
     methodArgs[c("pop", "fit")] <- list(population, fitness)
-    population <- gaSelection(methodFun, methodArgs)[[1]]
+    population <- mate(methodFun, methodArgs)[[1]]
 
     # offspring generation
     population <- evolve(population, pMutate, crossParams[1], crossParams[2])

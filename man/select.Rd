@@ -4,16 +4,16 @@
 \alias{select}
 \title{Selects Regression Variables using a Genetic Algorithm}
 \usage{
-select(x, y, model = list("lm"), fitMetric = "AIC", maxGen = 200L,
+select(x, y, model = list("glm"), fitMetric = "AIC", maxGen = 200L,
   minGen = 10L, gaMethod = list("TN", 5), pop = 100L, pMutate = 0.1,
-  crossParams = c(0.8, 1L), eliteRate = 0.1, ...)
+  crossParams = c(0.8, 1L), eliteRate = 0.1)
 }
 \arguments{
 \item{x}{matrix of dimension n * p}
 
 \item{y}{vector of length n or a matrix with n rows}
 
-\item{model}{list - default "lm" : one of ("lm", "glm") and an optional character string specifying arguments into lm.fit() or glm.fit()}
+\item{model}{list - default "glm" : one of ("lm", "glm") and an optional character string specifying arguments into lm.fit() or glm.fit()}
 
 \item{fitMetric}{default "AIC": one of ("AIC", "BIC", "RSS") or a function that takes a regression object and outputs a single number to be maximized}
 
@@ -57,6 +57,6 @@ tbd
 }
 \seealso{
 \code{\link{regress}}
-\code{\link{gaSelection}}
+\code{\link{mate}}
 \code{\link{evolve}}
 }
