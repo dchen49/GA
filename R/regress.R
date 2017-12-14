@@ -9,6 +9,13 @@
 #' @param model default "glm", a string either "lm" or "glm"
 #' @param fitnessCriteria default "AIC", a string specifying the fitness criterion: "AIC", "BIC", or an attribute of a fitted lm or glm model (must be single numeric value)
 #' @param modelParams default NULL, a string specifying additional arguments into lm.fit() or glm.fit()
+#' @examples
+#' numVar <- 10
+#' dataSize <- 50
+#' genotype <- array(rbinom(numVar, 1, prob = 0.5))
+#' x <- matrix(1:dataSize*numVar, dataSize, numVar)
+#' y <- array(1:dataSize)
+#' regress(genotype, x, y, model =  "lm", fitnessCriteria = "AIC")
 
 regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC", modelParams=NULL) {
 
