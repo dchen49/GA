@@ -175,6 +175,7 @@ citecolor=blue
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows}
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 \title{\LARGE Genetic Algorithm-R Package Final Report}
 \author{David Chen, Qi Chen, Emily Suter and Xinyi(Cindy) Zhang}
