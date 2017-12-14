@@ -34,11 +34,11 @@
 #'
 #' @examples tbd
 #' @seealso \code{\link{regress}}
-#' \code{\link{gaSelection}}
+#' \code{\link{mate}}
 #' \code{\link{evolve}}
 #' @export
 
-select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, minGen = 10L, gaMethod = list("TN", 5),  pop = 100L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1, ...) {
+select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, minGen = 10L, gaMethod = list("TN", 5),  pop = 100L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1) {
 
 
   ######################################## DEFINE NECESSARY OBJECTS ########################################\
@@ -149,7 +149,7 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
 
     # population selection
     methodArgs[c("pop", "fit")] <- list(population, fitness)
-    population <- gaSelection(methodFun, methodArgs)[[1]]
+    population <- mate(methodFun, methodArgs)[[1]]
 
     # offspring generation
     population <- evolve(population, pMutate, crossParams[1], crossParams[2])
