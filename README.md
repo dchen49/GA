@@ -17,23 +17,23 @@
     * regress (x, y, model, fitness function, ...) # apply(population, regress)
       * Performs regression
       * Calculate fitness
-        * -> regressOutput: vector of fitness metrics
+        * -> Output: vector of fitness metrics
     * stop (regressOutput, fitness)
       * Test that the current generation fitness improves upon the last by some threshold
-        * -> Boolean: TRUE if improvement insignificant
-      * if (Stop==true) Break
+        * -> Output: Boolean (TRUE if improvement insignificant)
+      * if (Stop==TRUE) Break
     * mate (population, fitness, survivor percentage, selection method/params, population size)
       * selects high fitness genotypes via selection method
-        * -> elite population
+        * -> Output: elite population
     * evolve(population, mutation prob, crossing prob, # of cross locations)
       * crossing(population, crossing prob, # of cross locations)
         * assign pairs
         * decide whether or not to cross, and crossing locations
-            * -> population = populationCrossed
+            * -> Output: populationCrossed
       * mutate(population, mutation prob)
         * picks locations and changes values
-          * -> population = populationCrossedMutated
+          * -> Output: populationCrossedMutated
     * counter +1
-    * pass new population back into while loop!
-  * output top genotypes and fitness values
+    * pass new population back into while loop
+  * Output: top genotypes and fitness values!
 
