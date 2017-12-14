@@ -188,7 +188,7 @@ citecolor=blue
 \maketitle
 
 \begin{abstract}
-Genetic Algorithm (GA) is a search-based optimization technique based on the principles of Genetics and Natural Selection. It is frequently used to find optimal or near-optimal solutions to difficult problems which otherwise would take a lifetime to solve. In this report, we will first introduce how we set up the genetic algorithm and the main steps. We then describe the testing procedure carried out. In section \ref{s3}, we include the results from the example we have taken to apply our GA algorithm. Contributions of each team member is collected in the last part, section \ref{s4}.
+Genetic Algorithm (GA) is a search-based optimization technique based on the principles of Genetics and Natural Selection. It is frequently used to find optimal or near-optimal solutions to difficult problems which otherwise would take a lifetime to solve. In this report, we first introduce how we set up a Genetic Algorithm and tested its functionality in Section \ref{s1}. We then describe the testing procedure carried out in Section \ref{s2}. In section \ref{s3}, we apply our GA algorithm to two example datasets, one set of simulated data and one real world dataset. Contributions of each team member are collected in section \ref{s4}.
 \end{abstract}
 
 \begin{center}

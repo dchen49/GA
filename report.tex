@@ -189,7 +189,7 @@ citecolor=blue
 \maketitle
 
 \begin{abstract}
-Genetic Algorithm (GA) is a search-based optimization technique based on the principles of Genetics and Natural Selection. It is frequently used to find optimal or near-optimal solutions to difficult problems which otherwise would take a lifetime to solve. In this report, we will first introduce how we set up the genetic algorithm and the main steps. We then describe the testing procedure carried out. In section \ref{s3}, we include the results from the example we have taken to apply our GA algorithm. Contributions of each team member is collected in the last part, section \ref{s4}.
+Genetic Algorithm (GA) is a search-based optimization technique based on the principles of Genetics and Natural Selection. It is frequently used to find optimal or near-optimal solutions to difficult problems which otherwise would take a lifetime to solve. In this report, we first introduce how we set up a Genetic Algorithm and tested its functionality in Section \ref{s1}. We then describe the testing procedure carried out in Section \ref{s2}. In section \ref{s3}, we apply our GA algorithm to two example datasets, one set of simulated data and one real world dataset. Contributions of each team member are collected in section \ref{s4}.
 \end{abstract}
 
 \begin{center}
@@ -348,7 +348,7 @@ In summary, our GA algorithm can find the global optima, results of which are co
 \section{Application}\label{s3}
 In this section, we considered two applications of our genetic algorithm, one on the dataset generated from a linear regression model, which aims to evaluate whether the designed algorithm can successfully select those important features, given known relevant variables combined with some noise terms. Another application is based on the baseball data collected from the textbook ``Computational Statistics'' \citet{compute}. Details will be illustrated as follows.
 
-\subsection{Application on Data Generated from Linear Regression Model}
+\subsection{Application on Data Generated from Linear Regression Model}\label{s3.1}
 In this section, we will first introduce how we generate the covariates and responses for evaluating our genetic algorithm on feature selection. We first generate covariates from the multivariate normal distribution $N_{p}(\bm{0}, \Sigma_{x})$, where the $(j, j^{\prime})$ entry of $\Sigma_{x}$ satisfies
 $$
 \Sigma_{x(j,j^{\prime})} = 0.5^{|j-j^{\prime}|}, \mbox{ for } 1\leq j, j^{\prime}\leq p.
@@ -431,7 +431,7 @@ We then repeated the previously described variable selection $ 50 $ times. Figur
 % \includegraphics[width=10cm, height=6cm]{r2}
 % \end{figure}
 
-\subsection{Application on Baseball Data}
+\subsection{Application on Baseball Data}\label{s3.2}
 We next test our genetic algorithm on a real data set to demonstrate the ability to select an optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for \citet{compute}.
 
 The data set contains 27 different statistics (such as hits and on-base percentage) for 337 players in the 1991 baseball season.  Additionally, the data set contains the salaries for the same 337 players in the 1992 season.  We used our genetic algorithm to select player statistic(s) that most influence that players salary in the following year.
@@ -507,26 +507,30 @@ The number of variables returned in the best genotype of each combination is sho
 Regardless of method, model, or criteria, Strength of Schedule (\textit{sos}), Runs Batted In (\textit{rbis}), Free Agency (\textit{freeagent}), and Arbitration (\textit{arbitration}) are all included in the top genotypes.  Free Agency and Arbitration had very high regression coefficients, hovering around 1300 and 850, respectively; conversely, the coefficients of RBIs and SOS were much lower, about 25 and -12.  We hypothesize that this is because a player that becomes a free agent and gets signed to a new team will likely negotiate a large salary contract with their new team;  players that enter free agency and don't get signed aren't included in this data set.
 
 
-
 \section{Group Member Contributions}\label{s4}
-David Chen:
+All members worked together to integrate functions, debug/execute testing, and assemble the report document (i.e., fought with Latex as a team).
 
 \vspace{3mm}
 \noindent
-Qi Chen:
+David Chen: Created and set up package scaffold; wrote the \textit{select()} function; conducted analysis included in Section \ref{s3.1}.
 
 \vspace{3mm}
 \noindent
-Emily Suter:
+Qi Chen: Wrote the \textit{evolve()} function (mutation and crossover) and the corresponding test functions.
 
 \vspace{3mm}
 \noindent
-Xinyi(Cindy) Zhang:
+Emily Suter:  Wrote the \textit{regress()} function and the corresponding test functions; conducted baseball analysis in Section \ref{s3.2}.
+
+\vspace{3mm}
+\noindent
+Xinyi(Cindy) Zhang: Wrote the \textit{mate()} function (including the selection sub-functions) and the corresponding test functions; wrote global search tests included in Section \ref{s2}; conducted analysis included in Section \ref{s3.1}; created report scaffold.
+
+
 
 \nocite{selection}
 \bibliographystyle{ims}
 \bibliography{243project}
-
 
 
 \end{document}
