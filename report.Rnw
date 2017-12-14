@@ -248,7 +248,7 @@ To better introduce our genetic algorithm, the following Figure \ref{p1} diagram
 \end{tikzpicture}
 
 \section{Testing}\label{s2}
-We have tested the input and output format for each individual functions in our GA algorithm. To test the function select() as a whole, we tested its ability to find max fitness using lm/glm and AIC/BIC on a manufactured dataset.\\
+We have tested the input and output format for each individual functions in our GA algorithm, as well as the stopping criteria. To test the function select() as a whole, we tested its ability to find max fitness using lm/glm and AIC/BIC on a manufactured dataset.\\
 
 \noindent
 To investigate whether our GA algorithm can attain the same optimum as global search for all possible genotypes, we create another dataset to test this. How data generated is presented as follows:
