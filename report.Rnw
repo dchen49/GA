@@ -192,7 +192,18 @@ Genetic Algorithm (GA) is a search-based optimization technique based on the pri
 \pagestyle{empty}
 
 \section{Introduction to Our Genetic Algorithm}\label{s1}
-To better introduce our genetic algorithm  Figure \ref{p1}, a flowchart is displayed as follows
+
+Our package is comprised of 4 major functions: \textit{select()}, \textit{regress()}, \textit{mate()}, and \textit{evolve()}.\\
+
+\textit{select()} is the main, exported function which takes in all user arguments and wraps all other functions. \textit{select()} also loops over generations, checks stopping criteria, and creates the output list object with 4 components: \textit{optimum}, \textit{fitPlot}, \textit{fitStats}, and \textit{GA}. \textit{optimum} contains the names of the selected variables, the fitness value achieved, and the regression object. \textit{fitPlot} is a ggplot of the mean, median, and maximum fitness per generation and is generated from the table in \textit{fitStats}. \textit{GA} contains the elite subset of genotypes and all fitness values for each generation.\\
+
+\textit{regress()} calculates the fitness of the regresssion model using a particular group of covariates and returns fitness metric as a single number to be maximized. In our GA implementation, \textit{regress()} is called in an apply loop to operate over the entire genotype poulation and return a vector of fitness values.\\
+
+\textit{mate()} selects parents using one of 4 selection methods: tournament selection, linear ranking selection, exponential ranking selection, or roulette wheel selection. Each method is defined as a sub-function which is then called by \textit{mate()}. The output is a genotype population of parents to be passed into \textit{evolve()}.\\
+
+\textit{evolve()} performs crossing-over of genotypes and mutates single alleles by calling subfunctions \textit{singlecrossover()}, \textit{multiplecrossover()}, and \textit{mutate()}. It returns a population of altered genotypes to be combined with elite survivors to produce the next generation.\\
+\\
+To better introduce our genetic algorithm, the following Figure \ref{p1} diagrams the workflow
 
 \vspace{5mm}
 
@@ -201,139 +212,51 @@ To better introduce our genetic algorithm  Figure \ref{p1}, a flowchart is displ
     text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
     text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{bblock} = [rectangle, draw, fill=blue!20,
+    text width=8em, text centered, rounded corners, minimum height=4em]
 \tikzstyle{line} = [draw, -latex']
 \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm, text width=5em,
     rounded corners, minimum height=3em]
+\tikzstyle{begin} = [rectangle, draw, fill=green!20,
+    text width=8em, text centered, rounded corners, minimum height=4em]
 
 \begin{tikzpicture}[node distance = 2cm, auto]\label{p1}
     % Place nodes
-    \node [block] (init) {Genetic Algorithm Starts Here};
-    \node [block, below of=init] (identify) {Population Initialization $P_{0}$};
-    \node [block, below of=identify] (evaluate) {Compute Fitness};
+    \node [begin] (init) {Algorithm Start: Initialize P$_{0}$};
+    \node [block, below of=init, node distance=3cm] (evaluate) {Compute Fitness};
     \node [decision, below of=evaluate] (decide) {Checking Stopping Criteria?};
-    \node [cloud, right of=decide, node distance=3.5cm] (stop) {Terminate and return the best!};
-    \node [block, left of=decide, node distance=3cm] (update) {Recombine with survivors from the last generation};
+    \node [cloud, right of=decide, node distance=4.5cm] (stop) {Terminate and return the best!};
+    \node [bblock, left of=evaluate, node distance=5.5cm] (update) {Recombine with survivors from the last generation};
 
 
     \node [block, below of=decide, node distance=3cm] (continue) {Parents Selection};
-    \node [block, below of=continue, node distance=2.5cm] (continuea) {Offspring Generation};
+    \node [block, left of=continue, node distance=5.5cm] (continuea) {Offspring Generation};
     % Draw edges
-    \path [line] (init) -- (identify);
-    \path [line] (identify) -- (evaluate);
+    \path [line] (init) -- (evaluate);
     \path [line] (evaluate) -- (decide);
     %\path [line] (decide) -| node [near start] {no} (update);
-    \path [line] (update) |- node {current population}(evaluate);
+    \path [line] (update) -- node {new population}(evaluate);
     \path [line] (decide) -- node {no}(continue);
-    \path [line] (continue) -- node {Evolution, including crossover and mutation}(continuea);
+    \path [line] (continue) -- node {Evolution}(continuea);
     \path [line] (decide) -- node {yes}(stop);
-    \path [line] (continuea) -| node [near start] {step into} (update);
+    \path [line] (continuea) --  node {step into} (update);
 
 
 \end{tikzpicture}
 
 \section{Testing}\label{s2}
-Ability to find max fitness.\\
-Ability to
+We have tested the input and output format for each individual functions in our GA algorithm. To test the function select() as a whole, we also test the following parts:
+\begin{itemize}
+\item[1.] Ability to find max fitness using lm/glm and AIC/BIC on a manufactured dataset. Table comparing brute forced optima and optima found via select()\\
+\item[2.] Ability to distinguish between variables via strength of correlation. The optimal set of covariates recommended by our function will likely include variables only weakly correlated and likely by chance. The user is provided with the regression model and can, by evaluating the coefficients, establish a threshold under which to exclude variables as spurious correlations.
+\end{itemize}
 
-\section{Application}\label{s3}
-In this section, we considered two applications of our genetic algorithm, one on the dataset generated from a linear regression model, which aims to evaluate whether the designed algorithm can successfully select those important features, given known relevant variables combined with some noise terms. Another application is based on the baseball data collected from the textbook ``Computational Statistics'' \citet{compute}. Details will be illustrated as follows.
-
-\subsection{Application on Data Generated from Linear Regression Model}
-In this section, we will first introduce how we generate the covariates and responses for evaluating our genetic algorithm on feature selection. We first generate covariates from the multivariate normal distribution $N_{p}(\bm{0}, \Sigma_{x})$, where the $(j, j^{\prime})$ $\Sigma_{x}$ satisfies
-$$
-\Sigma_{x(j,j^{\prime})} = 0.5^{|j-j^{\prime}|}, \mbox{ for } 1\leq j, j^{\prime}\leq p.
-$$
-Setting sample size $n=300$ and feature dimension $p=20$, we then fit the linear regression model
-$$
-Y = X\beta,
-$$
-where $\beta=(\beta_{1}, \cdots, \beta_{6})^{\mathrm{T}}$ is generated from univariate normal distribution $N(3, 25)$. Moreover, we add some noise $\epsilon=(\epsilon_{1}, \cdots, \epsilon_{n})$ to the covariates generated as above. $\epsilon_{i}$, for $1\leq i \leq n$, is generated from $N_{10}(\bm{0}, \Sigma_{x})$, which has the same parameter setting as $X$ except the dimension. We then combine $X$ and the noise terms together. The resulting covariates matrix is given by
-$$
-\tilde{X} = (X|\epsilon).
-$$
-Apply our genetic algorithm to fit a linear model regressing $Y\in \mathbb{R}^{n}$ on $\tilde{X}\in \mathbb{R}^{n\times 30}$. Given $20$ relevant covariates and 10 noise terms, the designed GA algorithm gives the following results for feature selection
-$$
-\mbox{genotype}=(0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, \textcolor{red}{0, 1, 0, 0, 1, 0, 1, 0, 0, 1}).
-$$
-One can see that our GA algorithm can select most of the relevant variables, but will also include some irrelevant noise terms denoted in red.
-
-% \vspace{3mm}
-% \noindent
-% A plot monitoring the optmization process is also included:
-% \begin{figure}[h]
-% \caption{How it evolves}
-% \centering
-% \includegraphics[width=10cm, height=6cm]{r2}
-% \end{figure}
-
-\subsection{Application on Baseball Data}
-We next test our genetic algorithm on a real data set to demonstrate the ability to select and optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for Computational Statistics, 2nd Edition, by Givens and Hoeting.
-
-The data set contains 27 different statistics (such as hits and on-base percentage) for 337 players in the 1991 baseball season.  Additionally, the data set contains the salaries for the same 337 players in the 1992 season.  We used our genetic algorithm to select player statistic(s) that most influence that players salary in the following year.
-
-We tested our algoritms performance on combinations of different fitness criteria (AIC, BIC) and selection method (tournament, exponential ranking, linear ranking, roulette wheel).  All other input parameters were held constant at maxGen = 500, minGen = 50, population = 500, pMutate = 0.1, crossParams = c(0.8, 1), and  eliteRate = 0.1.
-
-
-The fitness values are shown in the table below:
-$$
-\begin{tabular}{ |c|c|c|c|c|  }
- \hline
- \multicolumn{5}{|c|}{Maximum Fitness Value} \\
- \hline
- Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
- \hline
- Tournament &  5376.012   & 5409.318 & 5375.850  & 5412.395\\
- Linear & 5376.354 & 5409.318  & 5375.850 & 5409.318\\
- Exponential & 5378.926 & 5414.315 & 5379.316 & 5422.321\\
- Roulette   & 5376.365 & 5417.421 & 5376.353 & 5417.723\\
- \hline
-\end{tabular}
-$$
-In this simulation, the minimum (i.e., best) fitness value was produced using GLM as the model, AIC as the fitness criteria, and tournament or linear ranking as the selection method.  Generally, the difference between AIC and BIC was greater than the variance across selection methods.
-
-The exponential ranking selection method converged the fastest, followed by tournament selection, as shown in the table below:
-$$
-\begin{tabular}{ |c|c|c|c|c|  }
- \hline
- \multicolumn{5}{|c|}{Iterations to Reach Max Fitness Value} \\
- \hline
- Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
- \hline
- Tournament & 64  & 69 & 62  & 63\\
- Linear & 75 & 96  & 80 & 88\\
- Exponential & 53 & 52 & 53 & 53\\
- Roulette   & 84 & 85 & 94 & 111\\
- \hline
-\end{tabular}
-$$
-
-In general, the top genotype returned when using BIC fitness criteria had fewer variables than those uscing AIC.  This makes sense as BIC has a greater penalty for higher numbers of variables:  with AIC, the penalty is \textit{2p}, whereas with BIC the penalty is \textit{ln(n)p}.
-
-
-The number of variables returned in the best genotype of each combination:
-$$
-\begin{tabular}{ |c|c|c|c|c|  }
- \hline
- \multicolumn{5}{|c|}{Number of Variables in Best Genotype} \\
- \hline
- Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
- \hline
- Tournament &  10   & 6 & 12  & 6\\
- Linear & 10 & 7  & 15 & 6\\
- Exponential & 11 & 7 & 16 & 8\\
- Roulette   & 14 & 7 & 14 & 7\\
- \hline
-\end{tabular}
-$$
-
-Regardless of method, model, or criteria, Strength of Schedule (\textit{sos}), Runs Batted In (\textit{rbis}), Free Agency (\textit{freeagent}), and Arbitration (\textit{arbitration}) are all included in the top genotypes.  Free Agency and Arbitration had very high regression coefficients, hovering around 1300 and 850, respectively; conversely, the coefficients of RBIs and SOS were much lower, about 25 and -12.  We hypothesize that this is because a player that becomes a free agent and gets signed to a new team will likely negotiate a large salary contract with their new team;  players that enter free agency and don't get signed aren't included in this data set.
-
-\subsection{Comparison with Global Search for Optima}
+\noindent
 To investigate whether our GA algorithm can attain the same optimum as global search for all possible genotypes, we create another dataset to test this. How data generated is presented as follows:
 
 \vspace{3mm}
 \noindent
-Consider number of variables $p=5$, and we generate covariates $X=(X_{1}, \cdots, X_{5})^{\T}$ from different distributions, where $X_{1}\sim N(0,25)$, $X_{2}\sim \mathrm{Unif}(0,1)$, $X_{3}\sim \mathrm{Poisson}(1)$, $X_{4}\sim \mathrm{exp}(2)$, $X_{5}\sim \mathrm{Gamma}(10,1)$. The responses $Y$ is generated by simply averaging $X_{1}$ and $X_{3}$, i.e. $Y=\frac{X_{1}+X_{3}}{2}$. Apart from finding optimal genotype via Genetic Algorithm, we also compute all the fitness values for all 32 genotypes to see what the exact global optimum is and thus the "best" genotype. Since the reponse $Y$ is only related to variables $X_{1}$ and $X_{3}$, we hope that both the global search approach and the GA algorithm can only select these two features but not others. Additionally, we also hope that the results returned by these two methods are consistent. Comparison results are presented below in Table \ref{table:1}.
+Consider number of variables $p=5$, and we generate covariates $X=(X_{1}, \cdots, X_{5})^{\T}$ from different distributions, where $X_{1}\sim N(0,25)$, $X_{2}\sim \mathrm{Unif}(0,1)$, $X_{3}\sim \mathrm{Poisson}(1)$, $X_{4}\sim \mathrm{exp}(2)$, $X_{5}\sim \mathrm{Gamma}(10,1)$. The responses $Y$ are generated by simply averaging $X_{1}$ and $X_{3}$, i.e. $Y=\frac{X_{1}+X_{3}}{2}$. Apart from finding optimal genotype via Genetic Algorithm, we also compute all the fitness values for all 32 genotypes to see what the exact global optimum is and thus the "best" genotype. Since the reponse $Y$ is only related to variables $X_{1}$ and $X_{3}$, we hope that both the global search approach and the GA algorithm can only select these two features but not others. Additionally, we also hope that the results returned by these two methods are consistent. Comparison results are presented below in Table \ref{table:1}.
 
 
 \begin{table}[htp]
@@ -356,7 +279,7 @@ lm & 19963.50 & 19945.41 \\
     \end{minipage}%
     \begin{minipage}{.5\linewidth}
       \centering
-        \caption{GA Algorithm}
+       \caption{GA Algorithm}
         \begin{tabular}{r|r|r}
   \hline
  & AIC & BIC \\
@@ -416,6 +339,115 @@ lm & 11100 & 10100 \\
 
 \noindent
 In summary, our GA algorithm can find the global optima, results of which are consistent with that from global search.
+
+
+\section{Application}\label{s3}
+In this section, we considered two applications of our genetic algorithm, one on the dataset generated from a linear regression model, which aims to evaluate whether the designed algorithm can successfully select those important features, given known relevant variables combined with some noise terms. Another application is based on the baseball data collected from the textbook ``Computational Statistics'' \citet{compute}. Details will be illustrated as follows.
+
+\subsection{Application on Data Generated from Linear Regression Model}
+In this section, we will first introduce how we generate the covariates and responses for evaluating our genetic algorithm on feature selection. We first generate covariates from the multivariate normal distribution $N_{p}(\bm{0}, \Sigma_{x})$, where the $(j, j^{\prime})$ $\Sigma_{x}$ satisfies
+$$
+\Sigma_{x(j,j^{\prime})} = 0.5^{|j-j^{\prime}|}, \mbox{ for } 1\leq j, j^{\prime}\leq p.
+$$
+Setting sample size $n=300$ and feature dimension $p=20$, we then fit the linear regression model
+$$
+Y = X\beta,
+$$
+where $\beta=(\beta_{1}, \cdots, \beta_{6})^{\mathrm{T}}$ is generated from univariate normal distribution $N(3, 25)$. Moreover, we add some noise $\epsilon=(\epsilon_{1}, \cdots, \epsilon_{n})$ to the covariates generated as above. $\epsilon_{i}$, for $1\leq i \leq n$, is generated from $N_{10}(\bm{0}, \Sigma_{x})$, which has the same parameter setting as $X$ except the dimension. We then combine $X$ and the noise terms together. The resulting covariates matrix is given by
+$$
+\tilde{X} = (X|\epsilon).
+$$
+Apply our genetic algorithm to fit a linear model regressing $Y\in \mathbb{R}^{n}$ on $\tilde{X}\in \mathbb{R}^{n\times 30}$. Given $20$ relevant covariates and 10 noise terms, the designed GA algorithm gives the following results for feature selection
+$$
+\mbox{genotype}=(0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, \textcolor{red}{0, 1, 0, 0, 1, 0, 1, 0, 0, 1}).
+$$
+One can see that our GA algorithm can select most of the relevant variables, but will also include some irrelevant noise terms denoted in red.
+
+% \vspace{3mm}
+% \noindent
+% A plot monitoring the optmization process is also included:
+% \begin{figure}[h]
+% \caption{How it evolves}
+% \centering
+% \includegraphics[width=10cm, height=6cm]{r2}
+% \end{figure}
+
+\subsection{Application on Baseball Data}
+We next test our genetic algorithm on a real data set to demonstrate the ability to select and optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for Computational Statistics, 2nd Edition, by Givens and Hoeting.
+
+The data set contains 27 different statistics (such as hits and on-base percentage) for 337 players in the 1991 baseball season.  Additionally, the data set contains the salaries for the same 337 players in the 1992 season.  We used our genetic algorithm to select player statistic(s) that most influence that players salary in the following year.
+
+We tested our algoritms performance on combinations of different fitness criteria (AIC, BIC) and selection method (tournament, exponential ranking, linear ranking, roulette wheel).  All other input parameters were held constant at maxGen = 500, minGen = 50, population = 500, pMutate = 0.1, crossParams = c(0.8, 1), and  eliteRate = 0.1.  The fitness values are shown in Table \ref{table:7}.
+
+\begin{table}[htp]
+    \centering
+    \caption{Maximum Fitness Value for Various Model, Criteria, and Selection Methods}
+
+\begin{tabular}{ |c|c|c|c|c|  }
+
+ \hline
+ Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
+ \hline
+ Tournament &  5376.012   & 5409.318 & 5375.850  & 5412.395\\
+ Linear & 5376.354 & 5409.318  & 5375.850 & 5409.318\\
+ Exponential & 5378.926 & 5414.315 & 5379.316 & 5422.321\\
+ Roulette   & 5376.365 & 5417.421 & 5376.353 & 5417.723\\
+ \hline
+\end{tabular}
+    \label{table:7}
+\end{table}
+
+\vspace{5cm}
+
+In this simulation, the minimum (i.e., best) fitness value was produced using GLM as the model, AIC as the fitness criteria, and tournament or linear ranking as the selection method.  Generally, the difference between AIC and BIC was greater than the variance across selection methods.
+
+The exponential ranking selection method converged the fastest, followed by tournament selection, as shown in Table \ref{table:8}.
+
+\begin{table}[htp]
+    \centering
+    \caption{Iterations to Reach Maximum Fitness Value}
+
+\begin{tabular}{ |c|c|c|c|c|  }
+ \hline
+ Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
+ \hline
+ Tournament & 64  & 69 & 62  & 63\\
+ Linear & 75 & 96  & 80 & 88\\
+ Exponential & 53 & 52 & 53 & 53\\
+ Roulette   & 84 & 85 & 94 & 111\\
+ \hline
+\end{tabular}
+
+    \label{table:8}
+\end{table}
+
+
+In general, the top genotype returned when using BIC fitness criteria had fewer variables than those using AIC.  This makes sense since BIC has a greater penalty for higher numbers of variables:  with AIC, the penalty is \textit{2p}, whereas with BIC the penalty is \textit{ln(n)p}.
+
+
+The number of variables returned in the best genotype of each combination is shown in Table \ref{table:9}.
+
+\begin{table}[htp]
+    \centering
+    \caption{Number of Variables in Best Genotype}
+
+    \begin{tabular}{ |c|c|c|c|c|  }
+      \hline
+      Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
+      \hline
+      Tournament &  10   & 6 & 12  & 6\\
+      Linear & 10 & 7  & 15 & 6\\
+      Exponential & 11 & 7 & 16 & 8\\
+      Roulette   & 14 & 7 & 14 & 7\\
+    \hline
+    \end{tabular}
+
+    \label{table:9}
+\end{table}
+
+Regardless of method, model, or criteria, Strength of Schedule (\textit{sos}), Runs Batted In (\textit{rbis}), Free Agency (\textit{freeagent}), and Arbitration (\textit{arbitration}) are all included in the top genotypes.  Free Agency and Arbitration had very high regression coefficients, hovering around 1300 and 850, respectively; conversely, the coefficients of RBIs and SOS were much lower, about 25 and -12.  We hypothesize that this is because a player that becomes a free agent and gets signed to a new team will likely negotiate a large salary contract with their new team;  players that enter free agency and don't get signed aren't included in this data set.
+
+
 
 \section{Group Member Contributions}\label{s4}
 David Chen:
