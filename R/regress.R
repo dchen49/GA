@@ -40,3 +40,7 @@ regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC", modelPar
   if("try-error" %in% class(performance)) stop("Fitness criteria function is not correct.")
   return(performance)
 }
+
+myFun <- function(obj) {
+  return(sum(obj$residuals))
+}
