@@ -373,12 +373,42 @@ Gene & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & \textcolor{red}{1} & \textcolor{r
 \end{tabular}%
 }
 \end{table}
-One can see that our GA algorithm can select all the relevant features, but will also include some irrelevant noise terms denoted in red. Next, we will take a look at the coefficients of those noise terms from the regression model and further investigate whether the "noise" terms are significant or not.
+One can see that our GA algorithm can select all the relevant features, but will also include some irrelevant noise terms denoted in red. Next, we will take a look at the coefficients of those noise terms from the regression model and further investigate whether the "noise" terms are significant or not. Results are presented in Table \ref{Table:7} and Table \ref{Table:8}.
 
 \vspace{3mm}
 \noindent
 
+Coefficients of Relevant Variables:
+\begin{table}[ht]
+\centering
+\caption{x-variables}
+\begin{tabular}{r|r|r|r|r|r|r|r|r|r}
+  \hline
+ x1 & x2 & x3 & x4 & x5 & x6 & x7 & x8 & x9 & x10 \\
+  \hline
+8.70 & 0.98 & 8.46 & -0.74 & 1.87 & -1.31 & 5.47 & 5.07 & 0.61 & 4.99 \\
+   \hline
+\end{tabular}\label{Table:7}
+\end{table}
 
+\noindent
+Coefficients of Noise terms:
+\begin{table}[ht]
+\centering
+\caption{n-Noise terms}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{r|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
+  \hline
+ n1 & n2 & n3 & n4 & n5 & n7 & n9 & n11 & n13 & n15 & n16 & n17 & n18 & n19 & n20 \\
+  \hline
+3e-15 & -4e-15 & -2e-15 &4e-15& -2e-15& -1e-15& -5e-15 &5e-15& -1e-15& 1e-15& 5e-15& -1e-14& 4e-15& -5e-15& 3e-16 \\
+   \hline
+\end{tabular}%
+}\label{Table:8}
+\end{table}
+
+\noindent
+One can see from the table that although we have included some noise terms, but values of those coefficients are quite small, which indicates that these noise terms are not significant.
 
 \includegraphics{barplot}
 
