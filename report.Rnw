@@ -212,32 +212,34 @@ To better introduce our genetic algorithm  Figure \ref{p1}, a flowchart is displ
     text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
     text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{bblock} = [rectangle, draw, fill=blue!20,
+    text width=8em, text centered, rounded corners, minimum height=4em]
 \tikzstyle{line} = [draw, -latex']
 \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm, text width=5em,
     rounded corners, minimum height=3em]
+\tikzstyle{begin} = [rectangle, draw, fill=green!20,
+    text width=8em, text centered, rounded corners, minimum height=4em]
 
 \begin{tikzpicture}[node distance = 2cm, auto]\label{p1}
     % Place nodes
-    \node [block] (init) {Genetic Algorithm Starts Here};
-    \node [block, below of=init] (identify) {Population Initialization $P_{0}$};
-    \node [block, below of=identify] (evaluate) {Compute Fitness};
+    \node [begin] (init) {Algorithm Start: Initialize P$_{0}$};
+    \node [block, below of=init, node distance=3cm] (evaluate) {Compute Fitness};
     \node [decision, below of=evaluate] (decide) {Checking Stopping Criteria?};
-    \node [cloud, right of=decide, node distance=3.5cm] (stop) {Terminate and return the best!};
-    \node [block, left of=decide, node distance=3cm] (update) {Recombine with survivors from the last generation};
+    \node [cloud, right of=decide, node distance=4.5cm] (stop) {Terminate and return the best!};
+    \node [bblock, left of=evaluate, node distance=5.5cm] (update) {Recombine with survivors from the last generation};
 
 
     \node [block, below of=decide, node distance=3cm] (continue) {Parents Selection};
-    \node [block, below of=continue, node distance=2.5cm] (continuea) {Offspring Generation};
+    \node [block, left of=continue, node distance=5.5cm] (continuea) {Offspring Generation};
     % Draw edges
-    \path [line] (init) -- (identify);
-    \path [line] (identify) -- (evaluate);
+    \path [line] (init) -- (evaluate);
     \path [line] (evaluate) -- (decide);
     %\path [line] (decide) -| node [near start] {no} (update);
-    \path [line] (update) |- node {current population}(evaluate);
+    \path [line] (update) -- node {new population}(evaluate);
     \path [line] (decide) -- node {no}(continue);
-    \path [line] (continue) -- node {Evolution, including crossover and mutation}(continuea);
+    \path [line] (continue) -- node {Evolution}(continuea);
     \path [line] (decide) -- node {yes}(stop);
-    \path [line] (continuea) -| node [near start] {step into} (update);
+    \path [line] (continuea) --  node {step into} (update);
 
 
 \end{tikzpicture}
