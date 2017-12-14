@@ -344,7 +344,7 @@ In summary, our GA algorithm can find the global optima, results of which are co
 In this section, we considered two applications of our genetic algorithm, one on the dataset generated from a linear regression model, which aims to evaluate whether the designed algorithm can successfully select those important features, given known relevant variables combined with some noise terms. Another application is based on the baseball data collected from the textbook ``Computational Statistics'' \citet{compute}. Details will be illustrated as follows.
 
 \subsection{Application on Data Generated from Linear Regression Model}
-In this section, we will first introduce how we generate the covariates and responses for evaluating our genetic algorithm on feature selection. We first generate covariates from the multivariate normal distribution $N_{p}(\bm{0}, \Sigma_{x})$, where the $(j, j^{\prime})$ $\Sigma_{x}$ satisfies
+In this section, we will first introduce how we generate the covariates and responses for evaluating our genetic algorithm on feature selection. We first generate covariates from the multivariate normal distribution $N_{p}(\bm{0}, \Sigma_{x})$, where the $(j, j^{\prime})$ entry of $\Sigma_{x}$ satisfies
 $$
 \Sigma_{x(j,j^{\prime})} = 0.5^{|j-j^{\prime}|}, \mbox{ for } 1\leq j, j^{\prime}\leq p.
 $$
