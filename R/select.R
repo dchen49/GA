@@ -2,6 +2,7 @@
 # Variable Selection via a Genetic Algorithm
 
 #' Selects Regression Variables using a Genetic Algorithm
+#' @description Recommends regression variables by maximizing a fitness criteria using genetic algorithms
 #'
 #' @param x matrix of dimension n * p
 #' @param y vector of length n or a matrix with n rows
@@ -11,9 +12,9 @@
 #' @param minGen default 10: integer specifying the number of generations without fitness improvement at which the GA algorithm will stop
 #' @param gaMethod list - default 'LR': one of ('TN', 'LR', 'ER','RW') and an additional numrical argument as needed. See gaSelection for details.
 #' @param pop default 100: integer specifying the size of the genotype pool.
-#' @param pMutate default .1: real number between 0 and 1 specifying the probability of an allele mutation
+#' @param pMutate default 0.1: real number between 0 and 1 specifying the probability of an allele mutation
 #' @param crossParams numeric - default (.8, 1): c("cross probability", "max number of cross locations on a single gene")
-#' @param eliteRate default .1: Proportion of highest fitness genotypes that pass into the next generation unchanged.
+#' @param eliteRate default 0.1: Proportion of highest fitness genotypes that pass into the next generation unchanged.
 #'
 #' @return returns a list of 4 components: optimum, fitPlot, fitStats, and GA
 #' \itemize{
@@ -32,10 +33,52 @@
 #' }}
 #' }
 #'
-#' @examples tbd
 #' @seealso \code{\link{regress}}
 #' \code{\link{mate}}
 #' \code{\link{evolve}}
+#' @examples
+#' x <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, -1]
+#' y <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, 1]
+#'
+#' # linear regression using roulette wheel parent selection
+#' GA <- select(X, Y, model = list("lm"), gaMethod = list("RW"))
+#'
+#' # to return just the selected regression variables
+#' GA$optimum$variables
+#'
+#' # to return the regression object using the selected variables
+#' GA$optimum$fitModel
+#'
+#' # generalized linear regression with binomial family using tournament selection
+#' GA <- select(X, Y, model = list("glm", "family = poisson()"))
+#'
+#' # Code for the baseball dataset example
+#' maxFits <- matrix(0, 4, 4)
+#' maxIters <- matrix(0, 4, 4)
+#' method <- list(list('TN', 5), list('LR'), list('ER', 0.5), list('RW'))
+#' fit <- c("AIC", "BIC")
+#'
+#' for (i in 1:4) {
+#'   for (j in 1:2) {
+#'       trial <- GA::select(x, y, model = list("lm"), fitMetric = fit[j], maxGen = 500L, minGen = 50L,
+#'                               gaMethod = method[[i]], pop = 500L, pMutate = 0.1, crossParams = c(0.8, 1L), eliteRate = 0.1)
+#'       iters <- length(trial$GA)
+#'       bestFit <- eval(parse(text = paste0("trial$GA$gen", iters, "$elites[1,1]")))
+#'       maxFits[i,j] <- bestFit
+#'       maxIters[i,j] <- iters
+#'   }
+#'   for (j in 3:4) {
+#'       trial <- GA::select(x, y, model = list("glm"), fitMetric = fit[j-2], maxGen = 500L, minGen = 50L,
+#'                           gaMethod = method[[i]], pop = 500L, pMutate = 0.1, crossParams = c(0.8, 1L), eliteRate = 0.1)
+#'    iters <- length(trial$GA)
+#'    bestFit <- eval(parse(text = paste0("trial$GA$gen", iters, "$elites[1,1]")))
+#'    maxFits[i,j] <- bestFit
+#'    maxIters[i,j] <- iters
+#'    }
+#' }
+#'
+#' # code for the generated dataset
+#'
 #' @export
 
 select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, minGen = 10L, gaMethod = list("TN", 5),  pop = 100L, pMutate = .1, crossParams = c(.8, 1L), eliteRate = 0.1) {

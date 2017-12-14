@@ -192,6 +192,17 @@ Genetic Algorithm (GA) is a search-based optimization technique based on the pri
 \pagestyle{empty}
 
 \section{Introduction to Our Genetic Algorithm}\label{s1}
+
+Our package is comprised of 4 major functions: select(), regress(), mate(), and evolve().\\
+
+select() is the main, exported function which takes in all user arguments and wraps all other functions. select() also loops over generations and creates the output list object with components: optimum, fitPlot, fitStats, and GA. optimum contains the names of the selected variables, the fitness value achieved, and the regression object. fitPlot is a ggplot of the mean, median, and maximum fitness per generation and is generated from the table in fitStats. GA contains the elite genotypes all fitness values  for each generation.\\
+
+regress() calculates the fitness of the regresssion model using a particular group of covariates and returns fitness metric as a single number to be maximized. In our GA implementation, regress() is called in an apply() to operate over the entire genotype poulation and return a vector of fitness values.\\
+
+mate() selects parents using one of 4 selection methods: tournament selection, linear ranking selection, exponential ranking selection, or roulette wheel selection. Each method is defined as a sub-function called by mate(). The output is a genotype population of parents to be passed into evolve().\\
+
+evolve() performs crossing-over of genotypes and mutates single alleles by calling subfunctions singlecrossover(), multiplecrossover(), and mutate(). It returns a population of altered genotypes to be combined with elite survivors to form the next generation.\\
+\\
 To better introduce our genetic algorithm  Figure \ref{p1}, a flowchart is displayed as follows
 
 \vspace{5mm}
@@ -232,8 +243,8 @@ To better introduce our genetic algorithm  Figure \ref{p1}, a flowchart is displ
 \end{tikzpicture}
 
 \section{Testing}\label{s2}
-Ability to find max fitness.\\
-Ability to
+Ability to find max fitness using lm/glm and AIC/BIC on a manufactured dataset. Y is generated from X1 and X3. Table comparing brute forced optima and optima found via select()\\
+Ability to distinguish between variables via strength of correlation. The optimal set of covariates recommended by our function will likely include variables only weakly correlated and likely by chance. The user is provided with the regression model and can, by evaluating the coefficients, establish a threshold under which to exclude variables as spurious correlations.
 
 \section{Application}\label{s3}
 In this section, we considered two applications of our genetic algorithm, one on the dataset generated from a linear regression model, which aims to evaluate whether the designed algorithm can successfully select those important features, given known relevant variables combined with some noise terms. Another application is based on the baseball data collected from the textbook ``Computational Statistics'' \citet{compute}. Details will be illustrated as follows.
