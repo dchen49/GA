@@ -194,17 +194,17 @@ Genetic Algorithm (GA) is a search-based optimization technique based on the pri
 
 \section{Introduction to Our Genetic Algorithm}\label{s1}
 
-Our package is comprised of 4 major functions: select(), regress(), mate(), and evolve().\\
+Our package is comprised of 4 major functions: \textit{select()}, \textit{regress()}, \textit{mate()}, and \textit{evolve()}.\\
 
-select() is the main, exported function which takes in all user arguments and wraps all other functions. select() also loops over generations and creates the output list object with components: optimum, fitPlot, fitStats, and GA. optimum contains the names of the selected variables, the fitness value achieved, and the regression object. fitPlot is a ggplot of the mean, median, and maximum fitness per generation and is generated from the table in fitStats. GA contains the elite genotypes all fitness values  for each generation.\\
+\textit{select()} is the main, exported function which takes in all user arguments and wraps all other functions. \textit{select()} also loops over generations, checks stopping criteria, and creates the output list object with 4 components: \textit{optimum}, \textit{fitPlot}, \textit{fitStats}, and \textit{GA}. \textit{optimum} contains the names of the selected variables, the fitness value achieved, and the regression object. \textit{fitPlot} is a ggplot of the mean, median, and maximum fitness per generation and is generated from the table in \textit{fitStats}. \textit{GA} contains the elite subset of genotypes and all fitness values for each generation.\\
 
-regress() calculates the fitness of the regresssion model using a particular group of covariates and returns fitness metric as a single number to be maximized. In our GA implementation, regress() is called in an apply() to operate over the entire genotype poulation and return a vector of fitness values.\\
+\textit{regress()} calculates the fitness of the regresssion model using a particular group of covariates and returns fitness metric as a single number to be maximized. In our GA implementation, \textit{regress()} is called in an apply loop to operate over the entire genotype poulation and return a vector of fitness values.\\
 
-mate() selects parents using one of 4 selection methods: tournament selection, linear ranking selection, exponential ranking selection, or roulette wheel selection. Each method is defined as a sub-function called by mate(). The output is a genotype population of parents to be passed into evolve().\\
+\textit{mate()} selects parents using one of 4 selection methods: tournament selection, linear ranking selection, exponential ranking selection, or roulette wheel selection. Each method is defined as a sub-function which is then called by \textit{mate()}. The output is a genotype population of parents to be passed into \textit{evolve()}.\\
 
-evolve() performs crossing-over of genotypes and mutates single alleles by calling subfunctions singlecrossover(), multiplecrossover(), and mutate(). It returns a population of altered genotypes to be combined with elite survivors to form the next generation.\\
+\textit{evolve()} performs crossing-over of genotypes and mutates single alleles by calling subfunctions \textit{singlecrossover()}, \textit{multiplecrossover()}, and \textit{mutate()}. It returns a population of altered genotypes to be combined with elite survivors to produce the next generation.\\
 \\
-To better introduce our genetic algorithm  Figure \ref{p1}, a flowchart is displayed as follows
+To better introduce our genetic algorithm, the following Figure \ref{p1} diagrams the workflow
 
 \vspace{5mm}
 
@@ -213,32 +213,34 @@ To better introduce our genetic algorithm  Figure \ref{p1}, a flowchart is displ
     text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
     text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{bblock} = [rectangle, draw, fill=blue!20,
+    text width=8em, text centered, rounded corners, minimum height=4em]
 \tikzstyle{line} = [draw, -latex']
 \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm, text width=5em,
     rounded corners, minimum height=3em]
+\tikzstyle{begin} = [rectangle, draw, fill=green!20,
+    text width=8em, text centered, rounded corners, minimum height=4em]
 
 \begin{tikzpicture}[node distance = 2cm, auto]\label{p1}
     % Place nodes
-    \node [block] (init) {Genetic Algorithm Starts Here};
-    \node [block, below of=init] (identify) {Population Initialization $P_{0}$};
-    \node [block, below of=identify] (evaluate) {Compute Fitness};
+    \node [begin] (init) {Algorithm Start: Initialize P$_{0}$};
+    \node [block, below of=init, node distance=3cm] (evaluate) {Compute Fitness};
     \node [decision, below of=evaluate] (decide) {Checking Stopping Criteria?};
-    \node [cloud, right of=decide, node distance=3.5cm] (stop) {Terminate and return the best!};
-    \node [block, left of=decide, node distance=3cm] (update) {Recombine with survivors from the last generation};
+    \node [cloud, right of=decide, node distance=4.5cm] (stop) {Terminate and return the best!};
+    \node [bblock, left of=evaluate, node distance=5.5cm] (update) {Recombine with survivors from the last generation};
 
 
     \node [block, below of=decide, node distance=3cm] (continue) {Parents Selection};
-    \node [block, below of=continue, node distance=2.5cm] (continuea) {Offspring Generation};
+    \node [block, left of=continue, node distance=5.5cm] (continuea) {Offspring Generation};
     % Draw edges
-    \path [line] (init) -- (identify);
-    \path [line] (identify) -- (evaluate);
+    \path [line] (init) -- (evaluate);
     \path [line] (evaluate) -- (decide);
     %\path [line] (decide) -| node [near start] {no} (update);
-    \path [line] (update) |- node {current population}(evaluate);
+    \path [line] (update) -- node {new population}(evaluate);
     \path [line] (decide) -- node {no}(continue);
-    \path [line] (continue) -- node {Evolution, including crossover and mutation}(continuea);
+    \path [line] (continue) -- node {Evolution}(continuea);
     \path [line] (decide) -- node {yes}(stop);
-    \path [line] (continuea) -| node [near start] {step into} (update);
+    \path [line] (continuea) --  node {step into} (update);
 
 
 \end{tikzpicture}
@@ -265,7 +267,7 @@ Consider number of variables $p=5$, and we generate covariates $X=(X_{1}, \cdots
             \newsavebox{\tableboxb}
 \begin{lrbox}{\tableboxb}
     \begin{minipage}{.5\linewidth}
-      \caption*{Global Search}
+      \caption{Global Search}
       \centering
         \begin{tabular}{c|c|c}
   \hline
@@ -278,7 +280,7 @@ lm & 19963.50 & 19945.41 \\
     \end{minipage}%
     \begin{minipage}{.5\linewidth}
       \centering
-       \caption*{GA Algorithm}
+       \caption{GA Algorithm}
         \begin{tabular}{r|r|r}
   \hline
  & AIC & BIC \\
@@ -372,18 +374,18 @@ One can see that our GA algorithm can select most of the relevant variables, but
 % \end{figure}
 
 \subsection{Application on Baseball Data}
-We next test our genetic algorithm on a real data set to demonstrate the ability to select and optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for Computational Statistics, 2nd Edition, by Givens and Hoeting.
+We next test our genetic algorithm on a real data set to demonstrate the ability to select and optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for \citet{compute}.
 
 The data set contains 27 different statistics (such as hits and on-base percentage) for 337 players in the 1991 baseball season.  Additionally, the data set contains the salaries for the same 337 players in the 1992 season.  We used our genetic algorithm to select player statistic(s) that most influence that players salary in the following year.
 
-We tested our algoritms performance on combinations of different fitness criteria (AIC, BIC) and selection method (tournament, exponential ranking, linear ranking, roulette wheel).  All other input parameters were held constant at maxGen = 500, minGen = 50, population = 500, pMutate = 0.1, crossParams = c(0.8, 1), and  eliteRate = 0.1.
+We tested our algoritms performance on combinations of different fitness criteria (AIC, BIC) and selection method (tournament, exponential ranking, linear ranking, roulette wheel).  All other input parameters were held constant at maxGen = 500, minGen = 50, population = 500, pMutate = 0.1, crossParams = c(0.8, 1), and  eliteRate = 0.1.  The fitness values are shown in Table \ref{table:7}.
 
+\begin{table}[htp]
+    \centering
+    \caption{Maximum Fitness Value}
 
-The fitness values are shown in the table below:
-$$
 \begin{tabular}{ |c|c|c|c|c|  }
- \hline
- \multicolumn{5}{|c|}{Maximum Fitness Value} \\
+
  \hline
  Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
  \hline
@@ -393,14 +395,20 @@ $$
  Roulette   & 5376.365 & 5417.421 & 5376.353 & 5417.723\\
  \hline
 \end{tabular}
-$$
+    \label{table:7}
+\end{table}
+
+\vspace{5cm}
+
 In this simulation, the minimum (i.e., best) fitness value was produced using GLM as the model, AIC as the fitness criteria, and tournament or linear ranking as the selection method.  Generally, the difference between AIC and BIC was greater than the variance across selection methods.
 
-The exponential ranking selection method converged the fastest, followed by tournament selection, as shown in the table below:
-$$
+The exponential ranking selection method converged the fastest, followed by tournament selection, as shown in Table \ref{table:8}.
+
+\begin{table}[htp]
+    \centering
+    \caption{Iterations to Reach Maximum Fitness Value}
+
 \begin{tabular}{ |c|c|c|c|c|  }
- \hline
- \multicolumn{5}{|c|}{Iterations to Reach Max Fitness Value} \\
  \hline
  Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
  \hline
@@ -410,26 +418,33 @@ $$
  Roulette   & 84 & 85 & 94 & 111\\
  \hline
 \end{tabular}
-$$
 
-In general, the top genotype returned when using BIC fitness criteria had fewer variables than those uscing AIC.  This makes sense as BIC has a greater penalty for higher numbers of variables:  with AIC, the penalty is \textit{2p}, whereas with BIC the penalty is \textit{ln(n)p}.
+    \label{table:8}
+\end{table}
 
 
-The number of variables returned in the best genotype of each combination:
-$$
-\begin{tabular}{ |c|c|c|c|c|  }
- \hline
- \multicolumn{5}{|c|}{Number of Variables in Best Genotype} \\
- \hline
- Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
- \hline
- Tournament &  10   & 6 & 12  & 6\\
- Linear & 10 & 7  & 15 & 6\\
- Exponential & 11 & 7 & 16 & 8\\
- Roulette   & 14 & 7 & 14 & 7\\
- \hline
-\end{tabular}
-$$
+In general, the top genotype returned when using BIC fitness criteria had fewer variables than those using AIC.  This makes sense since BIC has a greater penalty for higher numbers of variables:  with AIC, the penalty is \textit{2p}, whereas with BIC the penalty is \textit{ln(n)p}.
+
+
+The number of variables returned in the best genotype of each combination is shown in Table \ref{table:9}.
+
+\begin{table}[htp]
+    \centering
+    \caption{Number of Variables in Best Genotype}
+
+    \begin{tabular}{ |c|c|c|c|c|  }
+      \hline
+      Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
+      \hline
+      Tournament &  10   & 6 & 12  & 6\\
+      Linear & 10 & 7  & 15 & 6\\
+      Exponential & 11 & 7 & 16 & 8\\
+      Roulette   & 14 & 7 & 14 & 7\\
+    \hline
+    \end{tabular}
+
+    \label{table:9}
+\end{table}
 
 Regardless of method, model, or criteria, Strength of Schedule (\textit{sos}), Runs Batted In (\textit{rbis}), Free Agency (\textit{freeagent}), and Arbitration (\textit{arbitration}) are all included in the top genotypes.  Free Agency and Arbitration had very high regression coefficients, hovering around 1300 and 850, respectively; conversely, the coefficients of RBIs and SOS were much lower, about 25 and -12.  We hypothesize that this is because a player that becomes a free agent and gets signed to a new team will likely negotiate a large salary contract with their new team;  players that enter free agency and don't get signed aren't included in this data set.
 

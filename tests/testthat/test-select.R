@@ -83,7 +83,22 @@ test_that("Outputs between global search and GA algorithm are equal", {
 })
 
 
+###################################
+numVar <- 10
+dataSize <- 50
+numGens <- 10
 
+genotype <- array(rbinom(numVar, 1, prob = 0.5))
+x <- matrix(1:dataSize*numVar, dataSize, numVar)
+y <- matrix(1:dataSize, dataSize, 1)
+trial <- select(x,y, minGen = numGens)
+trial2 <- select(x, y, maxGen = numGens, minGen = numGens)
+
+context("Testing select() stopping criteria")
+test_that("Stopping criteria stops after minimum generations of no change", {
+  expect_equal(length(trial$GA), numGens+1)
+  expect_equal(length(trial2$GA), numGens)
+})
 
 
 

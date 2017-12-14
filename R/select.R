@@ -133,7 +133,7 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
     stop("fitMetric must be 'AIC', 'BIC', or a function that takes a lm or glm object and outputs a single value that should be maximized")
 
   # maxGen, minGen, and pop: positive integers, maxGen > minGen
-  if (!is.integer(maxGen) | !is.integer(minGen) | median(c(1, minGen, maxGen))!=minGen)
+  if (as.integer(maxGen)!=maxGen | as.integer(minGen)!=minGen | median(c(1, minGen, maxGen))!=minGen)
     stop("minGen and maxGen must be positive integers with maxGen greater than minGen")
   if (!(is.integer(pop)) | pop < 1)
     stop("pop must be a positive integer")

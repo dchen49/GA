@@ -1,21 +1,21 @@
 
 ########################### TESTING ON BASEBALL DATA ###########################
 
-x <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, -1]
-y <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, 1]
-ga1 <- select(x, y)
-ga1[[1]]
-ga1[[2]]
-
-
-########################### TESTING O N LRDATA ###########################
-x <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, -1]
-colnames(x) <- sapply(1:30, FUN = function(i) paste0("X", i))
-y <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, 1]
-ga2 <- select(x, y, eliteRate = .05)
-ga2[[1]]
-ga2[[2]]
-OptModel <- ga2$optimum$fitModel
+# x <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, -1]
+# y <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, 1]
+# ga1 <- select(x, y)
+# ga1[[1]]
+# ga1[[2]]
+#
+#
+# ########################### TESTING O N LRDATA ###########################
+# x <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, -1]
+# colnames(x) <- sapply(1:30, FUN = function(i) paste0("X", i))
+# y <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, 1]
+# ga2 <- select(x, y, eliteRate = .05)
+# ga2[[1]]
+# ga2[[2]]
+# OptModel <- ga2$optimum$fitModel
 
 ########################### TESTING ON TOY DATASET ###########################
 # # Toy regression whhere only X[, 1:10] are meaningfully correlated with Y
@@ -50,18 +50,18 @@ OptModel <- ga2$optimum$fitModel
 # # X[, 1:10] ~ N(500, 4)
 # # X[, 11:100] ~ Unif(-1000, 1000)
 
-library(foreach)
-library(parallel)
-library(doParallel)
-
-# x <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, -1]
-# colnames(x) <- sapply(1:30, FUN = function(i) paste0("x", i))
-# y <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, 1]
-
-x <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, -1]
-y <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, 1]
-
-w <- sapply(1:50, FUN = function(i) {z <- select(x, y)$optimum$fitModel$coefficients})
-weights <- rowSums(abs(w))
-names(weights) <- c('avg', 'obp', 'run', 'hit', 'dbl', 'trp', 'hr', 'rbi', 'w', 'sos', 'sbs', 'err', 'fa', 'arb', 'r/so', 'h/so', 'w/so', 'o/e', 'r/e', 'h/e', 'hr/e', '', 'sbsop', 'sbsrns', 'sbshts')
-barplot(weights)
+# library(foreach)
+# library(parallel)
+# library(doParallel)
+#
+# # x <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, -1]
+# # colnames(x) <- sapply(1:30, FUN = function(i) paste0("x", i))
+# # y <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, 1]
+#
+# x <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, -1]
+# y <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, 1]
+#
+# w <- sapply(1:50, FUN = function(i) {z <- select(x, y)$optimum$fitModel$coefficients})
+# weights <- rowSums(abs(w))
+# names(weights) <- c('avg', 'obp', 'run', 'hit', 'dbl', 'trp', 'hr', 'rbi', 'w', 'sos', 'sbs', 'err', 'fa', 'arb', 'r/so', 'h/so', 'w/so', 'o/e', 'r/e', 'h/e', 'hr/e', '', 'sbsop', 'sbsrns', 'sbshts')
+# barplot(weights)
