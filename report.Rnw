@@ -189,7 +189,9 @@ citecolor=blue
 Genetic Algorithm (GA) is a search-based optimization technique based on the principles of Genetics and Natural Selection. It is frequently used to find optimal or near-optimal solutions to difficult problems which otherwise would take a lifetime to solve. In this report, we will first introduce how we set up the genetic algorithm and the main steps. We then describe the testing procedure carried out. In section \ref{s3}, we include the results from the example we have taken to apply our GA algorithm. Contributions of each team member is collected in the last part, section \ref{s4}.
 \end{abstract}
 
+\begin{center}
 \textbf{Github Username:} dchen49
+\end{center}
 
 \newpage
 \pagestyle{empty}
@@ -251,7 +253,7 @@ To better introduce our genetic algorithm, the following Figure \ref{p1} diagram
 We have tested the input and output format for each individual functions in our GA algorithm, as well as the stopping criteria. To test the function select() as a whole, we tested its ability to find max fitness using lm/glm and AIC/BIC on a manufactured dataset.\\
 
 \noindent
-To investigate whether our GA algorithm can attain the same optimum as global search for all possible genotypes, we create another dataset to test this. How data generated is presented as follows:
+To investigate whether our GA algorithm can attain the same optimum as global search for all possible genotypes, we create another dataset to test this. We generated the data as follows:
 
 \vspace{3mm}
 \noindent
@@ -372,7 +374,7 @@ One can see that our GA algorithm can select most of the relevant variables, but
 % \end{figure}
 
 \subsection{Application on Baseball Data}
-We next test our genetic algorithm on a real data set to demonstrate the ability to select and optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for \citet{compute}.
+We next test our genetic algorithm on a real data set to demonstrate the ability to select an optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for \citet{compute}.
 
 The data set contains 27 different statistics (such as hits and on-base percentage) for 337 players in the 1991 baseball season.  Additionally, the data set contains the salaries for the same 337 players in the 1992 season.  We used our genetic algorithm to select player statistic(s) that most influence that players salary in the following year.
 
