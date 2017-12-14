@@ -255,7 +255,7 @@ To better introduce our genetic algorithm, the following Figure \ref{p1} diagram
 We have tested the input and output format for each individual functions in our GA algorithm, as well as the stopping criteria. To test the function select() as a whole, we tested its ability to find max fitness using lm/glm and AIC/BIC on a manufactured dataset.\\
 
 \noindent
-To investigate whether our GA algorithm can attain the same optimum as global search for all possible genotypes, we create another dataset to test this. How data generated is presented as follows:
+To investigate whether our GA algorithm can attain the same optimum as global search for all possible genotypes, we create another dataset to test this. We generated the data as follows:
 
 \vspace{3mm}
 \noindent
@@ -392,7 +392,7 @@ One can see that our GA algorithm can select all the relevant features, but will
 % \end{figure}
 
 \subsection{Application on Baseball Data}
-We next test our genetic algorithm on a real data set to demonstrate the ability to select and optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for \citet{compute}.
+We next test our genetic algorithm on a real data set to demonstrate the ability to select an optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for \citet{compute}.
 
 The data set contains 27 different statistics (such as hits and on-base percentage) for 337 players in the 1991 baseball season.  Additionally, the data set contains the salaries for the same 337 players in the 1992 season.  We used our genetic algorithm to select player statistic(s) that most influence that players salary in the following year.
 
