@@ -68,6 +68,18 @@ GA$optimum$fitModel
 # generalized linear regression with binomial family using tournament selection
 GA <- select(X, Y, model = list("glm", "family = poisson()"))
 
+# code for toy data linear regression example
+x <- as.matrix(read.table("./data/LRdataTest"), header = TRUE)[, -1]
+y <- as.matrix(read.table("./data/LRdataTest"), header = TRUE)[, 1]
+n = 50
+out <- sapply(1:n, FUN = function {select(x, y)$optimum})
+coeffs <- sapply(seq(3, 3*n, 3), FUN = function(i) out[[i]]$coefficients)
+weights <- c(unlist(sapply(1:n, FUN = function(i) coeffs[[i]])))
+weights <- sapply(colnames(x), FUN = function(name) sum(abs(weights[names(weights)==name])))
+barplot(weights)
+vars <- out[[1]]
+varCoeffs <- out[[3]]$coefficients
+
 # Code for the baseball dataset example
 maxFits <- matrix(0, 4, 4)
 maxIters <- matrix(0, 4, 4)

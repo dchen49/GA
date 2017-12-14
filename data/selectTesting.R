@@ -22,7 +22,7 @@
 # # Y = mean(X[, 1:10])
 # # X[, 1:10] ~ N(500, 4)
 # # X[, 11:100] ~ Unif(-1000, 1000)
-#
+# #
 # library(foreach)
 # library(parallel)
 # library(doParallel)
@@ -42,7 +42,7 @@
 # )
 # gaComparisonPlot <- ggplot() + stat_count(aes(x = as.integer(gaComparison))) + xlab("Variables")
 # save.image(file = "./data/toyDataTest.Rdata")
-
+#
 
 ########################### TESTING ON TOY DATASET ###########################
 # # Toy regression whhere only X[, 1:10] are meaningfully correlated with Y
@@ -60,9 +60,24 @@
 # #
 # x <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, -1]
 # y <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, 1]
-
-w <- sapply(1:50, FUN = function(i) {z <- select(x, y)$optimum$fitModel$coefficients})
-weights <- c(unlist(sapply(1:50, FUN = function(i) w[[i]])))
-weights <- sapply(colnames(x), FUN = function(name) sum(abs(weights[names(weights)==name])))
-names(weights) <- c('av', 'obp', 'rn', 'hit', 'dbl', 'trp', 'hr', 'rbi', 'w', 'so', 'sbs', 'err', 'fa', 'arb', 'r/so', 'h/so', 'w/so', 'o/e', 'r/e', 'h/e', 'hr/e', '', 'sbsop', 'sbsrns', 'sbshts')
-barplot(weights)
+#
+# w <- sapply(1:50, FUN = function(i) {z <- select(x, y)$optimum$fitModel$coefficients})
+# weights <- c(unlist(sapply(1:50, FUN = function(i) w[[i]])))
+# weights <- sapply(colnames(x), FUN = function(name) sum(abs(weights[names(weights)==name])))
+# names(weights) <- c('av', 'obp', 'rn', 'hit', 'dbl', 'trp', 'hr', 'rbi', 'w', 'so', 'sbs', 'err', 'fa', 'arb', 'r/so', 'h/so', 'w/so', 'o/e', 'r/e', 'h/e', 'hr/e', '', 'sbsop', 'sbsrns', 'sbshts')
+# barplot(weights)
+#
+# library(foreach)
+# library(parallel)
+# library(doParallel)
+# library(ggplot2)
+#
+# registerDoParallel(8)  # change as needed
+# gaComparison <- foreach(i=1:50,
+#                         .packages = "GA",
+#                         .combine = c,
+#                         .verbose = TRUE) %dopar% {
+#                           optima <- select(x, y)$optimum
+#                         }
+# gaComparisonPlot <- ggplot() + stat_count(aes(x = as.integer(gaComparison))) + xlab("Variables")
+# save.image(file = "./data/toyDataTest.Rdata")

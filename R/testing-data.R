@@ -31,7 +31,11 @@
 # ## combine X with noise \epsilon
 # X.tilde <- cbind(X, variable_matrix(300,20)) ## 10 uncorrelated variables
 #
-# ## first column-Y, 2-21: X, 22-31: noise
+# ## first column-Y, 2-11: X, 12-31: noise
 # data <- cbind(Y, X.tilde)
+# colnames(data) <- vector("character", length = 31)
+# colnames(data)[1] <- "y"
+# colnames(data)[2:11] <- sapply(1:10, FUN = function(i) paste0("x", i))
+# colnames(data)[12:31] <- sapply(1:20, FUN = function(i) paste0("N", i))
 # write.csv(data, file = "./data/LRdataTest.csv",row.names=FALSE)
 # write.table(data, file="./data/LRdataTest")
