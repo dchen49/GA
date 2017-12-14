@@ -170,7 +170,7 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
   gen <- 1
   Stop = FALSE
 
-  while(gen < maxGen) {
+  while(gen <= maxGen) {
     # Regression
     fitness <- apply(population, 1, regress, x = x, y = y, model = model, fitnessCriteria = fitMetric)
 
@@ -186,8 +186,9 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
       fitHistory <- sapply((gen-minGen+1):gen, FUN = function(i) {
         GA[[i]]$elites[1,1] - GA[[i-1]]$elites[1,1]
       })
-      Stop <- abs(sum(fitHistory)) <= .Machine$double.eps
+      Stop <- (abs(sum(fitHistory)) <= .Machine$double.eps)
     }
+    if (gen == maxGen) {Stop <- TRUE}
     if (Stop == TRUE) break
 
     # population selection
