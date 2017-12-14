@@ -373,7 +373,7 @@ One can see that our GA algorithm can select most of the relevant variables, but
 % \end{figure}
 
 \subsection{Application on Baseball Data}
-We next test our genetic algorithm on a real data set to demonstrate the ability to select and optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for Computational Statistics, 2nd Edition, by Givens and Hoeting.
+We next test our genetic algorithm on a real data set to demonstrate the ability to select and optimal variable subset.  A data set of baseball player statistics and salary numbers was obtained via the website for \citet{compute}.
 
 The data set contains 27 different statistics (such as hits and on-base percentage) for 337 players in the 1991 baseball season.  Additionally, the data set contains the salaries for the same 337 players in the 1992 season.  We used our genetic algorithm to select player statistic(s) that most influence that players salary in the following year.
 
@@ -381,11 +381,10 @@ We tested our algoritms performance on combinations of different fitness criteri
 
 \begin{table}[htp]
     \centering
-    \caption{}
+    \caption{Maximum Fitness Value}
 
 \begin{tabular}{ |c|c|c|c|c|  }
- \hline
- \multicolumn{5}{|c|}{Maximum Fitness Value} \\
+
  \hline
  Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
  \hline
@@ -406,11 +405,9 @@ The exponential ranking selection method converged the fastest, followed by tour
 
 \begin{table}[htp]
     \centering
-    \caption{}
+    \caption{Iterations to Reach Maximum Fitness Value}
 
 \begin{tabular}{ |c|c|c|c|c|  }
- \hline
- \multicolumn{5}{|c|}{Iterations to Reach Max Fitness Value} \\
  \hline
  Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
  \hline
@@ -432,11 +429,9 @@ The number of variables returned in the best genotype of each combination is sho
 
 \begin{table}[htp]
     \centering
-    \caption{}
+    \caption{Number of Variables in Best Genotype}
 
     \begin{tabular}{ |c|c|c|c|c|  }
-      \hline
-      \multicolumn{5}{|c|}{Number of Variables in Best Genotype} \\
       \hline
       Selection Method & LM, AIC & LM, BIC & GLM, AIC & GLM, BIC\\
       \hline
