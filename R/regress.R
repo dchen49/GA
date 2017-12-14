@@ -19,9 +19,11 @@
 
 regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC", modelParams=NULL) {
 
+  #Check that user correctly inputs a lm() or glm() model
   if (model != "glm" && model != "lm") stop("model must specify either glm or lm")
 
-  #Fit model based on user input model type, lm() or glm()
+  #Fit model based on user input model type; adds in model params as necessary
+  #Ater fitting, confirm that model creation completed without error
   if (model=="glm") {
     fitModel <- eval(parse(text = paste0("try(glm.fit(cbind(x[, which(genotype==1)], 1), y, ", modelParams,"))")))
     if("try-error" %in% class(fitModel)) stop(fitModel[1])
@@ -33,6 +35,7 @@ regress <- function(genotype, x, y, model="glm", fitnessCriteria="AIC", modelPar
   }
 
   #Calculate fitness criteria based on user specified criteria
+  #Confirm that fitnessCriteria is correct by checking that calculation completed without error
   performance <- try (-eval(parse(text = paste0(fitnessCriteria, "(fitModel)"))), silent = TRUE)
   if("try-error" %in% class(performance)) stop("Fitness criteria function is not correct.")
   return(performance)
