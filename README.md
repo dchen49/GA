@@ -20,8 +20,7 @@
         * -> regressOutput: vector of fitness metrics
     * stop (regressOutput, fitness)
       * Test that the current generation fitness improves upon the last by some threshold
-      * -> Boolean: TRUE if improvement insignificant
-    
+        * -> Boolean: TRUE if improvement insignificant
     * if (Stop==true) Break
     * mate (population, fitness, survivor percentage, selection method/params, population size)
       * selects high fitness genotypes via selection method
@@ -34,6 +33,6 @@
       * mutate(population, mutation prob)
         * picks locations and changes values
           * -> population = populationCrossedMutated
-      * counter +1
-      * pass new population back into while loop!
+    * counter +1
+    * pass new population back into while loop!
 
