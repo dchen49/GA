@@ -180,6 +180,7 @@ citecolor=blue
 \title{\LARGE Genetic Algorithm-R Package Final Report}
 \author{David Chen, Qi Chen, Emily Suter and Xinyi(Cindy) Zhang}
 
+
 \date{\today}
 
 \maketitle
@@ -187,6 +188,8 @@ citecolor=blue
 \begin{abstract}
 Genetic Algorithm (GA) is a search-based optimization technique based on the principles of Genetics and Natural Selection. It is frequently used to find optimal or near-optimal solutions to difficult problems which otherwise would take a lifetime to solve. In this report, we will first introduce how we set up the genetic algorithm and the main steps. We then describe the testing procedure carried out. In section \ref{s3}, we include the results from the example we have taken to apply our GA algorithm. Contributions of each team member is collected in the last part, section \ref{s4}.
 \end{abstract}
+
+\textbf{Github Username:} dchen49
 
 \newpage
 \pagestyle{empty}
@@ -245,11 +248,7 @@ To better introduce our genetic algorithm, the following Figure \ref{p1} diagram
 \end{tikzpicture}
 
 \section{Testing}\label{s2}
-We have tested the input and output format for each individual functions in our GA algorithm. To test the function select() as a whole, we also test the following parts:
-\begin{itemize}
-\item[1.] Ability to find max fitness using lm/glm and AIC/BIC on a manufactured dataset. Table comparing brute forced optima and optima found via select()\\
-\item[2.] Ability to distinguish between variables via strength of correlation. The optimal set of covariates recommended by our function will likely include variables only weakly correlated and likely by chance. The user is provided with the regression model and can, by evaluating the coefficients, establish a threshold under which to exclude variables as spurious correlations.
-\end{itemize}
+We have tested the input and output format for each individual functions in our GA algorithm. To test the function select() as a whole, we tested its ability to find max fitness using lm/glm and AIC/BIC on a manufactured dataset.\\
 
 \noindent
 To investigate whether our GA algorithm can attain the same optimum as global search for all possible genotypes, we create another dataset to test this. How data generated is presented as follows:
