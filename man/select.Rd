@@ -15,7 +15,7 @@ select(x, y, model = list("glm"), fitMetric = "AIC", maxGen = 200L,
 
 \item{model}{list - default "glm" : one of ("lm", "glm") and an optional character string specifying arguments into lm.fit() or glm.fit()}
 
-\item{fitMetric}{default "AIC": one of ("AIC", "BIC", "RSS") or a function that takes a regression object and outputs a single number to be maximized}
+\item{fitMetric}{default "AIC": one of ("AIC", "BIC") or a function that takes a regression object and outputs a single number to be maximized}
 
 \item{maxGen}{default 200: integer specifying the maximum number of GA generations to use}
 

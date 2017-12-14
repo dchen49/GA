@@ -7,7 +7,7 @@
 #' @param x matrix of dimension n * p
 #' @param y vector of length n or a matrix with n rows
 #' @param model list - default "glm" : one of ("lm", "glm") and an optional character string specifying arguments into lm.fit() or glm.fit()
-#' @param fitMetric default "AIC": one of ("AIC", "BIC", "RSS") or a function that takes a regression object and outputs a single number to be maximized
+#' @param fitMetric default "AIC": one of ("AIC", "BIC") or a function that takes a regression object and outputs a single number to be maximized
 #' @param maxGen default 200: integer specifying the maximum number of GA generations to use
 #' @param minGen default 10: integer specifying the number of generations without fitness improvement at which the GA algorithm will stop
 #' @param gaMethod list - default 'LR': one of ('TN', 'LR', 'ER','RW') and an additional numrical argument as needed. See gaSelection for details.
@@ -129,8 +129,11 @@ select <- function(x, y, model=list("glm"), fitMetric = "AIC", maxGen = 200L, mi
     }
 
   # fitMetric: "AIC" or "BIC", or a function taking in an lm/glm object and outputting a singel number to be maximized
-  if (!(fitMetric %in% c("AIC", "BIC")) && !is.function(fitMetric))
-    stop("fitMetric must be 'AIC', 'BIC', or a function that takes a lm or glm object and outputs a single value that should be maximized")
+  if (!is.function(fitMetric)) {
+    if (!(as.character(fitMetric) %in% c("AIC", "BIC"))) {
+      stop("fitMetric must be 'AIC', 'BIC', or a function that takes a lm or glm object and outputs a single value that should be maximized")
+    }
+  } else {fitMetric <-substitute(fitMetric)}
 
   # maxGen, minGen, and pop: positive integers, maxGen > minGen
   if (as.integer(maxGen)!=maxGen | as.integer(minGen)!=minGen | median(c(1, minGen, maxGen))!=minGen)

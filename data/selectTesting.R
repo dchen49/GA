@@ -1,17 +1,17 @@
 
 ########################### TESTING ON BASEBALL DATA ###########################
 
-# x <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, -1]
-# y <- as.matrix(read.table("data/baseball.dat", header = TRUE))[, 1]
+# x <- as.matrix(read.table("./data/baseball.dat", header = TRUE))[, -1]
+# y <- as.matrix(read.table("./data/baseball.dat", header = TRUE))[, 1]
 # ga1 <- select(x, y)
 # ga1[[1]]
 # ga1[[2]]
 #
 #
 # ########################### TESTING O N LRDATA ###########################
-# x <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, -1]
+# x <- as.matrix(read.table("./data/LRdataTest"), header = TRUE)[, -1]
 # colnames(x) <- sapply(1:30, FUN = function(i) paste0("X", i))
-# y <- as.matrix(read.table("data/LRdataTest"), header = TRUE)[, 1]
+# y <- as.matrix(read.table("./data/LRdataTest"), header = TRUE)[, 1]
 # ga2 <- select(x, y, eliteRate = .05)
 # ga2[[1]]
 # ga2[[2]]
