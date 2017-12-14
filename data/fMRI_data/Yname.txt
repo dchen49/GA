@@ -1,10 +1,0 @@
-1-L_bankssts 2-L_caudalanteriorcingulate 
-
-10-L_isthmuscingulate 
-32-L_frontalpole 38-R_caudalmiddlefrontal 
-44-R_inferiortemporal 
-50-R_middletemporal 
-61-R_rostralanteriorcingulate 
-62-R_rostralmiddlefrontal 
-66-R_supramarginal 
-67-R_frontalpole Information about dataset: related fMRI data from Human Connectome Project (HCP) Dataset (https://www.humanconnectome.org/).

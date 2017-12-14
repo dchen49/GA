@@ -8,7 +8,7 @@
 # ### Next, we start to test our algorithm
 #
 #
-# ## step1: function to generate X, of size n*p
+## step1: function to generate X, of size n*p
 # variable_matrix <- function(n,p) {
 #   mu = matrix(0,p,1)
 #   Sigma = matrix(0,p,p)
@@ -23,13 +23,13 @@
 # ## generate X with size n*p
 #
 # ## step2: generate response Y
-# p <- 20
-# X <- variable_matrix(300,20)
+# p <- 10
+# X <- variable_matrix(300,p)
 # beta <- rnorm(p, mean=3, sd=5)
 # Y <- X%*%beta
 #
 # ## combine X with noise \epsilon
-# X.tilde <- cbind(X, variable_matrix(300,10)) ## 10 uncorrelated variables
+# X.tilde <- cbind(X, variable_matrix(300,20)) ## 10 uncorrelated variables
 #
 # ## first column-Y, 2-21: X, 22-31: noise
 # data <- cbind(Y, X.tilde)

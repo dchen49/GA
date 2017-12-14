@@ -1,6 +1,8 @@
 library(testthat)
 library(GA)
 
+context("Testing select() finds the known global optimum")
+
 ## generate outputs
 ########################### GA Algorithm Output from Simulate Data
 ## How data generated?
@@ -75,7 +77,6 @@ rownames(m22) <- c("lm", "glm")
 ## m21: optimal fitness value for GA
 ## m22: selected genotype for GA
 
-context("Testing that select() finds the known global optimum")
 test_that("Outputs between global search and GA algorithm are equal", {
   expect_equal(m11, m21)
   expect_equal(m12, m22)
