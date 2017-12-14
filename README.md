@@ -34,6 +34,6 @@
       * mutate(population, mutation prob)
         * picks locations and changes values
           * -> population = populationCrossedMutated
-      * count++
-      *pass new population back into while loop!
+      * counter +1
+      * pass new population back into while loop!
 
