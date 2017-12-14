@@ -360,7 +360,7 @@ where $\beta=(\beta_{1}, \cdots, \beta_{6})^{\mathrm{T}}$ is generated from univ
 $$
 \tilde{X} = (X|\epsilon).
 $$
-Apply our genetic algorithm to fit a linear model regressing $Y\in \mathbb{R}^{n}$ on $\tilde{X}\in \mathbb{R}^{n\times 30}$. Given $10$ relevant covariates and 20 noise terms, the designed GA algorithm gives the following results for feature selection
+Apply our genetic algorithm to fit a linear model regressing $Y\in \mathbb{R}^{n}$ on $\tilde{X}\in \mathbb{R}^{n\times 30}$. Given $10$ relevant covariates and 20 noise terms, the designed GA algorithm gives the following results for feature selection.
 \begin{table}[ht]
 \centering
 \resizebox{\columnwidth}{!}{%
@@ -373,6 +373,7 @@ Gene & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & \textcolor{red}{1} & \textcolor{r
 \end{tabular}%
 }
 \end{table}
+
 One can see that our GA algorithm can select all the relevant features, but will also include some irrelevant noise terms denoted in red. Next, we will take a look at the coefficients of those noise terms from the regression model and further investigate whether the "noise" terms are significant or not. Results are presented in Table \ref{Table:7} and Table \ref{Table:8}.
 
 \vspace{3mm}
