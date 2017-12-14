@@ -12,7 +12,9 @@ m2 <- mate("gaExpSelection", list(population, fitnessVec, eliteRate, c))
 m3 <- mate("gaRWselection", list(population, fitnessVec, eliteRate))
 m4 <- mate("gaTNselection", list(population, fitnessVec, eliteRate, k))
 
+
 ## test the dimension and number of output, class of output
+context("selection returns a list with two elements")
 test_that("selection returns a list with two elements", {
   expect_equal(class(mate("gaLRselection", list(population, fitnessVec, eliteRate))), "list")
   expect_equal(dim(mate("gaLRselection", list(population, fitnessVec, eliteRate))[[1]]), c(48,6))
@@ -30,6 +32,7 @@ test_that("selection returns a list with two elements", {
 
 
 ## test whether population and fitness are updated
+context("population and fitness are changing")
 test_that("population and fitness are changing", {
   expect_false(identical(fitnessVec, m1[[2]]))
   expect_false(identical(fitnessVec, m2[[2]]))
@@ -42,6 +45,7 @@ test_that("population and fitness are changing", {
 })
 
 ## test arguments
+context("arguments satisfies certain condition and some are not missing")
 test_that("arguments satisfies certain condition and some are not missing", {
   expect_error(mate(, list(population, fitnessVec, eliteRate)), "A selection method must be provided", fixed=TRUE)
   expect_error(mate(2, list(population, fitnessVec, eliteRate)), "Selection method must be one of 'gaLRselection', 'gaExpSelection', 'gaRWselection', or 'gaTNselection'", fixed=TRUE)
