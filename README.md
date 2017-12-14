@@ -2,18 +2,12 @@
 ## Variable Selection via Genetic Algorithm
 
 ### Work in Progress
-* David - Github & R package
+* David Chen
+* Qi Chen
+* Emily Suter
+* Xinyi(Cindy) Zhang
 
-### Select Outline
-
-* select()
-  * *initialize*
-  * *while*
-    * **regress()**
-    * **stop()**
-    * **selection()**
-    * **evolve()**
-  * *choose*
+### Select() Outline
 
 * Select (y, x, tbd, ...)
   * initialize(p = initial population size, n = ncol(x))
